@@ -15,8 +15,8 @@ A library that integrates different MIL methods into a unified framework
 * DS_MIL [Dual-stream MIL Network for WSI Classification with Self-supervised Contrastive Learning](https://arxiv.org/abs/2011.08939) (CVPR 2021)
 * CLAM_MIL [Data Efficient and Weakly Supervised Computational Pathology on WSI](https://arxiv.org/abs/2004.09666) (Nature Biomedical Engineering 2021)
 * WENO_MIL [Bi-directional Weakly Supervised Knowledge Distillation for WSI Classification](https://arxiv.org/abs/2210.03664) (NeurIPS 2022)
-* DTFD_MIL [Double-Tier Feature Distillation Multiple Instance Learning for Histopathology WSI Classification](https://arxiv.org/abs/2203.12081) (CVPR 2022)
+* DTFD_MIL [Double-Tier Feature Distillation MIL for Histopathology WSI Classification](https://arxiv.org/abs/2203.12081) (CVPR 2022)
 * MHIM_MIL [MIL Framework with Masked Hard Instance Mining for WSI Classification](https://arxiv.org/abs/2307.15254) (ICCV 2023)
 * IB_MIL [Interventional Bag Multi-Instance Learning On Whole-Slide Pathological Images](https://arxiv.org/abs/2303.06873) (CVPR 2023)
-* RTT_MIL [Feature Re-Embedding: Towards Foundation Model-Level Performance in Computational Pathology](https://arxiv.org/abs/2402.17228) (CVPR 2024) 
+* RTT_MIL [Towards Foundation Model-Level Performance in Computational Pathology](https://arxiv.org/abs/2402.17228) (CVPR 2024) 
   
