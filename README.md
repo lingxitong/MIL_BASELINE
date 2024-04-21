@@ -9,11 +9,14 @@ A library that integrates different MIL methods into a unified framework
 
 ## Dataset Uniform Interface
 * User only need to provide the following csvs whether Public/Private Dataset
+* 
 ## Supported Dataset-Split-Method
-* Officail Dataset-split
 * User-difined Train-Val-Test split
-* User-difined Train-Val-Test split with K-fold
-* Split by Patient/Slide
+* Train-Test split with K-fold
+
+## Feature Encoder
+* R50
+* PLIP
   
 ## Implementated NetWork
 * MEAN_MIL [Attention-based Deep Multiple Instance Learning](https://arxiv.org/abs/1802.04712) (ICML 2018) 
@@ -27,8 +30,10 @@ A library that integrates different MIL methods into a unified framework
 * MHIM_MIL [MIL Framework with Masked Hard Instance Mining for WSI Classification](https://arxiv.org/abs/2307.15254) (ICCV 2023)
 * IB_MIL [Interventional Bag Multi-Instance Learning On Whole-Slide Pathological Images](https://arxiv.org/abs/2303.06873) (CVPR 2023)
 * RRT_MIL [Towards Foundation Model-Level Performance in Computational Pathology](https://arxiv.org/abs/2402.17228) (CVPR 2024)
+* WIKG_MIL [Dynamic Graph Representation with Knowledge-aware Attention for WSI Analysis](https://arxiv.org/abs/2403.07719) (CVPR 2024)
+* ***UPDATING...***
 
-## Code Will Be Released Later
+## Let's Begin
 
 
 
