@@ -34,7 +34,7 @@ A library that integrates different MIL methods into a unified framework
 * UPDATING...
 
 ## :orange_book: Let's Begin Now
-* Dataset Prepare
+- Code Framework
 
 
 
