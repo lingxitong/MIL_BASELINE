@@ -34,12 +34,14 @@ A library that integrates different MIL methods into a unified framework
 * UPDATING...
 
 ## :orange_book: Let's Begin Now
-### **Code Framework**
-- MIL_BASELINE defines MIL models through a YAML configuration file.
-- Since different MIL models may have different training logic, MIL_BASELINE defines a separate training framework for each MIL model, thus achieving decoupling.
-- In addition, it provides scripts for WSI feature extraction and data partitioning, supporting feature extractors like R50 and PLIP, making expansion very convenient.
-- Dataset partitioning supports the most common TVT split and Train-Test with k-fold division.
-- MIL_BASELINE provides a highly convenient and easily extendable framework for research on improvements to MIL models. Thank you for your 🥇 star.
+### 🔨 **Code Framework**
+- `/configs:` MIL_BASELINE defines MIL models through a YAML configuration file.
+- `/modules:` Defined the network architectures of different MIL models.
+- `/process:` Defined the training frameworks for different MIL models.
+- `/feature_encoder:` Supports different feature extractors.
+- `/datasets:` User-Datasets path information.
+- `/utils:` Framework's utility scripts.
+- `/train_mil.py:` Entry function of the framework.
 
-
+### 📁 **Dataset Pre-Process**
   
