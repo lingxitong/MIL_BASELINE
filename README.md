@@ -33,7 +33,7 @@ A library that integrates different MIL methods into a unified framework
 * WIKG_MIL [Dynamic Graph Representation with Knowledge-aware Attention for WSI Analysis](https://arxiv.org/abs/2403.07719) (CVPR 2024)
 * UPDATING...
 
-## Let's Begin Now
+## :orange_book: Let's Begin Now
 * Dataset Prepare
 
 
