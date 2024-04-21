@@ -1,0 +1,146 @@
+import torch
+torch.autograd.set_detect_anomaly(True)
+import torch.nn as nn
+import torch.nn.functional as F
+from torch_geometric.nn import SAGPooling, global_mean_pool, global_max_pool, GlobalAttention
+from torch_geometric.nn.aggr import AttentionalAggregation
+
+class WiKGMIL(nn.Module):
+    def __init__(self,args,in_dim=512, dim_hidden=512, topk=6, n_classes=2, agg_type='bi-interaction', dropout=True, pool='attn'):
+        super().__init__()
+        in_dim = args.Model.in_dim
+        dim_hidden = args.Model.dim_hidden
+        topk = args.Model.topk
+        n_classes = args.General.num_classes
+        agg_type = args.Model.agg_type
+        dropout = args.Model.dropout
+        self._fc1 = nn.Sequential(nn.Linear(in_dim, dim_hidden), nn.LeakyReLU())
+        
+        self.W_head = nn.Linear(dim_hidden, dim_hidden)
+        self.W_tail = nn.Linear(dim_hidden, dim_hidden)
+
+        self.scale = dim_hidden ** -0.5
+        self.topk = topk
+        self.agg_type = agg_type
+
+        self.gate_U = nn.Linear(dim_hidden, dim_hidden // 2)
+        self.gate_V = nn.Linear(dim_hidden, dim_hidden // 2)
+        self.gate_W = nn.Linear(dim_hidden // 2, dim_hidden)
+
+        if self.agg_type == 'gcn':
+            self.linear = nn.Linear(dim_hidden, dim_hidden)
+        elif self.agg_type == 'sage':
+            self.linear = nn.Linear(dim_hidden * 2, dim_hidden)
+        elif self.agg_type == 'bi-interaction':
+            self.linear1 = nn.Linear(dim_hidden, dim_hidden)
+            self.linear2 = nn.Linear(dim_hidden, dim_hidden)
+        else:
+            raise NotImplementedError
+        
+        self.activation = nn.LeakyReLU()
+        if dropout:
+            self.message_dropout = nn.Dropout(dropout)
+        # self.cls_token = nn.Parameter(torch.randn(1, 1, dim_hidden))
+        
+        # self.pooling = SAGPooling(in_channels=dim_hidden, ratio=0.5)
+        self.norm = nn.LayerNorm(dim_hidden)
+        self.fc = nn.Linear(dim_hidden, n_classes)
+
+        if pool == "mean":
+            self.readout = global_mean_pool 
+        elif pool == "max":
+            self.readout = global_max_pool 
+        elif pool == "attn":
+            att_net=nn.Sequential(nn.Linear(dim_hidden, dim_hidden // 2), nn.LeakyReLU(), nn.Linear(dim_hidden//2, 1))     
+            self.readout = GlobalAttention(att_net)
+
+
+    def forward(self, x):
+        try:
+            x = x["feature"]
+        except:
+            x = x
+        x = self._fc1(x)    # [B,N,C]
+
+        # B, N, C = x.shape
+        x = (x + x.mean(dim=1, keepdim=True)) * 0.5  
+
+        e_h = self.W_head(x)
+        # e_r = self.W_edge(x)
+        e_t = self.W_tail(x)
+
+        # construct neighbour
+        attn_logit = (e_h * self.scale) @ e_t.transpose(-2, -1)  # 1
+        # attn_logit = (e_h) @ e_t.transpose(-2, -1)  # 2
+        topk_weight, topk_index = torch.topk(attn_logit, k=self.topk, dim=-1)
+
+        # btmk_weight, btm_index = torch.topk(attn_logit, k=self.topk, dim=-1, largest=False)
+
+        # 为了使用高级索引，我们需要对 topk_index 进行额外的处理来匹配 e_t 的批次和特征维度。
+        # 我们在索引张量上添加一个额外的维度，使其可以用于高级索引，并与 e_t 的维度对齐。
+        topk_index = topk_index.to(torch.long)
+
+        # 首先，扩展 topk_index 以匹配 e_t 的批处理大小和特征维度。
+        topk_index_expanded = topk_index.expand(e_t.size(0), -1, -1)  # shape: [1, 10000, 4]
+
+        # 创建一个用于辅助索引的 range tensor
+        batch_indices = torch.arange(e_t.size(0)).view(-1, 1, 1).to(topk_index.device)  # shape: [1, 1, 1]
+        # 使用高级索引来获取结果。我们将 batch_indices 和 topk_index_expanded 用作索引。
+        # 这会从 e_t 的第一和第二维中选择元素，得到我们想要的 4 个最相关 patches 的特征。
+        Nb_h = e_t[batch_indices, topk_index_expanded, :]  # shape: [1, 10000, 4, 512]
+
+        # SoftMax来转换成概率
+        topk_prob = F.softmax(topk_weight, dim=2)
+        eh_r = torch.mul(topk_prob.unsqueeze(-1), Nb_h) + torch.matmul((1 - topk_prob).unsqueeze(-1), e_h.unsqueeze(2))  # 1 pixel wise   2 matmul
+
+        # gated knowledge attention
+        e_h_expand = e_h.unsqueeze(2).expand(-1, -1, self.topk, -1)
+        gate = torch.tanh(e_h_expand + eh_r)
+        ka_weight = torch.einsum('ijkl,ijkm->ijk', Nb_h, gate)
+
+        # gate_1 = torch.tanh(self.gate_U(e_h_expand + eh_r))
+        # gate_2 = torch.sigmoid(self.gate_V(e_h_expand + eh_r))
+        # gate = torch.mul(gate_1, gate_2)
+        # ka_weight = torch.einsum('ijkl,ijkm->ijk', Nb_h, self.gate_W(gate))
+        ka_prob = F.softmax(ka_weight, dim=2).unsqueeze(dim=2)
+        e_Nh = torch.matmul(ka_prob, Nb_h).squeeze(dim=2)
+
+        if self.agg_type == 'gcn':
+            embedding = e_h + e_Nh
+            embedding = self.activation(self.linear(embedding))
+        elif self.agg_type == 'sage':
+            embedding = torch.cat([e_h, e_Nh], dim=2)
+            embedding = self.activation(self.linear(embedding))
+        elif self.agg_type == 'bi-interaction':
+            sum_embedding = self.activation(self.linear1(e_h + e_Nh))
+            bi_embedding = self.activation(self.linear2(e_h * e_Nh))
+            # cat_embedding = self.activation(self.linear3(torch.cat([e_h, e_Nh], dim=2)))
+            embedding = sum_embedding + bi_embedding
+            # embedding = bi_embedding + cat_embedding
+        
+        h = self.message_dropout(embedding)
+        # h = (h + h.mean(dim=1, keepdim=True)) * 0.5
+
+        # h = self.pooling(h.squeeze(0), edge_index)[0]
+        h = self.readout(h.squeeze(0), batch=None)
+        h = self.norm(h)
+        h = self.fc(h)
+        logits = h
+        
+        return logits
+
+            
+# if __name__ == "__main__":
+#     data = torch.randn((1, 10000, 384)).cuda()
+#     model = WiKGMIL(dim_in=384, dim_hidden=512, topk=6, n_classes=2, agg_type='bi-interaction', dropout=0.3, pool='attn').cuda()
+#     output = model(data)
+#     print(output.shape)
+#     # print(kg_loss.item())
+#     total_params = sum(p.numel() for p in model.parameters())
+#     total_m_params = total_params / 1e6  # 转换为以“M”为单位
+
+#     print(f"full parameter: {total_m_params:.2f} M")
+
+
+
+

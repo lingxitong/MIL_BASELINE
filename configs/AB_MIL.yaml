@@ -1,0 +1,48 @@
+General:
+    MODEL_NAME: AB_MIL
+    seed: 2024
+    num_classes: 2
+    num_epochs: 50
+    device: 1
+    num_workers: 4
+    best_model_metric: val_auc  # val_auc or val_acc val_f1 val_loss val_recall val_precision
+    earlystop: 
+        use: False
+        patience: 5
+        metric: val_auc  # val_auc or val_acc val_f1 val_loss val_recall val_pre
+
+Dataset:
+    DATASET_NAME: GEM_2CLS
+    # to use train-val-test, open  dataset_csv_dir
+    # to use k-fold cross validation, open  dataset_csv_path
+    
+    # dataset_csv_path: /data_sda/lxt/CAMELYON_BENCHMARK/datasets/CAMELYON17_4CLS_PLIP.csv
+    dataset_root_dir: /data_sdd/lxt/GEM_MIL/MIL_BASELINE/datasets_csv/GEM-2cls
+    VIST: True
+
+Logs:
+    log_root_dir: /data_sdd/lxt/GEM_MIL/MIL_BASELINE/logs
+
+Model:
+    in_dim: 512
+    dropout: 0.1
+    act: relu  # relu or silu gule
+    optimizer:
+        which: adam    # adam or adamw
+        adam_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+        adamw_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+    criterion: ce  # ce
+    scheduler:
+        which: step  # step_lr or plateau cosine none
+        step_config:
+            step_size: 10
+            gamma: 0.1
+
+        
+
+    
+     
