@@ -16,7 +16,9 @@ A library that integrates different MIL methods into a unified framework
 
 ## Feature Encoder
 * R50
+* VIT-S
 * PLIP
+* UNI
   
 ## Implementated NetWork
 * MEAN_MIL
