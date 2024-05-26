@@ -76,20 +76,13 @@ class WiKGMIL(nn.Module):
 
         # btmk_weight, btm_index = torch.topk(attn_logit, k=self.topk, dim=-1, largest=False)
 
-        # 为了使用高级索引，我们需要对 topk_index 进行额外的处理来匹配 e_t 的批次和特征维度。
-        # 我们在索引张量上添加一个额外的维度，使其可以用于高级索引，并与 e_t 的维度对齐。
-        topk_index = topk_index.to(torch.long)
 
-        # 首先，扩展 topk_index 以匹配 e_t 的批处理大小和特征维度。
+        topk_index = topk_index.to(torch.long)
         topk_index_expanded = topk_index.expand(e_t.size(0), -1, -1)  # shape: [1, 10000, 4]
 
-        # 创建一个用于辅助索引的 range tensor
         batch_indices = torch.arange(e_t.size(0)).view(-1, 1, 1).to(topk_index.device)  # shape: [1, 1, 1]
-        # 使用高级索引来获取结果。我们将 batch_indices 和 topk_index_expanded 用作索引。
-        # 这会从 e_t 的第一和第二维中选择元素，得到我们想要的 4 个最相关 patches 的特征。
         Nb_h = e_t[batch_indices, topk_index_expanded, :]  # shape: [1, 10000, 4, 512]
 
-        # SoftMax来转换成概率
         topk_prob = F.softmax(topk_weight, dim=2)
         eh_r = torch.mul(topk_prob.unsqueeze(-1), Nb_h) + torch.matmul((1 - topk_prob).unsqueeze(-1), e_h.unsqueeze(2))  # 1 pixel wise   2 matmul
 
@@ -98,10 +91,6 @@ class WiKGMIL(nn.Module):
         gate = torch.tanh(e_h_expand + eh_r)
         ka_weight = torch.einsum('ijkl,ijkm->ijk', Nb_h, gate)
 
-        # gate_1 = torch.tanh(self.gate_U(e_h_expand + eh_r))
-        # gate_2 = torch.sigmoid(self.gate_V(e_h_expand + eh_r))
-        # gate = torch.mul(gate_1, gate_2)
-        # ka_weight = torch.einsum('ijkl,ijkm->ijk', Nb_h, self.gate_W(gate))
         ka_prob = F.softmax(ka_weight, dim=2).unsqueeze(dim=2)
         e_Nh = torch.matmul(ka_prob, Nb_h).squeeze(dim=2)
 

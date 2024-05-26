@@ -9,7 +9,8 @@ def Balanced_K_fold_Train_Test(args):
     df = pd.read_csv(csv_path)
     X = df['slide_path']
     y = df['label']
-    
+    save_dir = args.save_dir
+    dataset_name = args.dataset_name
     skf = StratifiedKFold(n_splits=5)
     for k_idx,(train_index, test_index) in enumerate(skf.split(X, y)):
         X_train, X_test = X[train_index].values.tolist(), X[test_index].values.tolist()
@@ -32,7 +33,7 @@ def Balanced_K_fold_Train_Test(args):
         })
         
         os.makedirs(f'{args.save_dir}/{args.dataset}', exist_ok=True)
-        one_fold.to_csv(f'/data_sdd/lxt/GEM_MIL/MIL_BASELINE/datasets_csv/{args.dataset}/Total_{k}-fold_GEM-2cls_{k_idx+1}fold.csv', index=False)
+        one_fold.to_csv(f'{save_dir}/{args.dataset}/Total_{k}-fold_{dataset_name}_{k_idx+1}fold.csv', index=False)
 
 
 

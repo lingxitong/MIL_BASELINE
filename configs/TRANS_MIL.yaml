@@ -14,10 +14,10 @@ General:
 Dataset:
     DATASET_NAME: GEM_2CLS
     # to use train-val-test, open  dataset_csv_dir
-    # to use k-fold cross validation, open  dataset_csv_path
+    # to use k-fold cross validation, open  dataset_root_dir
     
-    # dataset_csv_path: /data_sda/lxt/CAMELYON_BENCHMARK/datasets/CAMELYON17_4CLS_PLIP.csv
-    dataset_root_dir: /data_sdd/lxt/GEM_MIL/MIL_BASELINE/datasets_csv/GEM-2cls
+    # dataset_csv_path: /path/to/your/dataset.csv
+    dataset_root_dir: /dir/to/your/dataset_dir/
     VIST: True
 
 Logs:

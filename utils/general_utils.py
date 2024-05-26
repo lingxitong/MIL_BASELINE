@@ -23,13 +23,11 @@ def print_args(args):
     print(f'Fold Info:{args.Dataset.now_fold}')
     
 def get_time():
-    # 创建一个时区对象
+
     tz = pytz.timezone('Asia/Shanghai')
 
-    # 获取当前的时间
     now = datetime.now(tz)
 
-    # 格式化时间
     return now.strftime("%Y-%m-%d-%H-%M")
 def set_global_seed(seed):
     random.seed(seed)

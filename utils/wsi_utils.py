@@ -7,50 +7,6 @@ import torch
 from torch.utils.data import Dataset
 
 
-def display_camlyon_info(wsi_path):
-    # 打开 WSI 文件
-    slide = openslide.open_slide(wsi_path)
-
-    # 获取 WSI 的尺寸
-    width, height = slide.dimensions
-    print("WSI尺寸：{}x{}".format(width, height))
-
-    # 获取 WSI 的 level 数量
-    num_levels = slide.level_count
-    dimensions = slide.level_dimensions
-    print("WSI Level数量：", num_levels)
-    print("WSI Level明细：", dimensions)
-    
-    #获取WSI元数据，读取相关信息
-    if 'aperio.AppMag' in slide.properties.keys():
-        level_0_magnification = int(slide.properties['aperio.AppMag'])
-    elif 'openslide.mpp-x' in slide.properties.keys():
-        level_0_magnification = 40 if int(np.floor(float(slide.properties['openslide.mpp-x']) * 10)) == 2 else 20
-    else:
-        level_0_magnification = 40
-        
-    #输出level0对应的放大倍数
-    print("level_0对应的放大倍数为:",level_0_magnification)
-
-
-
-def save_thumbnail(wsi_path,save_path,level=-1):
-    # 打开 WSI 文件
-    slide = openslide.open_slide(wsi_path)
-
-    # 获取 WSI 的尺寸
-    width, height = slide.dimensions
-
-    # 获取 WSI 的 level 数量
-    num_levels = slide.level_count
-
-    # 选择一个 level，这里选择 level 5
-
-    thumbnail = slide.get_thumbnail(slide.level_dimensions[level])
-    thumbnail = np.array(thumbnail)
-    thumbnail = cv2.cvtColor(thumbnail, cv2.COLOR_RGB2BGR)
-    cv2.imwrite(save_path, thumbnail)
-    print("缩略图已保存为{}".format(save_path))
 
 
 class WSI_Dataset(Dataset):

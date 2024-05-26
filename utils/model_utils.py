@@ -32,13 +32,10 @@ def get_scheduler(args,optimizer):
         return None
 
 def _delete_best_pth_files(now_log_dir):
-    # 找到 now_log_dir 目录下所有后缀为 .pth 的文件
     pth_files = glob.glob(os.path.join(now_log_dir, '*.pth'))
 
     for file in pth_files:
-        # 检查文件名是否包含 'best'
         if 'Best' in os.path.basename(file):
-            # 删除文件
             os.remove(file)
     
 def _set_round(str_value_list,round_num):

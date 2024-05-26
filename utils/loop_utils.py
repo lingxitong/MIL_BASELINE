@@ -18,9 +18,7 @@ def _optimal_thresh(fpr, tpr, thresholds, p=0):
     return fpr[idx], tpr[idx], thresholds[idx]
 
 def _cal_six_scores_optimal_thresh_2class(args,bag_labels,bag_predictions):
-    '''
-    bag_predictions是经过sigmoid/softmax后的结果中为'1'的值
-    '''
+
     fpr, tpr, threshold = roc_curve(bag_labels, bag_predictions, pos_label=1)
     fpr_optimal, tpr_optimal, threshold_optimal = _optimal_thresh(fpr, tpr, threshold)
     auc_value = roc_auc_score(bag_labels, bag_predictions)
@@ -35,14 +33,7 @@ def _cal_six_scores_optimal_thresh_2class(args,bag_labels,bag_predictions):
 
 
 def cal_six_scores_optimal_thresh(args,bag_labels,model_logist_after_normal):
-    '''
-    (1)通过阈值优化计算指标  ref:CVPR23-IBMIL,ICCV23-MHIM_MIL,CVPR24-RTT_MIL
-    (2)model_logits_after_normal是经过sigmoid或softmax后的结果,ce损失使用softmax,bce损失使用sigmoid
-    (3)ref:https://github.com/DearCaat/MHIM-MIL/blob/master/utils.py
-    (4)需要注意model_logits_after_normal可能是一个list,每个元素是一个numpy数组,每个数组的shape是(n,2)或(n,3)
-    '''
     if args.General.num_classes == 2:
-        # print('DEBUG')
         bag_predictions = [model_logist_after_normal_idx[1] for model_logist_after_normal_idx in model_logist_after_normal]
         bag_predictions = np.array(bag_predictions)
         baccuracy,accuracy, auc_value, precision, recall, f1score = _cal_six_scores_optimal_thresh_2class(args,bag_labels,bag_predictions)
@@ -54,7 +45,7 @@ def cal_six_scores_optimal_thresh(args,bag_labels,model_logist_after_normal):
         recalls = []
         f1scores = []
         for i in range(args.General.num_classes):
-            label_i = _map_list(bag_labels, i) #将label为i的转换为1,其他转换为0
+            label_i = _map_list(bag_labels, i) 
             bag_predictions_i = [model_logist_after_normal_idx[i] for model_logist_after_normal_idx in model_logist_after_normal]
             bag_predictions_i = np.array(bag_predictions_i)
             baccuracy_i,accuracy_i, auc_value_i, precision_i, recall_i, f1score_i = _cal_six_scores_optimal_thresh_2class(args,label_i,bag_predictions_i)
@@ -77,7 +68,7 @@ def train_loop(args,model,loader,criterion,optimizer,scheduler):
     model.train()
     train_loss_log = 0
     device = torch.device(f'cuda:{args.General.device}')
-    model = model.to(device)
+    print(f'device:{device}')
     for i, data in enumerate(loader):
         optimizer.zero_grad()
         label = data[1].long().to(device)

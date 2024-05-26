@@ -26,7 +26,7 @@ def main(arg):
 
     else:
         '''
-        train-test with k-fold split
+        train-test with k-fold split or train-val-test with k-fold split
         '''
         dataset_root_dir = args.Dataset.dataset_root_dir
         k = len(os.listdir(dataset_root_dir)) 
