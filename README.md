@@ -47,4 +47,6 @@ A library that integrates different MIL methods into a unified framework
 - `/train_mil.py:` Entry function of the framework.
 
 ### 📁 **Dataset Pre-Process**
+- Extract Feature
+  - `/feature_enc`
   
