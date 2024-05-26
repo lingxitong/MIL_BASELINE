@@ -41,12 +41,13 @@ A library that integrates different MIL methods into a unified framework
 - `/configs:` MIL_BASELINE defines MIL models through a YAML configuration file.
 - `/modules:` Defined the network architectures of different MIL models.
 - `/process:` Defined the training frameworks for different MIL models.
-- `/feature_encoder:` Supports different feature extractors.
+- `/feature_extracter:` Supports different feature extractors.
 - `/datasets:` User-Datasets path information.
 - `/utils:` Framework's utility scripts.
 - `/train_mil.py:` Entry function of the framework.
 
 ### 📁 **Dataset Pre-Process**
 - Extract Feature
-  - `/feature_enc`
-  
+  - `/feature_extracter:` Supports different feature extractors.
+  - R50 and VIT-S are always supported.
+  - To use UNI and PLIP, you should download the model-weights to `/feature_extracter/UNI` and `/feature_extracter/PLIP`
