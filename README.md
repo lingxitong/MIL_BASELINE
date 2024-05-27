@@ -50,5 +50,6 @@ A library that integrates different MIL methods into a unified framework
 #### **Feature Extracter**
 - R50 and VIT-S are supported directly.
 - PLIP and UNI are supported by push the model-weights in `/feature_extracter/PLIP` and `/feature_extracter/UNI`.
-- To permform feature extracter: </br>
-  
+- To permform feature extracter </br>
+  - First, you should get h5 file </br>
+``  
