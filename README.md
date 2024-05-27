@@ -71,4 +71,47 @@ A library that integrates different MIL methods into a unified framework
 #### **Yaml Config**
 - you can config the yaml-file in `/configs`
 - for example, `/configs/AB_MIL.yaml`
+`General:
+    MODEL_NAME: AB_MIL
+    seed: 2024
+    num_classes: 2
+    num_epochs: 50
+    device: 1
+    num_workers: 4
+    best_model_metric: val_auc  # val_auc or val_acc val_f1 val_loss val_recall val_precision
+    earlystop: 
+        use: False
+        patience: 5
+        metric: val_auc  # val_auc or val_acc val_f1 val_loss val_recall val_pre
+
+Dataset:
+    DATASET_NAME: GEM_2CLS
+    # to use train-val-test, open  dataset_csv_dir
+    # to use k-fold cross validation, open  dataset_root_dir
+    
+    # dataset_csv_path: /path/to/your/dataset.csv
+    dataset_root_dir: /dir/to/your/dataset_dir/
+    VIST: True
+
+Logs:
+    log_root_dir: /dir/to/your_logs_dir
+
+Model:
+    in_dim: 512
+    dropout: 0.1
+    act: relu  # relu or silu gule
+    optimizer:
+        which: adam    # adam or adamw
+        adam_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+        adamw_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+    criterion: ce  
+    scheduler:
+        which: step  # step_lr or plateau cosine none
+        step_config:
+            step_size: 10
+            gamma: 0.1`
 
