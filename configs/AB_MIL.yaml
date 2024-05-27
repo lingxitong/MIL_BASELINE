@@ -21,10 +21,10 @@ Dataset:
     VIST: True
 
 Logs:
-    log_root_dir: /dir/to/your_logs_dir
+    log_root_dir: /dir/to/your_logs_dir # where you would like to save your logs
 
 Model:
-    in_dim: 512
+    in_dim: 512  # depend on the pt dimensions，such resnet50——>1024 vit_s——>768
     dropout: 0.1
     act: relu  # relu or silu gule
     optimizer:
