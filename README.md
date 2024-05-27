@@ -59,3 +59,6 @@ A library that integrates different MIL methods into a unified framework
       - backbone : resnet50_imagenet/vit_s_imagenet/plip/uni
       - ext : .svs/.tif/.ndpi/......./.sdpc
       - target_patch_size : for example, vit_s need 224 as input
+
+#### **Dataset-Csv Construction**
+- You should construct a csv-file like the format of `/datasets/example.csv`
