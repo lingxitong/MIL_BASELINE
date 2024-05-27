@@ -68,4 +68,7 @@ A library that integrates different MIL methods into a unified framework
 
 
 ### :fire: **Train MIL**
+#### **Yaml Config**
+- you can config the yaml-file in `/configs`
+- for example, `/configs/AB_MIL.yaml`
 
