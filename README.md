@@ -47,4 +47,7 @@ A library that integrates different MIL methods into a unified framework
 - `/train_mil.py:` Entry function of the framework.
 
 ### 📁 **Dataset Pre-Process**
+#### **Feature Extracter**
+- R50 and VIT-S are supported directly.
+- PLIP and UNI are supported by push the model-weights in `/feature_extracter/PLIP` and `/feature_extracter/UNI`.
   
