@@ -71,6 +71,7 @@ A library that integrates different MIL methods into a unified framework
 #### **Yaml Config**
 - you can config the yaml-file in `/configs`
 - for example, `/configs/AB_MIL.yaml`, A detailed explanation has been written in  `/configs/AB_MIL.yaml`
+- Then, `/train_mil.py` will help you !
 
 
 ### :sparkles: **Git Pull**
