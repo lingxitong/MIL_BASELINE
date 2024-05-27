@@ -13,6 +13,7 @@ A library that integrates different MIL methods into a unified framework
 ## Supported Dataset-Split-Method
 * User-difined Train-Val-Test split
 * Train-Test split with K-fold
+* Train-Val-Test split with K-fold
 
 ## Feature Encoder
 * R50
