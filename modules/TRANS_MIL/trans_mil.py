@@ -58,8 +58,6 @@ class TRANSMIL(nn.Module):
     def __init__(self,args):
         super(TRANSMIL, self).__init__()
         n_classes = args.General.num_classes
-        dropout = args.Model.dropout.use
-        dropout_rate = args.Model.dropout.dropout_rate
         act = args.Model.act
         in_dim = args.Model.in_dim
         self.pos_layer = PPEG(dim=512)
@@ -73,7 +71,7 @@ class TRANSMIL(nn.Module):
             self._fc1 += [nn.GELU()]
 
         if dropout:
-            self._fc1 += [nn.Dropout(dropout_rate)]
+            self._fc1 += [nn.Dropout(args.Model.dropout)]
 
         #self._fc1 += [SwinEncoder(attn='swin',pool='none',n_heads=2,trans_conv=False)]
         
