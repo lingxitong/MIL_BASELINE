@@ -7,6 +7,7 @@ import shutil
 import os
 def save_dataset_csv(args):
     dataset_csv_path = args.Dataset.dataset_csv_path
+    os.makedirs(args.Logs.now_log_dir, exist_ok=True)
     dst_path = os.path.join(args.Logs.now_log_dir,os.path.basename(dataset_csv_path))
     shutil.copyfile(dataset_csv_path,dst_path)
     
