@@ -115,6 +115,6 @@ def test_loop(args,model,loader,criterion):
             test_loss_log += test_loss.item()
 
     baccuracy,accuracy, auc_value, precision, recall, f1score = cal_six_scores(bag_predictions_after_normal,labels,args.General.num_classes)
-    test_metrics = {'bacc':baccuracy,'acc':accuracy,'auc':auc,'pre':precision,'recall':recall,'f1':f1score}
+    test_metrics = {'bacc':baccuracy,'acc':accuracy,'auc':auc_value,'pre':precision,'recall':recall,'f1':f1score}
     test_loss_log /= len(loader)
     return test_loss_log,test_metrics
