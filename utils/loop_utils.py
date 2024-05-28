@@ -10,10 +10,16 @@ import random
 import glob
 import pickle
 import torch
-
+def _map_list(lst, i):
+    return [1 if x == i else 0 for x in lst]
+def _optimal_thresh(fpr, tpr, thresholds, p=0):
+    loss = (fpr - tpr) - p * tpr / (fpr + tpr + 1)
+    idx = np.argmin(loss, axis=0)
+    return fpr[idx], tpr[idx], thresholds[idx]
 
 def cal_six_scores(logits, labels, num_classes):       # logits:[batch_size, num_classes]   labels:[batch_size, ]
     logits = torch.tensor(logits)
+    labels = torch.tensor(labels)
     predicted_classes = torch.argmax(logits, dim=1)
     accuracy = accuracy_score(labels.numpy(), predicted_classes.numpy())
     probs = F.softmax(logits, dim=1)
