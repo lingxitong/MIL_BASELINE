@@ -1,99 +1,319 @@
 import torch
 import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import DataLoader, RandomSampler
-import argparse 
-import os
-import modules
-from modules.CLAM_MB_MIL.clam_mb_mil import *
-from utils.wsi_utils import *
-from utils.general_utils import *
-from utils.model_utils import *
-from utils.loop_utils import *
-from tqdm import tqdm
+import torch.nn.functional as F
+import numpy as np
+from .topk.svm import SmoothTop1SVM
 
-    
-def process_CLAM_MB_MIL(args):
-    print_args(args)
+def initialize_weights(module):
+	for m in module.modules():
+		if isinstance(m, nn.Linear):
+			nn.init.xavier_normal_(m.weight)
+			m.bias.data.zero_()
+		
+		elif isinstance(m, nn.BatchNorm1d):
+			nn.init.constant_(m.weight, 1)
+			nn.init.constant_(m.bias, 0)
 
-    train_dataset = WSI_Dataset(args.Dataset.dataset_csv_path,'train')
-    val_dataset = WSI_Dataset(args.Dataset.dataset_csv_path,'val')
-    test_dataset = WSI_Dataset(args.Dataset.dataset_csv_path,'test')
-    '''
-    generator设置seed用于保证shuffle的一致性
-    '''
+"""
+Attention Network without Gating (2 fc layers)
+args:
+    L: input feature dimension
+    D: hidden layer dimension
+    dropout: whether to use dropout (p = 0.25)
+    n_classes: number of classes 
+"""
+class Attn_Net(nn.Module):
+
+    def __init__(self, L = 1024, D = 256, dropout = False, n_classes = 1):
+        super(Attn_Net, self).__init__()
+        self.module = [
+            nn.Linear(L, D),
+            nn.Tanh()]
+
+        if dropout:
+            self.module.append(nn.Dropout(0.25))
+
+        self.module.append(nn.Linear(D, n_classes))
+        
+        self.module = nn.Sequential(*self.module)
     
-    generator = torch.Generator()
-    generator.manual_seed(args.General.seed) 
-    set_global_seed(args.General.seed)
-    num_workers = args.General.num_workers
-    train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers = num_workers,generator=generator)
-    val_dataloader = DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=num_workers)
-    test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=num_workers)
-    
-    print('DataLoader Ready!')
-    
-    device = torch.device(f'cuda:{args.General.device}')
-    mil_model = CLAM_MB(args)
-    mil_model.to(device)
-    
-    print('Model Ready!')
-    
-    optimizer = get_optimizer(args,mil_model)
-    scheduler = get_scheduler(args,optimizer)
-    criterion = get_criterion(args.Model.criterion)
-    
-    '''
-    开始循环epoch进行训练
-    '''
-    epoch_info_log = {'epoch':[],'train_loss':[],'val_loss':[],'test_loss':[],'val_bacc':[],
-                      'val_acc':[],'val_auc':[],'val_pre':[],'val_recall':[],'val_f1':[],'test_bacc':[],
-                      'test_acc':[],'test_auc':[],'test_pre':[],'test_recall':[],'test_f1':[]}
-    best_model_metric = args.General.best_model_metric
-    REVERSE = False
-    best_val_metric = 0
-    if best_model_metric == 'val_loss':
-        REVERSE = True
-        best_val_metric = 999
-    best_model_metric = best_model_metric.replace('val_','')
-    best_epoch = 1
-    print('Start Process!')
-    for epoch in tqdm(range(args.General.num_epochs),colour='GREEN'):
-        train_loss,cost_time = train_loop(args,mil_model,train_dataloader,criterion,optimizer,scheduler)
-        val_loss,val_metrics = val_loop(args,mil_model,val_dataloader,criterion)
-        if args.Dataset.VIST == True:
-            test_loss,test_metrics = val_loss,val_metrics
+    def forward(self, x):
+        return self.module(x), x # N x n_classes
+
+"""
+Attention Network with Sigmoid Gating (3 fc layers)
+args:
+    L: input feature dimension
+    D: hidden layer dimension
+    dropout: whether to use dropout (p = 0.25)
+    n_classes: number of classes 
+"""
+class Attn_Net_Gated(nn.Module):
+    def __init__(self, L = 1024, D = 256, dropout = False, n_classes = 1):
+        super(Attn_Net_Gated, self).__init__()
+        self.attention_a = [
+            nn.Linear(L, D),
+            nn.Tanh()]
+        
+        self.attention_b = [nn.Linear(L, D),
+                            nn.Sigmoid()]
+        if dropout:
+            self.attention_a.append(nn.Dropout(0.25))
+            self.attention_b.append(nn.Dropout(0.25))
+
+        self.attention_a = nn.Sequential(*self.attention_a)
+        self.attention_b = nn.Sequential(*self.attention_b)
+        
+        self.attention_c = nn.Linear(D, n_classes)
+
+    def forward(self, x):
+        a = self.attention_a(x)
+        b = self.attention_b(x)
+        A = a.mul(b)
+        A = self.attention_c(A)  # N x n_classes
+        return A, x
+
+"""
+args:
+    gate: whether to use gated attention network
+    size_arg: config for network size
+    dropout: whether to use dropout
+    k_sample: number of positive/neg patches to sample for instance-level training
+    dropout: whether to use dropout (p = 0.25)
+    n_classes: number of classes 
+    instance_loss_fn: loss function to supervise instance-level training
+    subtyping: whether it's a subtyping problem
+"""
+
+
+class CLAM_SB(nn.Module):
+    def __init__(self, args,gate = True, size_arg = "small", dropout = 0., k_sample=8, n_classes=2,
+        instance_loss_fn=SmoothTop1SVM(2), subtyping=False,test=False,act='relu',n_robust=0):
+        super(CLAM_SB, self).__init__()
+        n_classes == args.General.num_classes
+        dropout = args.Model.dropout
+        self.device =f'cuda:{args.General.device}'
+        in_dim = args.Model.in_dim
+        act = args.Model.act
+        self.size_dict = {"small": [1024, 512, 256], "big": [1024, 512, 384],"hipt": [192, 512, 256]}
+        size = self.size_dict[size_arg]
+        # fc = [nn.Linear(size[0], size[1]), nn.GELU()]
+
+        fc = [nn.Linear(in_dim, size[1])]
+        
+        if act.lower() == 'gelu':
+            fc += [nn.GELU()]
         else:
-            test_loss,test_metrics = test_loop(args,mil_model,test_dataloader,criterion)
-        print(f'EPOCH:{epoch+1},  Train_Loss:{train_loss},  Val_Loss:{val_loss},  Test_Loss:{test_loss},  Cost_Time:{cost_time}')
-        print(f'Val_Metrics:{val_metrics}')
-        print(f'Test_Metrics:{test_metrics}')
-        add_epoch_info_log(epoch_info_log,epoch,train_loss,val_loss,test_loss,val_metrics,test_metrics)
+            fc += [nn.ReLU()]
+
+        if dropout != 0.:
+            fc.append(nn.Dropout(dropout))
+        if gate:
+            attention_net = Attn_Net_Gated(L = size[1], D = size[2], dropout = dropout, n_classes = 1)
+        else:
+            attention_net = Attn_Net(L = size[1], D = size[2], dropout = dropout, n_classes = 1)
+        fc.append(attention_net)
+        self.attention_net = nn.Sequential(*fc)
+        self.classifiers = nn.Linear(size[1], n_classes)
+        instance_classifiers = [nn.Linear(size[1], 2) for i in range(n_classes)]
+        self.instance_classifiers = nn.ModuleList(instance_classifiers)
+        self.k_sample = k_sample
+        self.instance_loss_fn = SmoothTop1SVM(2).to(self.device)
+        # self.instance_loss_fn = nn.CrossEntropyLoss()
+        self.n_classes = n_classes
+        self.subtyping = subtyping
+
+        self.apply(initialize_weights)
+
+    def relocate(self):
+
+        self.attention_net = self.attention_net.to(self.device)
+        self.classifiers = self.classifiers.to(self.device)
+        self.instance_classifiers = self.instance_classifiers.to(self.device)
+    
+    @staticmethod
+    def create_positive_targets(length, device):
+        return torch.full((length, ), 1, device=self.device).long()
+    @staticmethod
+    def create_negative_targets(length, device):
+        return torch.full((length, ), 0, device=self.device).long()
+    
+    #instance-level evaluation for in-the-class attention branch
+    def inst_eval(self, A, h, classifier): 
+        device=h.device
+        if len(A.shape) == 1:
+            A = A.view(1, -1)
+        top_p_ids = torch.topk(A, self.k_sample)[1][-1]
+        top_p = torch.index_select(h, dim=0, index=top_p_ids)
+        top_n_ids = torch.topk(-A, self.k_sample, dim=1)[1][-1]
+        top_n = torch.index_select(h, dim=0, index=top_n_ids)
+        p_targets = self.create_positive_targets(self.k_sample, device)
+        n_targets = self.create_negative_targets(self.k_sample, device)
+
+        all_targets = torch.cat([p_targets, n_targets], dim=0)
+        all_instances = torch.cat([top_p, top_n], dim=0)
+        logits = classifier(all_instances)
+        all_preds = torch.topk(logits, 1, dim = 1)[1].squeeze(1)
+
+        instance_loss = self.instance_loss_fn(logits, all_targets)
+        return instance_loss, all_preds, all_targets
+    
+    #instance-level evaluation for out-of-the-class attention branch
+    def inst_eval_out(self, A, h, classifier):
+        device=h.device
+        if len(A.shape) == 1:
+            A = A.view(1, -1)
+        top_p_ids = torch.topk(A, self.k_sample)[1][-1]
+        top_p = torch.index_select(h, dim=0, index=top_p_ids)
+        p_targets = self.create_negative_targets(self.k_sample, device)
+        logits = classifier(top_p)
+        p_preds = torch.topk(logits, 1, dim = 1)[1].squeeze(1)
+        instance_loss = self.instance_loss_fn(logits, p_targets)
+        return instance_loss, p_preds, p_targets
+
+    def forward(self, h, label=None, instance_eval=False, return_features=False, attention_only=False):
+        device = h.device
+        ps = h.size(1)
+        A, h = self.attention_net(h.squeeze())  # NxK        
+        A = torch.transpose(A, 1, 0)  # KxN
+        if attention_only:
+            return A
+        A_raw = A
+        A = F.softmax(A, dim=1)  # softmax over N
+
+        if instance_eval:
+            total_inst_loss = 0.0
+            all_preds = []
+            all_targets = []
+            inst_labels = F.one_hot(label, num_classes=self.n_classes).squeeze() #binarize label
+            for i in range(len(self.instance_classifiers)):
+                inst_label = inst_labels[i].item()
+                classifier = self.instance_classifiers[i]
+                if inst_label == 1: #in-the-class:
+                    instance_loss, preds, targets = self.inst_eval(A, h, classifier)
+                    all_preds.extend(preds.cpu().numpy())
+                    all_targets.extend(targets.cpu().numpy())
+                else: #out-of-the-class
+                    if self.subtyping:
+                        instance_loss, preds, targets = self.inst_eval_out(A, h, classifier)
+                        all_preds.extend(preds.cpu().numpy())
+                        all_targets.extend(targets.cpu().numpy())
+                    else:
+                        continue
+                total_inst_loss += instance_loss
+
+            if self.subtyping:
+                total_inst_loss /= len(self.instance_classifiers)
+                
+        M = torch.mm(A, h) 
+        logits = self.classifiers(M)
+        Y_hat = torch.topk(logits, 1, dim = 1)[1]
+        Y_prob = F.softmax(logits, dim = 1)
+        if instance_eval:
+            results_dict = {'instance_loss': total_inst_loss, 'inst_labels': np.array(all_targets), 
+            'inst_preds': np.array(all_preds)}
+        else:
+            results_dict = {}
+        if return_features:
+            results_dict.update({'features': M})
         
-        if REVERSE and val_metrics[best_model_metric] < best_val_metric:
-            best_val_metric = val_metrics[best_model_metric]
-            save_best_model(args,mil_model,epoch_info_log)
-            best_epoch = epoch+1
-        elif not REVERSE and val_metrics[best_model_metric] > best_val_metric:
-            best_val_metric = val_metrics[best_model_metric]
-            save_best_model(args,mil_model,epoch_info_log)
-            best_epoch = epoch+1
-        '''
-        判断是否需要早停
-        '''
-        is_stop = cal_is_stopping(args,epoch_info_log)
-        if is_stop:
-            print(f'Early Stop In EPOCH {epoch+1}!')
-            save_last_model(args,mil_model,epoch_info_log)
-            save_log(args,epoch_info_log,best_epoch)
-            break
-        if epoch+1 == args.General.num_epochs:
-            save_last_model(args,mil_model,epoch_info_log)
-            save_log(args,epoch_info_log,best_epoch)
+        if instance_eval:
+            return logits,total_inst_loss,ps
+        else:
+            return logits
+
+
+
+class CLAM_MB(CLAM_SB):
+    def __init__(self, args,gate = True, size_arg = "small", dropout = 0., k_sample=8, n_classes=2,
+        instance_loss_fn=SmoothTop1SVM(2), subtyping=False,act='relu'):
+        nn.Module.__init__(self)
+        self.size_dict = {"small": [1024, 512, 256], "big": [1024, 512, 384]}
+        device = f'cuda:args.General.device'
+        size = self.size_dict[size_arg]
+        #fc = [nn.Linear(size[0], size[1]), nn.ReLU()]
+        n_classes = args.General.num_classes
+        dropout = args.Model.dropout
+        act = args.Model.act
+        in_dim = args.Model.in_dim
+        fc = [nn.Linear(in_dim, size[1])]
+        if act.lower() == 'gelu':
+            fc += [nn.GELU()]
+        else:
+            fc += [nn.ReLU()]
+
+        if dropout != 0.:
+            fc.append(nn.Dropout(dropout))
+
+        if gate:
+            attention_net = Attn_Net_Gated(L = size[1], D = size[2], dropout = dropout, n_classes = n_classes)
+        else:
+            attention_net = Attn_Net(L = size[1], D = size[2], dropout = dropout, n_classes = n_classes)
+        fc.append(attention_net)
+        self.attention_net = nn.Sequential(*fc)
+        bag_classifiers = [nn.Linear(size[1], 1) for i in range(n_classes)] #use an indepdent linear layer to predict each class
+        self.classifiers = nn.ModuleList(bag_classifiers)
+        instance_classifiers = [nn.Linear(size[1], 2) for i in range(n_classes)]
+        self.instance_classifiers = nn.ModuleList(instance_classifiers)
+        self.k_sample = k_sample
+        self.instance_loss_fn = SmoothTop1SVM(2).to(device)
+        # self.instance_loss_fn = nn.CrossEntropyLoss()
+        self.n_classes = n_classes
+        self.subtyping = subtyping
+        initialize_weights(self)
+
+    def forward(self, h, label=None, instance_eval=False, return_features=False, attention_only=False):
+        device = h.device
+        ps = h.size(1)
+        A, h = self.attention_net(h.squeeze())  # NxK        
+        A = torch.transpose(A, 1, 0)  # KxN
+        if attention_only:
+            return A
+        A_raw = A
+        A = F.softmax(A, dim=1)  # softmax over N
+
+        if instance_eval:
+            total_inst_loss = 0.0
+            all_preds = []
+            all_targets = []
+
+            inst_labels = F.one_hot(label, num_classes=self.n_classes).squeeze() #binarize label
+
+            for i in range(len(self.instance_classifiers)):
+                inst_label = inst_labels[i].item()
+                classifier = self.instance_classifiers[i]
+                if inst_label == 1: #in-the-class:
+                    instance_loss, preds, targets = self.inst_eval(A[i], h, classifier)
+                    all_preds.extend(preds.cpu().numpy())
+                    all_targets.extend(targets.cpu().numpy())
+                else: #out-of-the-class
+                    if self.subtyping:
+                        instance_loss, preds, targets = self.inst_eval_out(A[i], h, classifier)
+                        all_preds.extend(preds.cpu().numpy())
+                        all_targets.extend(targets.cpu().numpy())
+                    else:
+                        continue
+                total_inst_loss += instance_loss
+
+            if self.subtyping:
+                total_inst_loss /= len(self.instance_classifiers)
+
+        M = torch.mm(A, h) 
+        logits = torch.empty(1, self.n_classes).float().to(device)
+        for c in range(self.n_classes):
+            logits[0, c] = self.classifiers[c](M[c])
+        Y_hat = torch.topk(logits, 1, dim = 1)[1]
+        Y_prob = F.softmax(logits, dim = 1)
         
+        if instance_eval:
+            results_dict = {'instance_loss': total_inst_loss, 'inst_labels': np.array(all_targets), 
+            'inst_preds': np.array(all_preds)}
+        else:
+            results_dict = {}
+        if return_features:
+            results_dict.update({'features': M})
 
-
-
-
-
-
+        if instance_eval:
+            return logits,total_inst_loss,ps
+        else:
+            return logits
