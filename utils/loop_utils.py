@@ -18,19 +18,26 @@ def _optimal_thresh(fpr, tpr, thresholds, p=0):
     idx = np.argmin(loss, axis=0)
     return fpr[idx], tpr[idx], thresholds[idx]
 
-def cal_six_scores(logits, labels, num_classes):       # logits:[batch_size, num_classes]   labels:[batch_size, ]
+def cal_scores(logits, labels, num_classes):       # logits:[batch_size, num_classes]   labels:[batch_size, ]
     logits = torch.tensor(logits)
     labels = torch.tensor(labels)
     predicted_classes = torch.argmax(logits, dim=1)
     accuracy = accuracy_score(labels.numpy(), predicted_classes.numpy())
     probs = F.softmax(logits, dim=1)
     if num_classes > 2:
-        auc = roc_auc_score(y_true=labels.numpy(), y_score=probs.numpy(), average='macro', multi_class='ovr')
+        macro_auc = roc_auc_score(y_true=labels.numpy(), y_score=probs.numpy(), average='macro', multi_class='ovr')
+        micro_auc = roc_auc_score(y_true=labels.numpy(), y_score=probs.numpy(), average='micro', multi_class='ovr')
     else:
-        auc = roc_auc_score(y_true=labels.numpy(), y_score=probs[:,1].numpy())
-    f1 = f1_score(labels.numpy(), predicted_classes.numpy(), average='weighted')
-    recall = recall_score(labels.numpy(), predicted_classes.numpy(), average='weighted')
-    precision = precision_score(labels.numpy(), predicted_classes.numpy(), average='weighted')
+        macro_auc = roc_auc_score(y_true=labels.numpy(), y_score=probs[:,1].numpy())
+    weighted_f1 = f1_score(labels.numpy(), predicted_classes.numpy(), average='weighted')
+    weighted_recall = recall_score(labels.numpy(), predicted_classes.numpy(), average='weighted')
+    weighted_precision = precision_score(labels.numpy(), predicted_classes.numpy(), average='weighted')
+    macro_f1 = f1_score(labels.numpy(), predicted_classes.numpy(), average='macro')
+    macro_recall = recall_score(labels.numpy(), predicted_classes.numpy(), average='macro')
+    macro_precision = precision_score(labels.numpy(), predicted_classes.numpy(), average='macro')
+    micro_f1 = f1_score(labels.numpy(), predicted_classes.numpy(), average='micro')
+    micro_recall = recall_score(labels.numpy(), predicted_classes.numpy(), average='micro')
+    micro_precision = precision_score(labels.numpy(), predicted_classes.numpy(), average='micro') 
     baccuracy = balanced_accuracy_score(labels.numpy(), predicted_classes.numpy())
     kappa = cohen_kappa_score(labels.numpy(), predicted_classes.numpy(), weights='quadratic')
     specificity_list = []
@@ -43,7 +50,8 @@ def cal_six_scores(logits, labels, num_classes):       # logits:[batch_size, num
         specificity_list.append(specificity)
     macro_specificity = np.mean(specificity_list)
     confusion_mat = confusion_matrix(labels.numpy(), predicted_classes.numpy())
-    return baccuracy,accuracy, auc, precision, recall, f1
+    metrics = {'accuracy': accuracy, 'macro_auc': macro_auc, 'micro_auc': micro_auc, 'weighted_f1': weighted_f1, 'weighted_recall': weighted_recall, 'weighted_precision': weighted_precision, 'macro_f1': macro_f1, 'macro_recall': macro_recall, 'macro_precision': macro_precision, 'micro_f1': micro_f1, 'micro_recall': micro_recall, 'micro_precision': micro_precision, 'baccuracy': baccuracy, 'kappa': kappa, 'macro_specificity': macro_specificity, 'confusion_mat': confusion_mat}
+    return baccuracy, accuracy, macro_auc, macro_precision, macro_recall, macro_f1
 
 def train_loop(args,model,loader,criterion,optimizer,scheduler):
     
@@ -56,7 +64,6 @@ def train_loop(args,model,loader,criterion,optimizer,scheduler):
         optimizer.zero_grad()
         label = data[1].long().to(device)
         bag = data[0].to(device).float()
-
         train_logits = model(bag)
         train_loss = criterion(train_logits, label)
         train_loss_log += train_loss.item()
@@ -89,7 +96,7 @@ def val_loop(args,model,loader,criterion):
             val_loss = criterion(val_logits,label)
             val_loss_log += val_loss.item()
 
-    baccuracy,accuracy, auc_value, precision, recall, f1score = cal_six_scores(bag_predictions_after_normal,labels,args.General.num_classes)
+    baccuracy,accuracy, auc_value, precision, recall, f1score = cal_scores(bag_predictions_after_normal,labels,args.General.num_classes)
     val_metrics = {'bacc':baccuracy,'acc':accuracy,'auc':auc_value,'pre':precision,'recall':recall,'f1':f1score}
     val_loss_log /= len(loader)
     return val_loss_log,val_metrics
@@ -114,7 +121,7 @@ def test_loop(args,model,loader,criterion):
             test_loss = criterion(test_logits,label)
             test_loss_log += test_loss.item()
 
-    baccuracy,accuracy, auc_value, precision, recall, f1score = cal_six_scores(bag_predictions_after_normal,labels,args.General.num_classes)
+    baccuracy,accuracy, auc_value, precision, recall, f1score = cal_scores(bag_predictions_after_normal,labels,args.General.num_classes)
     test_metrics = {'bacc':baccuracy,'acc':accuracy,'auc':auc_value,'pre':precision,'recall':recall,'f1':f1score}
     test_loss_log /= len(loader)
     return test_loss_log,test_metrics
