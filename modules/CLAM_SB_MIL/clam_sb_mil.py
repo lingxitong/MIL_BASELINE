@@ -92,6 +92,7 @@ class CLAM_SB(nn.Module):
         super(CLAM_SB, self).__init__()
         n_classes == args.General.num_classes
         dropout = args.Model.dropout
+        self.device =f'cuda:{args.General.device}'
         in_dim = args.Model.in_dim
         act = args.Model.act
         self.size_dict = {"small": [1024, 512, 256], "big": [1024, 512, 384],"hipt": [192, 512, 256]}
@@ -117,7 +118,7 @@ class CLAM_SB(nn.Module):
         instance_classifiers = [nn.Linear(size[1], 2) for i in range(n_classes)]
         self.instance_classifiers = nn.ModuleList(instance_classifiers)
         self.k_sample = k_sample
-        self.instance_loss_fn = SmoothTop1SVM(2).cuda()
+        self.instance_loss_fn = SmoothTop1SVM(2).to(self.device)
         # self.instance_loss_fn = nn.CrossEntropyLoss()
         self.n_classes = n_classes
         self.subtyping = subtyping
@@ -125,17 +126,17 @@ class CLAM_SB(nn.Module):
         self.apply(initialize_weights)
 
     def relocate(self):
-        device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.attention_net = self.attention_net.to(device)
-        self.classifiers = self.classifiers.to(device)
-        self.instance_classifiers = self.instance_classifiers.to(device)
+
+        self.attention_net = self.attention_net.to(self.device)
+        self.classifiers = self.classifiers.to(self.device)
+        self.instance_classifiers = self.instance_classifiers.to(self.device)
     
     @staticmethod
     def create_positive_targets(length, device):
-        return torch.full((length, ), 1, device=device).long()
+        return torch.full((length, ), 1, device=self.device).long()
     @staticmethod
     def create_negative_targets(length, device):
-        return torch.full((length, ), 0, device=device).long()
+        return torch.full((length, ), 0, device=self.device).long()
     
     #instance-level evaluation for in-the-class attention branch
     def inst_eval(self, A, h, classifier): 
