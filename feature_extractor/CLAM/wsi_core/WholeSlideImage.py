@@ -26,10 +26,17 @@ class WholeSlideImage(object):
         Args:
             path (str): fullpath to WSI file
         """
-
-#         self.name = ".".join(path.split("/")[-1].split('.')[:-1])
+        if path.endswith('.sdpc'):
+            try:
+                import sdpc
+            except ImportError:
+                print("Please install the Sdpc package : pip install sdpc-for-python ")
+            self.wsi = sdpc.Sdpc(path)
+        else:
+            self.wsi = openslide.open_slide(path)
+            
         self.name = os.path.splitext(os.path.basename(path))[0]
-        self.wsi = openslide.open_slide(path)
+        self.path = path
         self.level_downsamples = self._assertLevelDownsamples()
         self.level_dim = self.wsi.level_dimensions
     
@@ -141,8 +148,10 @@ class WholeSlideImage(object):
                 hole_contours.append(filtered_holes)
 
             return foreground_contours, hole_contours
-        
-        img = np.array(self.wsi.read_region((0,0), seg_level, self.level_dim[seg_level]))
+        if self.path.endswith('.sdpc'):
+            img = self.wsi.read_region((0,0), seg_level, self.level_dim[seg_level])
+        else:
+            img = np.array(self.wsi.read_region((0,0), seg_level, self.level_dim[seg_level]))
         img_hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)  # Convert to HSV space
         img_med = cv2.medianBlur(img_hsv[:,:,1], mthresh)  # Apply median blurring
         
@@ -196,8 +205,10 @@ class WholeSlideImage(object):
         else:
             top_left = (0,0)
             region_size = self.level_dim[vis_level]
-
-        img = np.array(self.wsi.read_region(top_left, vis_level, region_size).convert("RGB"))
+        if self.path.endswith('.sdpc'):
+            img = np.array(self.wsi.read_region(top_left, vis_level, region_size))
+        else:
+            img = np.array(self.wsi.read_region(top_left, vis_level, region_size).convert("RGB"))
         
         if not view_slide_only:
             offset = tuple(-(np.array(top_left) * scale).astype(int))
@@ -316,7 +327,10 @@ class WholeSlideImage(object):
                     continue    
                 
                 count+=1
-                patch_PIL = self.wsi.read_region((x,y), patch_level, (patch_size, patch_size)).convert('RGB')
+                if self.path.endswith('.sdpc'):
+                    patch_PIL = Image.fromarray(self.wsi.read_region((x,y), patch_level, (patch_size, patch_size)))
+                else:
+                    patch_PIL = self.wsi.read_region((x,y), patch_level, (patch_size, patch_size)).convert('RGB')
                 if custom_downsample > 1:
                     patch_PIL = patch_PIL.resize((target_patch_size, target_patch_size))
                 
@@ -609,7 +623,10 @@ class WholeSlideImage(object):
         
         if not blank_canvas:
             # downsample original image and use as canvas
-            img = np.array(self.wsi.read_region(top_left, vis_level, region_size).convert("RGB"))
+            if self.path.endswith('.sdpc'):
+                img = np.array(self.wsi.read_region(top_left, vis_level, region_size))
+            else:
+                img = np.array(self.wsi.read_region(top_left, vis_level, region_size).convert("RGB"))
         else:
             # use blank canvas
             img = np.array(Image.new(size=region_size, mode="RGB", color=(255,255,255))) 
@@ -708,7 +725,10 @@ class WholeSlideImage(object):
                 if not blank_canvas:
                     # 4. read actual wsi block as canvas block
                     pt = (x_start, y_start)
-                    canvas = np.array(self.wsi.read_region(pt, vis_level, blend_block_size).convert("RGB"))     
+                    if self.path.endswith('.sdpc'):
+                        canvas = np.array(self.wsi.read_region(pt, vis_level, blend_block_size))
+                    else:
+                        canvas = np.array(self.wsi.read_region(pt, vis_level, blend_block_size).convert("RGB"))     
                 else:
                     # 4. OR create blank canvas block
                     canvas = np.array(Image.new(size=blend_block_size, mode="RGB", color=(255,255,255)))
@@ -735,6 +755,7 @@ class WholeSlideImage(object):
         tissue_mask = tissue_mask.astype(bool)
         print('detected {}/{} of region as tissue'.format(tissue_mask.sum(), tissue_mask.size))
         return tissue_mask
+
 
 
 

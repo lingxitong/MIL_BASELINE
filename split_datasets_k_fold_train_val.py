@@ -16,7 +16,6 @@ def Balanced_K_fold_Train_Test(args):
         X_train, X_test = X[train_index].values.tolist(), X[test_index].values.tolist()
         y_train, y_test = y[train_index].values.tolist(), y[test_index].values.tolist()
         
-        # 如果训练数据和测试数据的长度不一样，用NaN填充缺失的部分
         max_len = max(len(X_train), len(X_test))
         X_train += [np.nan] * (max_len - len(X_train))
         y_train += [np.nan] * (max_len - len(y_train))

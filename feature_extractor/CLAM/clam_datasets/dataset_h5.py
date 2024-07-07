@@ -148,10 +148,11 @@ class Whole_Slide_Bag_FP(Dataset):
 	def __getitem__(self, idx):
 		with h5py.File(self.file_path,'r') as hdf5_file:
 			coord = hdf5_file['coords'][idx]
-			if self.wsi.sdpc != None: 
-				img = self.wsi.read_region(coord, self.patch_level, (self.patch_size, self.patch_size))
+			img = self.wsi.read_region(coord, self.patch_level, (self.patch_size, self.patch_size))
+			if isinstance(img, Image.Image):
+				img = img.convert('RGB')
 			else:
-				img = self.wsi.read_region(coord, self.patch_level, (self.patch_size, self.patch_size)).convert('RGB')
+				img = Image.fromarray(img)
 
 		if self.target_patch_size is not None:
 			img = img.resize(self.target_patch_size)

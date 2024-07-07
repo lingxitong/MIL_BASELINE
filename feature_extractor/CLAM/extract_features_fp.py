@@ -36,14 +36,14 @@ def plip_transforms(pretrained=False):
 		mean = (0.48145466,0.4578275,0.40821073)
 		std = (0.26862954,0.26130258,0.27577711)
 
-	trnsfrms_val = transforms.Compose(
+	transforms_val = transforms.Compose(
 					[
 					 transforms.ToTensor(),
 					 transforms.Normalize(mean = mean, std = std)
 					]
 				)
 
-	return trnsfrms_val
+	return transforms_val
 
 def uni_transforms():
     uni_transform = transforms.Compose(
@@ -52,6 +52,10 @@ def uni_transforms():
     ]
 )
     return uni_transform
+
+
+
+    
 def load_plip_model( name: str,
                 device: Union[str, torch.device] = "cuda" if torch.cuda.is_available() else "cpu",
                 auth_token=None):
@@ -121,7 +125,7 @@ parser.add_argument('--batch_size', type=int, default=256)
 parser.add_argument('--no_auto_skip', default=False, action='store_true')
 parser.add_argument('--custom_downsample', type=int, default=1)
 parser.add_argument('--target_patch_size', type=int, default=-1)
-parser.add_argument('--backbone', type=str,choices=['vit_s_imagenet','plip','uni','resnet50_imagenet'])
+parser.add_argument('--backbone', type=str,choices=['vit_s_imagenet','plip','uni','resnet50_imagenet','couch'])
 args = parser.parse_args()
 
 
@@ -176,9 +180,6 @@ if __name__ == '__main__':
 		if not args.no_auto_skip and slide_id+'.pt' in dest_files:
 			print('skipped {}'.format(slide_id))
 			continue 
-		new_slide_id = slide_id.replace('normal_', '').replace('tumor_', '')
-
-			
 
 		output_path = os.path.join(args.feat_dir, 'h5_files', bag_name)
 		time_start = time.time()

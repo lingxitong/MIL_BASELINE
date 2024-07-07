@@ -20,7 +20,7 @@ def process_CLAM_MB_MIL(args):
     val_dataset = WSI_Dataset(args.Dataset.dataset_csv_path,'val')
     test_dataset = WSI_Dataset(args.Dataset.dataset_csv_path,'test')
     '''
-    generator设置seed用于保证shuffle的一致性
+    generator settings
     '''
     
     generator = torch.Generator()
@@ -56,7 +56,7 @@ def process_CLAM_MB_MIL(args):
     warmuo_epoch = args.Model.scheduler.warmup
     
     '''
-    开始循环epoch进行训练
+    begin training
     '''
     epoch_info_log = init_epoch_info_log()
     best_model_metric = args.General.best_model_metric
@@ -95,7 +95,7 @@ def process_CLAM_MB_MIL(args):
             save_best_model(args,mil_model,best_epoch)
 
         '''
-        判断是否需要早停
+        early stop
         '''
         is_stop = cal_is_stopping(args,epoch_info_log)
         if is_stop:

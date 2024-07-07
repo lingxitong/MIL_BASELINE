@@ -7,7 +7,6 @@ from .TRANS_MIL.process_trans_mil import process_TRANS_MIL
 from .RRT_MIL.process_rrt_mil import process_RRT_MIL
 from .CLAM_SB_MIL.process_clam_sb_mil import process_CLAM_SB_MIL
 from .CLAM_MB_MIL.process_clam_mb_mil import process_CLAM_MB_MIL
-import os
 from utils.general_utils import *
 def process(args,yaml_path,now_fold=None):
     save_dataset_csv(args)
