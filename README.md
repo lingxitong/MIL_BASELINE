@@ -54,7 +54,7 @@ A library that integrates different MIL methods into a unified framework
 #### **Feature Extracter**
 - OpenSlide supported formats and SDPC formats
 - R50 and VIT-S are supported directly.
-- PLIP and UNI are supported by push the model-weights in `/feature_extracter/PLIP` and `/feature_extracter/UNI`.
+- PLIP/UNI/COUCH/TRANSPATH/GIG are supported by push the model-weights in `/feature_extracter/PLIP` `/feature_extracter/UNI` `/feature_extracter/COUCH ` `/feature_extracter/TRANSPATH` `/feature_extracter/GIG`.
 - To permform feature extracter </br>
   - First, you should get h5 file </br>
 `python /feature_extracter/CLAM/create_patches_fp.py --source /path/to/your/slide_dir --save_dir /path/to/your/save_dr --preset /feature_extractor/CLAM/presets/bwh_biopsy.csv --patch_level your_path_level --patch_size your_patch_size --seg --patch` 
