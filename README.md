@@ -18,8 +18,11 @@ A library that integrates different MIL methods into a unified framework
 ## Feature Encoder
 * R50
 * VIT-S
+* TRANSPATH
 * PLIP
+* COUCH
 * UNI
+* GIG
   
 ## Implementated NetWork
 * MEAN_MIL
