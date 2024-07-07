@@ -9,6 +9,7 @@ A library that integrates different MIL methods into a unified framework
 
 ## Dataset Uniform Interface
 * User only need to provide the following csvs whether Public/Private Dataset
+- `/datasets/example.csv:`
   
 ## Supported Dataset-Split-Method
 * User-difined Train-Val-Test split
