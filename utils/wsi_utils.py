@@ -6,9 +6,6 @@ import math
 import torch
 from torch.utils.data import Dataset
 
-
-
-
 class WSI_Dataset(Dataset):
     def __init__(self,dataset_info_csv_path,group):
         assert group in ['train','val','test'], 'group must be in [train,val,test]'

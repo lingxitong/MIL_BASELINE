@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
-
+from utils.model_utils import get_act
 def initialize_weights(module):
     for m in module.modules():
         if isinstance(m,nn.Linear):
@@ -42,24 +42,23 @@ class Resnet(nn.Module):
         x2,_ = torch.max(x1, dim=0)
         x2=x2.view(1,-1)
         return x2,x
-class GATE_ABMIL(nn.Module):
-    def __init__(self,args,n_classes=2,act='relu',bias=False,dropout=False,in_dim = 512):
-        super(GATE_ABMIL, self).__init__()
-        n_classes = args.General.num_classes
-        dropout = args.Model.dropout
-        act = args.Model.act
-        in_dim = args.Model.in_dim
+class GATE_AB_MIL(nn.Module):
+    def __init__(self,num_classes=2,act='relu',bias=False,dropout=0,in_dim = 512):
+        super(GATE_AB_MIL, self).__init__()
+        self.num_classes = num_classes
+        self.dropout = dropout
+        self.in_dim = in_dim
         self.L = 512
         self.D = 128 #128
         self.K = 1
 
         self.feature = [nn.Linear(in_dim, 512)]
-        self.feature += [nn.ReLU()]
-        self.feature += [nn.Dropout(0.25)]
+        self.feature += [get_act(act)]
+        self.feature += [nn.Dropout(self.dropout)]
         self.feature = nn.Sequential(*self.feature)
 
         self.classifier = nn.Sequential(
-            nn.Linear(self.L*self.K, n_classes),
+            nn.Linear(self.L*self.K, self.num_classes,bias=bias),
         )
 
         self.attention_a = [
@@ -97,9 +96,9 @@ class GATE_ABMIL(nn.Module):
         A = F.softmax(A, dim=-1)  # softmax over N
         x = torch.matmul(A,x)
 
-        Y_prob = self.classifier(x)
+        logits = self.classifier(x)
 
-        return Y_prob
+        return logits
 
 
 

@@ -33,7 +33,7 @@ def process_RRT_MIL(args):
     print('DataLoader Ready!')
     model_params = {
     'in_dim': args.Model.in_dim,
-    'n_classes': args.General.num_classes,
+    'num_classes': args.General.num_classes,
     'dropout': args.Model.dropout,
     'act': args.Model.act,
     'region_num': args.Model.region_num,
@@ -65,16 +65,15 @@ def process_RRT_MIL(args):
     
     print('Model Ready!')
     
-    optimizer = get_optimizer(args,mil_model)
-    scheduler = get_scheduler(args,optimizer)
+    optimizer,base_lr = get_optimizer(args,mil_model)
+    scheduler,warmup_scheduler = get_scheduler(args,optimizer,base_lr)
     criterion = get_criterion(args.Model.criterion)
+    warmuo_epoch = args.Model.scheduler.warmup
     
     '''
     开始循环epoch进行训练
     '''
-    epoch_info_log = {'epoch':[],'train_loss':[],'val_loss':[],'test_loss':[],'val_bacc':[],
-                      'val_acc':[],'val_auc':[],'val_pre':[],'val_recall':[],'val_f1':[],'test_bacc':[],
-                      'test_acc':[],'test_auc':[],'test_pre':[],'test_recall':[],'test_f1':[]}
+    epoch_info_log = init_epoch_info_log()
     best_model_metric = args.General.best_model_metric
     REVERSE = False
     best_val_metric = 0
@@ -85,12 +84,16 @@ def process_RRT_MIL(args):
     best_epoch = 1
     print('Start Process!')
     for epoch in tqdm(range(args.General.num_epochs),colour='GREEN'):
-        train_loss,cost_time = train_loop(args,mil_model,train_dataloader,criterion,optimizer,scheduler)
+        if epoch+1 <= warmuo_epoch:
+            now_scheduler = warmup_scheduler
+        else:
+            now_scheduler = scheduler
+        train_loss,cost_time = train_loop(device,mil_model,train_dataloader,criterion,optimizer,now_scheduler)
         val_loss,val_metrics = val_loop(args,mil_model,val_dataloader,criterion)
         if args.Dataset.VIST == True:
             test_loss,test_metrics = val_loss,val_metrics
         else:
-            test_loss,test_metrics = test_loop(args,mil_model,test_dataloader,criterion)
+            test_loss,test_metrics = val_loop(args,mil_model,test_dataloader,criterion)
         print(f'EPOCH:{epoch+1},  Train_Loss:{train_loss},  Val_Loss:{val_loss},  Test_Loss:{test_loss},  Cost_Time:{cost_time}')
         print(f'Val_Metrics:{val_metrics}')
         print(f'Test_Metrics:{test_metrics}')

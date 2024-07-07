@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
-
+from utils.model_utils import get_act
 def initialize_weights(module):
     for m in module.modules():
         if isinstance(m,nn.Linear):
@@ -43,22 +43,17 @@ class Resnet(nn.Module):
         x2=x2.view(1,-1)
         return x2,x
 
-class ABMIL(nn.Module):
-    def __init__(self,args,n_classes=1,dropout=True,act='relu',in_dim = 512):
-        super(ABMIL, self).__init__()
-        n_classes = args.General.num_classes
-        dropout = args.Model.dropout
-        act = args.Model.act
-        in_dim = args.Model.in_dim
+class AB_MIL(nn.Module):
+    def __init__(self,num_classes=1,dropout=0,act='relu',in_dim = 512):
+        super(AB_MIL, self).__init__()
+        self.in_dim = in_dim
+        self.num_classes = num_classes
         self.L = 512 #512
         self.D = 128 #128
         self.K = 1
         self.feature = [nn.Linear(in_dim, 512)]
         
-        if act.lower() == 'gelu':
-            self.feature += [nn.GELU()]
-        else:
-            self.feature += [nn.ReLU()]
+        self.feature += [get_act(act)]
 
         if dropout:
             self.feature += [nn.Dropout(dropout)]
@@ -71,7 +66,7 @@ class ABMIL(nn.Module):
             nn.Linear(self.D, self.K)
         )
         self.classifier = nn.Sequential(
-            nn.Linear(self.L*self.K, n_classes),
+            nn.Linear(self.L*self.K, self.num_classes),
         )
 
         self.apply(initialize_weights)

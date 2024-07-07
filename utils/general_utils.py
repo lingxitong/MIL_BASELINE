@@ -21,7 +21,8 @@ def print_args(args):
     print(f'Model Info:{args.General.MODEL_NAME}')
     print(f'Device Info:CUDA:{args.General.device}')
     print(f'Epoch Info:{args.General.num_epochs}')
-    print(f'Fold Info:{args.Dataset.now_fold}')
+    if args.Dataset.now_fold != {}:
+        print(f'Fold Info:{args.Dataset.now_fold}')
     
 def get_time():
 
@@ -40,25 +41,29 @@ def set_global_seed(seed):
     torch.backends.cudnn.benchmark = False  
     print('set_global_seed:{}'.format(seed))
     
+def init_epoch_info_log():
+    epoch_info_log = {'epoch':[],'train_loss':[],'val_loss':[],'test_loss':[],
+                      'val_acc':[],'val_bacc':[],'val_macro_auc':[],'val_micro_auc':[],'val_weighted_auc':[],
+                       'val_macro_f1':[],'val_micro_f1':[],'val_weighted_f1':[],
+                       'val_macro_recall':[],'val_micro_recall':[],'val_weighted_recall':[],
+                       'val_macro_pre':[],'val_micro_pre':[],'val_weighted_pre':[],
+                       'val_quadratic_kappa':[],'val_linear_kappa':[],'val_confusion_mat':[],
+                       'test_acc':[],'test_bacc':[],'test_macro_auc':[],'test_micro_auc':[],'test_weighted_auc':[],
+                       'test_macro_f1':[],'test_micro_f1':[],'test_weighted_f1':[],
+                       'test_macro_recall':[],'test_micro_recall':[],'test_weighted_recall':[],
+                       'test_macro_pre':[],'test_micro_pre':[],'test_weighted_pre':[],
+                       'test_quadratic_kappa':[],'test_linear_kappa':[],'test_confusion_mat':[]}
+    return epoch_info_log
     
 def add_epoch_info_log(epoch_info_log,epoch,train_loss,val_loss,test_loss,val_metrics,test_metrics):
     epoch_info_log['epoch'].append(epoch+1)
     epoch_info_log['train_loss'].append(train_loss)
     epoch_info_log['val_loss'].append(val_loss)
     epoch_info_log['test_loss'].append(test_loss)
-    epoch_info_log['val_bacc'].append(val_metrics['bacc'])
-    epoch_info_log['val_acc'].append(val_metrics['acc'])
-    epoch_info_log['val_auc'].append(val_metrics['auc'])
-    epoch_info_log['val_pre'].append(val_metrics['pre'])
-    epoch_info_log['val_recall'].append(val_metrics['recall'])
-    epoch_info_log['val_f1'].append(val_metrics['f1'])
-    epoch_info_log['test_bacc'].append(test_metrics['bacc'])
-    epoch_info_log['test_acc'].append(test_metrics['acc'])
-    epoch_info_log['test_auc'].append(test_metrics['auc'])
-    epoch_info_log['test_pre'].append(test_metrics['pre'])
-    epoch_info_log['test_recall'].append(test_metrics['recall'])
-    epoch_info_log['test_f1'].append(test_metrics['f1'])
-
+    for key in val_metrics.keys():
+        epoch_info_log['val_'+key].append(val_metrics[key])
+    for key in test_metrics.keys():
+        epoch_info_log['test_'+key].append(test_metrics[key])
 def cal_is_stopping(args,epoch_info_log):
 
     if args.General.earlystop.use == None or args.General.earlystop.use == False:

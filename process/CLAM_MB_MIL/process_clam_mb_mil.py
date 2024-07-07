@@ -32,23 +32,33 @@ def process_CLAM_MB_MIL(args):
     test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=num_workers)
     
     print('DataLoader Ready!')
-    
+    in_dim = args.Model.in_dim
+    subtyping = args.Model.subtyping
+    k_sample = args.Model.k_sample
+    size_arg = args.Model.size_arg
+    dropout = args.Model.dropout
+    num_classes = args.General.num_classes
+    gate = args.Model.gate
+    act = args.Model.act
+    instance_eval = args.Model.instance_eval
     device = torch.device(f'cuda:{args.General.device}')
-    mil_model = CLAM_MB(args)
+    instance_loss_fn = args.Model.instance_loss_fn
+    instance_loss_fn = get_criterion(instance_loss_fn)
+    bag_weight = args.Model.bag_weight
+    mil_model = CLAM_MB_MIL(gate, size_arg, dropout, k_sample, num_classes, instance_loss_fn, subtyping, in_dim,act,instance_eval)
     mil_model.to(device)
     
     print('Model Ready!')
     
-    optimizer = get_optimizer(args,mil_model)
-    scheduler = get_scheduler(args,optimizer)
+    optimizer,base_lr = get_optimizer(args,mil_model)
+    scheduler,warmup_scheduler = get_scheduler(args,optimizer,base_lr)
     criterion = get_criterion(args.Model.criterion)
+    warmuo_epoch = args.Model.scheduler.warmup
     
     '''
     开始循环epoch进行训练
     '''
-    epoch_info_log = {'epoch':[],'train_loss':[],'val_loss':[],'test_loss':[],'val_bacc':[],
-                      'val_acc':[],'val_auc':[],'val_pre':[],'val_recall':[],'val_f1':[],'test_bacc':[],
-                      'test_acc':[],'test_auc':[],'test_pre':[],'test_recall':[],'test_f1':[]}
+    epoch_info_log = init_epoch_info_log()
     best_model_metric = args.General.best_model_metric
     REVERSE = False
     best_val_metric = 0
@@ -59,36 +69,42 @@ def process_CLAM_MB_MIL(args):
     best_epoch = 1
     print('Start Process!')
     for epoch in tqdm(range(args.General.num_epochs),colour='GREEN'):
-        train_loss,cost_time = train_loop(args,mil_model,train_dataloader,criterion,optimizer,scheduler)
-        val_loss,val_metrics = val_loop(args,mil_model,val_dataloader,criterion)
+        if epoch+1 <= warmuo_epoch:
+            now_scheduler = warmup_scheduler
+        else:
+            now_scheduler = scheduler
+        train_loss,cost_time = train_loop(device,mil_model,train_dataloader,criterion,optimizer,now_scheduler)
+        val_loss,val_metrics = clam_val_loop(device,num_classes,mil_model,val_dataloader,criterion,bag_weight)
         if args.Dataset.VIST == True:
             test_loss,test_metrics = val_loss,val_metrics
         else:
-            test_loss,test_metrics = test_loop(args,mil_model,test_dataloader,criterion)
+            test_loss,test_metrics = clam_val_loop(device,num_classes,mil_model,test_dataloader,criterion,bag_weight)
         print(f'EPOCH:{epoch+1},  Train_Loss:{train_loss},  Val_Loss:{val_loss},  Test_Loss:{test_loss},  Cost_Time:{cost_time}')
         print(f'Val_Metrics:{val_metrics}')
         print(f'Test_Metrics:{test_metrics}')
         add_epoch_info_log(epoch_info_log,epoch,train_loss,val_loss,test_loss,val_metrics,test_metrics)
         
         if REVERSE and val_metrics[best_model_metric] < best_val_metric:
-            best_val_metric = val_metrics[best_model_metric]
-            save_best_model(args,mil_model,epoch_info_log)
             best_epoch = epoch+1
+            best_val_metric = val_metrics[best_model_metric]
+            save_best_model(args,mil_model,best_epoch)
+
         elif not REVERSE and val_metrics[best_model_metric] > best_val_metric:
-            best_val_metric = val_metrics[best_model_metric]
-            save_best_model(args,mil_model,epoch_info_log)
             best_epoch = epoch+1
+            best_val_metric = val_metrics[best_model_metric]
+            save_best_model(args,mil_model,best_epoch)
+
         '''
         判断是否需要早停
         '''
         is_stop = cal_is_stopping(args,epoch_info_log)
         if is_stop:
             print(f'Early Stop In EPOCH {epoch+1}!')
-            save_last_model(args,mil_model,epoch_info_log)
+            save_last_model(args,mil_model,epoch + 1)
             save_log(args,epoch_info_log,best_epoch)
             break
         if epoch+1 == args.General.num_epochs:
-            save_last_model(args,mil_model,epoch_info_log)
+            save_last_model(args,mil_model,epoch + 1)
             save_log(args,epoch_info_log,best_epoch)
         
 

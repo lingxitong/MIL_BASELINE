@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 from .nystrom_attention import NystromAttention
-
+from utils.model_utils import get_act
 def initialize_weights(module):
     for m in module.modules():
         if isinstance(m, nn.Conv2d):
@@ -54,24 +54,22 @@ class PPEG(nn.Module):
         x = torch.cat((cls_token.unsqueeze(1), x), dim=1)
         return x
 
-class TRANSMIL(nn.Module):
-    def __init__(self,args):
-        super(TRANSMIL, self).__init__()
-        n_classes = args.General.num_classes
-        act = args.Model.act
-        in_dim = args.Model.in_dim
+class TRANS_MIL(nn.Module):
+    def __init__(self,num_classes,dropout,act,in_dim):
+        super(TRANS_MIL, self).__init__()
+        self.in_dim = in_dim
+        self.act = act
+        self.dropout = dropout
+        self.num_classes = num_classes
         self.pos_layer = PPEG(dim=512)
         #self.pos_layer = nn.Identity()
         # self._fc1 = nn.Sequential(nn.Linear(1024, 512), nn.ReLU(),nn.Dropout(0.25))
-        self._fc1 = [nn.Linear(in_dim, 512)]
+        self._fc1 = [nn.Linear(self.in_dim, 512)]
 
-        if act.lower() == 'relu':
-            self._fc1 += [nn.ReLU()]
-        elif act.lower() == 'gelu':
-            self._fc1 += [nn.GELU()]
+        self._fc1 += [get_act(act)]
 
         if dropout:
-            self._fc1 += [nn.Dropout(args.Model.dropout)]
+            self._fc1 += [nn.Dropout(self.dropout)]
 
         #self._fc1 += [SwinEncoder(attn='swin',pool='none',n_heads=2,trans_conv=False)]
         
@@ -79,11 +77,10 @@ class TRANSMIL(nn.Module):
         
         self.cls_token = nn.Parameter(torch.randn(1, 1, 512))
         nn.init.normal_(self.cls_token, std=1e-6)
-        self.n_classes = n_classes
         self.layer1 = TransLayer(dim=512)
         self.layer2 = TransLayer(dim=512)
         self.norm = nn.LayerNorm(512)
-        self._fc2 = nn.Linear(512, self.n_classes)
+        self._fc2 = nn.Linear(512, self.num_classes)
 
         self.apply(initialize_weights)
 

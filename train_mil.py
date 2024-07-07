@@ -26,7 +26,7 @@ def main(arg):
 
     else:
         '''
-        train-test with k-fold split or train-val-test with k-fold split
+        train-val with k-fold split or train-val with k-fold split then test
         '''
         dataset_root_dir = args.Dataset.dataset_root_dir
         k = len(os.listdir(dataset_root_dir)) 
@@ -47,13 +47,10 @@ def main(arg):
             process(args,yaml_path,k_idx+1)
             print(f'K-Fold:{k_idx+1} Done!')
         
-        
-    
-        
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--yaml_path',type=str,default='/data_sdd/lxt/GEM_MIL/MIL_BASELINE/configs/CLAM_MB_MIL.yaml',help='path to MIL-yaml file')
+    parser.add_argument('--yaml_path',type=str,default='/path/to/your/config-yaml',help='path to MIL-yaml file')
     arg = parser.parse_args()
     main(arg)
     

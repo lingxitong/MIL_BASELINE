@@ -37,9 +37,9 @@ def Balanced_Train_Val_Test(args):
 
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('--csv_path', type=str, default='/data_sdd/lxt/GEM_MIL/MIL_BASELINE/datasets/GEM-2cls.csv')
-    argparser.add_argument('--save_path', type=str, default='/data_sdd/lxt/GEM-2cls-train_val_test.csv')
-    argparser.add_argument('--dataset_name', type=str, default='GEM-2cls')
+    argparser.add_argument('--csv_path', type=str, default='/path/to/your/dataset-csv-file.csv')
+    argparser.add_argument('--save_path', type=str, default='/path/to/your/save-path.csv')
+    argparser.add_argument('--dataset_name', type=str, default='your_dataset_name')
     argparser.add_argument('--train_ratio', type=float, default=0.6)
     argparser.add_argument('--val_ratio', type=float, default=0.2)
     argparser.add_argument('--test_ratio', type=float, default=0.2)

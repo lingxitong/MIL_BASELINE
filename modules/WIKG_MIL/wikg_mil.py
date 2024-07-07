@@ -4,17 +4,15 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import SAGPooling, global_mean_pool, global_max_pool, GlobalAttention
 from torch_geometric.nn.aggr import AttentionalAggregation
-
-class WiKGMIL(nn.Module):
-    def __init__(self,args,in_dim=512, dim_hidden=512, topk=6, n_classes=2, agg_type='bi-interaction', dropout=True, pool='attn'):
+from utils.model_utils import get_act
+class WIKG_MIL(nn.Module):
+    def __init__(self,in_dim=512, act = 'LeakyReLU',dim_hidden=512, topk=6, num_classes=2, agg_type='bi-interaction', dropout=0.1, pool='attn'):
         super().__init__()
-        in_dim = args.Model.in_dim
-        dim_hidden = args.Model.dim_hidden
-        topk = args.Model.topk
-        n_classes = args.General.num_classes
-        agg_type = args.Model.agg_type
-        dropout = args.Model.dropout
-        self._fc1 = nn.Sequential(nn.Linear(in_dim, dim_hidden), nn.LeakyReLU())
+        self.topk = topk
+        self.num_classes = num_classes
+        self.agg_type = agg_type
+        self.dropout = dropout
+        self._fc1 = nn.Sequential(nn.Linear(in_dim, dim_hidden), get_act(act))
         
         self.W_head = nn.Linear(dim_hidden, dim_hidden)
         self.W_tail = nn.Linear(dim_hidden, dim_hidden)
@@ -30,21 +28,21 @@ class WiKGMIL(nn.Module):
         if self.agg_type == 'gcn':
             self.linear = nn.Linear(dim_hidden, dim_hidden)
         elif self.agg_type == 'sage':
-            self.linear = nn.Linear(dim_hidden * 2, dim_hidden)
+            self.linear = nn.Linear(dim_hidden * 2, dim_hidden)  
         elif self.agg_type == 'bi-interaction':
             self.linear1 = nn.Linear(dim_hidden, dim_hidden)
             self.linear2 = nn.Linear(dim_hidden, dim_hidden)
         else:
             raise NotImplementedError
         
-        self.activation = nn.LeakyReLU()
+        self.activation = get_act(act)
         if dropout:
-            self.message_dropout = nn.Dropout(dropout)
+            self.message_dropout = nn.Dropout(self.dropout)
         # self.cls_token = nn.Parameter(torch.randn(1, 1, dim_hidden))
         
         # self.pooling = SAGPooling(in_channels=dim_hidden, ratio=0.5)
         self.norm = nn.LayerNorm(dim_hidden)
-        self.fc = nn.Linear(dim_hidden, n_classes)
+        self.fc = nn.Linear(dim_hidden, self.num_classes)
 
         if pool == "mean":
             self.readout = global_mean_pool 
