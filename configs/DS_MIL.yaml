@@ -1,11 +1,11 @@
 General:
-    MODEL_NAME: TRANS_MIL
+    MODEL_NAME: DS_MIL
     seed: 2024
     num_classes: 2
-    num_epochs: 4
+    num_epochs: 5
     device: 1
     num_workers: 4
-    best_model_metric: macro_auc
+    best_model_metric: macro_auc  
     earlystop: 
         use: False
         patience: 5
@@ -24,7 +24,7 @@ Logs:
     log_root_dir: /path/to/your/log_dir/
 
 Model:
-    in_dim: 1024 # depend on the pt dimensions，such resnet50——>1024 vit_s——>768
+    in_dim: 1024  # depend on the pt dimensions，such resnet50——>1024 vit_s——>768
     dropout: 0.1
     act: relu  # relu or silu gule
     optimizer:
@@ -35,7 +35,7 @@ Model:
         adamw_config:
             lr: 0.0002
             weight_decay: 0.00001
-    criterion: ce  # ce
+    criterion: ce  
     scheduler:
         warmup: 2
         which: step  # [step, cosine,multi_step,exponential]
@@ -50,6 +50,8 @@ Model:
         cosine_config:
             T_max: 10 # interval of cosine annealing, begin after warmup
             eta_min: 0.0001
+            
+
 
         
 

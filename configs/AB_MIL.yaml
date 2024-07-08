@@ -21,7 +21,7 @@ Dataset:
     VIST: True # if your val is test, set it to True
 
 Logs:
-    log_root_dir: /data_sda/lxt/logs
+    log_root_dir: /path/to/your/log_dir/
 
 Model:
     in_dim: 1024  # depend on the pt dimensions，such resnet50——>1024 vit_s——>768

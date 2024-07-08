@@ -134,3 +134,56 @@ def clam_val_loop(device,num_classes,model,loader,criterion,bag_weight):
     val_metrics= cal_scores(bag_predictions_after_normal,labels,num_classes)
     val_loss_log /= len(loader)
     return val_loss_log,val_metrics
+
+def ds_train_loop(device,model,loader,criterion,optimizer,scheduler):
+    
+    start = time.time()
+    model.train()
+    train_loss_log = 0
+    model = model.to(device)
+    for i, data in enumerate(loader):
+        optimizer.zero_grad()
+        label = data[1].long().to(device)
+        bag = data[0].to(device).float()
+
+        max_prediction, train_logits = model(bag)
+        max_prediction, _ = torch.max(max_prediction, 0)
+        max_prediction = max_prediction.unsqueeze(0)
+        loss_bag = criterion(train_logits, label)
+        loss_max = criterion(max_prediction, label)
+        train_loss = 0.5*loss_bag + 0.5*loss_max
+        train_loss_log += train_loss.item()
+
+        train_loss.backward()
+
+        optimizer.step()
+    if scheduler is not None:
+        scheduler.step()
+    train_loss_log /= len(loader)
+    end = time.time()
+    total_time = end - start
+    return train_loss_log,total_time
+
+def ds_val_loop(device,model,loader,criterion):
+    
+    start = time.time()
+    model.train()
+    train_loss_log = 0
+    model = model.to(device)
+    with torch.autograd.set_detect_anomaly(True):
+        for i, data in enumerate(loader):
+            label = data[1].long().to(device)
+            bag = data[0].to(device).float()
+
+            max_prediction, train_logits = model(bag)
+            max_prediction, _ = torch.max(max_prediction, 0)
+            max_prediction = max_prediction.unsqueeze(0)
+            loss_bag = criterion(train_logits, label)
+            loss_max = criterion(max_prediction, label)
+            val_loss = 0.5*loss_bag + 0.5*loss_max
+            val_loss_log += val_loss.item()
+
+    train_loss_log /= len(loader)
+    end = time.time()
+    total_time = end - start
+    return val_loss_log,total_time
