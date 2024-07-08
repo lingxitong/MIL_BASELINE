@@ -164,26 +164,71 @@ def ds_train_loop(device,model,loader,criterion,optimizer,scheduler):
     total_time = end - start
     return train_loss_log,total_time
 
-def ds_val_loop(device,model,loader,criterion):
-    
-    start = time.time()
-    model.train()
+def ds_val_loop(device,num_classes,model,loader,criterion):
+
+    labels = []
+    bag_predictions_after_normal = []
     train_loss_log = 0
     model = model.to(device)
     with torch.autograd.set_detect_anomaly(True):
         for i, data in enumerate(loader):
             label = data[1].long().to(device)
+            labels.append(label.cpu().numpy())
             bag = data[0].to(device).float()
 
-            max_prediction, train_logits = model(bag)
+            max_prediction, val_logits = model(bag)
+            bag_predictions_after_normal.append(torch.softmax(val_logits,0).cpu().numpy())
             max_prediction, _ = torch.max(max_prediction, 0)
             max_prediction = max_prediction.unsqueeze(0)
-            loss_bag = criterion(train_logits, label)
+            loss_bag = criterion(val_logits, label)
             loss_max = criterion(max_prediction, label)
             val_loss = 0.5*loss_bag + 0.5*loss_max
             val_loss_log += val_loss.item()
 
     train_loss_log /= len(loader)
+    val_metrics= cal_scores(bag_predictions_after_normal,labels,num_classes)
+    return val_loss_log,val_metrics
+
+
+def rnn_train_loop(device,model,loader,criterion,optimizer,scheduler):
+    
+    start = time.time()
+    model.train()
+    train_loss_log = 0
+    for i, data in enumerate(loader):
+        state  = model.init_hidden(1).to(device)
+        optimizer.zero_grad()
+        label = data[1].long().to(device)
+        bag = data[0].to(device).float().squeeze(0)
+        for j in range(len(bag)):
+            train_logits,state = model(bag[j],state)
+        train_loss = criterion(train_logits, label)
+        train_loss_log += train_loss.item()
+        train_loss.backward()
+        optimizer.step()
+    if scheduler is not None:
+        scheduler.step()
+    train_loss_log /= len(loader)
     end = time.time()
     total_time = end - start
-    return val_loss_log,total_time
+    return train_loss_log,total_time
+
+def rnn_val_loop(device,num_classes,model,loader,criterion):
+    
+    train_loss_log = 0
+    labels = []
+    bag_predictions_after_normal = []
+    with torch.autograd.set_detect_anomaly(True):
+        for i, data in enumerate(loader):
+            state  = model.init_hidden(1).to(device)
+            label = data[1].long().to(device)
+            labels.append(label.cpu().numpy())
+            bag = data[0].to(device).float().squeeze(0)
+            for j in range(len(bag)):
+                val_logits,state = model(bag[j],state)
+            val_loss = criterion(val_logits, label)
+            bag_predictions_after_normal.append(torch.softmax(val_logits,0).cpu().numpy())
+            train_loss_log += val_loss.item()
+    val_loss_log /= len(loader)
+    val_metrics= cal_scores(bag_predictions_after_normal,labels,num_classes)
+    return val_loss_log,val_metrics
