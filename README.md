@@ -45,8 +45,8 @@ A library that integrates different MIL methods into a unified framework
 * `ACC,BACC`: BACC is macro-RECALL
 * `KAPPLE`: linear,quadratic
 * `Confusion_Mat`
-* 'FROC'
-* 'patch-ACC'
+* `FROC`
+* `Patch-ACC1
 
 
 ## :orange_book: Let's Begin Now
