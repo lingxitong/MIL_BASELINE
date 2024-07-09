@@ -46,7 +46,7 @@ A library that integrates different MIL methods into a unified framework
 * `KAPPLE`: linear,quadratic
 * `Confusion_Mat`
 * `FROC`
-* `Patch-ACC1
+* `Patch-ACC`
 
 
 ## :orange_book: Let's Begin Now
