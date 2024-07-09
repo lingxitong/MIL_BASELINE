@@ -11,12 +11,12 @@ A library that integrates different MIL methods into a unified framework
 * User only need to provide the following csvs whether Public/Private Dataset<br/>
 `/datasets/example_Dataset.csv`
   
-### :bookmark: Supported Dataset-Split-Method
+### :closed_umbrella: Supported Dataset-Split-Method
 * User-difined Train-Val-Test split
 * Train-Val split with K-fold
 * Train-Val-Test split with K-fold
 
-### :triangular_ruler Feature Encoder
+### :triangular_ruler: Feature Encoder
 * R50
 * VIT-S
 * CTRANSPATH
