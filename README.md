@@ -51,7 +51,7 @@ A library that integrates different MIL methods into a unified framework
 - `/test_mil.py:` Test Entry function of the framework.
 
 ### 📁 **Dataset Pre-Process**
-#### :triangular_ruler: **Feature Extracter**
+####  :egg: **Feature Extracter**
 - OpenSlide supported formats and SDPC formats
 - R50 and VIT-S are supported directly.
 - PLIP/UNI/COUCH/TRANSPATH/GIG are supported by push the model-weights in `/feature_extracter/PLIP` `/feature_extracter/UNI` `/feature_extracter/COUCH ` `/feature_extracter/CTRANSPATH` `/feature_extracter/GIG`.
@@ -64,15 +64,15 @@ A library that integrates different MIL methods into a unified framework
     - ext : .svs/.tif/.ndpi/......./.sdpc
     - target_patch_size : for example, vit_s need 224 as input
 
-#### **Dataset-Csv Construction**
+#### :custard: **Dataset-Csv Construction**
 - You should construct a csv-file like the format of `/datasets/example_Dataset.csv`
 
-#### **Dataset-Csv Construction**
+#### :cookie: **Dataset-Csv Construction**
 - You can use the dataset-split-scripts to perform different data-split.
 
 
 ### :fire: **Train MIL**
-#### **Yaml Config**
+#### :8ball: **Yaml Config**
 - you can config the yaml-file in `/configs`
 - for example, `/configs/AB_MIL.yaml`, A detailed explanation has been written in  `/configs/AB_MIL.yaml`
 - Then, `/train_mil.py` will help you !
