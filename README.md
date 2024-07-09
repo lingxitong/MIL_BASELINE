@@ -1,22 +1,22 @@
 # MIL_BASELINE
 A library that integrates different MIL methods into a unified framework
 ## :memo: **Overall Introduction**
-### Library Introduction
+### :bookmark: Library Introduction
 * A library that integrates different MIL methods into a unified framework
 * A library that integrates different Datasets into a unified Interface
 * A library that provides different Datasets-Split-Methods which commonly used
 * A library that easily extend by following a uniform definition
 
-### Dataset Uniform Interface
+### :bookmark: Dataset Uniform Interface
 * User only need to provide the following csvs whether Public/Private Dataset<br/>
 `/datasets/example_Dataset.csv`
   
-### Supported Dataset-Split-Method
+### :bookmark: Supported Dataset-Split-Method
 * User-difined Train-Val-Test split
 * Train-Val split with K-fold
 * Train-Val-Test split with K-fold
 
-### Feature Encoder
+### :bookmark: Feature Encoder
 * R50
 * VIT-S
 * CTRANSPATH
@@ -25,7 +25,7 @@ A library that integrates different MIL methods into a unified framework
 * UNI
 * GIG
   
-### Implementated NetWork
+### :bookmark: Implementated NetWork
 * MEAN_MIL
 * MAX_MIL
 * AB_MIL [Attention-based Deep Multiple Instance Learning](https://arxiv.org/abs/1802.04712) (ICML 2018)
