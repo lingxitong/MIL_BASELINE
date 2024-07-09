@@ -51,18 +51,18 @@ A library that integrates different MIL methods into a unified framework
 - `/test_mil.py:` Test Entry function of the framework.
 
 ### 📁 **Dataset Pre-Process**
-  #### :triangular_ruler: **Feature Extracter**
-  - OpenSlide supported formats and SDPC formats
-  - R50 and VIT-S are supported directly.
-  - PLIP/UNI/COUCH/TRANSPATH/GIG are supported by push the model-weights in `/feature_extracter/PLIP` `/feature_extracter/UNI` `/feature_extracter/COUCH ` `/feature_extracter/CTRANSPATH` `/feature_extracter/GIG`.
-  - To permform feature extracter </br>
-    - First, you should get h5 file </br>
-  `python /feature_extracter/CLAM/create_patches_fp.py --source /path/to/your/slide_dir --save_dir /path/to/your/save_dr --preset /feature_extractor/CLAM/presets/bwh_biopsy.csv --patch_level your_path_level --patch_size your_patch_size --seg --patch` 
-    - Second, you should get pt file </br>
-  `CUDA_VISIBLE_DEVICES=your_cuda_id python /feature_extractor/CLAM/extract_features_fp.py --data_h5_dir /path/to/your/h5_save_dir --data_slide_dir /path/to/your/slide_dir --csv_path /path/to/your/h5_save_dir/process_list_autogen.csv --feat_dir path/to/your/pt_save_dir --batch_size your_bach_size --slide_ext your_ext --backbone your_backbone --target_patch_size your_target_patch_size --model_dir your_backbone_dir` 
-        - backbone : resnet50_imagenet/vit_s_imagenet/plip/uni
-        - ext : .svs/.tif/.ndpi/......./.sdpc
-        - target_patch_size : for example, vit_s need 224 as input
+#### :triangular_ruler: **Feature Extracter**
+- OpenSlide supported formats and SDPC formats
+- R50 and VIT-S are supported directly.
+- PLIP/UNI/COUCH/TRANSPATH/GIG are supported by push the model-weights in `/feature_extracter/PLIP` `/feature_extracter/UNI` `/feature_extracter/COUCH ` `/feature_extracter/CTRANSPATH` `/feature_extracter/GIG`.
+- To permform feature extracter </br>
+  - First, you should get h5 file </br>
+`python /feature_extracter/CLAM/create_patches_fp.py --source /path/to/your/slide_dir --save_dir /path/to/your/save_dr --preset /feature_extractor/CLAM/presets/bwh_biopsy.csv --patch_level your_path_level --patch_size your_patch_size --seg --patch` 
+  - Second, you should get pt file </br>
+`CUDA_VISIBLE_DEVICES=your_cuda_id python /feature_extractor/CLAM/extract_features_fp.py --data_h5_dir /path/to/your/h5_save_dir --data_slide_dir /path/to/your/slide_dir --csv_path /path/to/your/h5_save_dir/process_list_autogen.csv --feat_dir path/to/your/pt_save_dir --batch_size your_bach_size --slide_ext your_ext --backbone your_backbone --target_patch_size your_target_patch_size --model_dir your_backbone_dir` 
+    - backbone : resnet50_imagenet/vit_s_imagenet/plip/uni
+    - ext : .svs/.tif/.ndpi/......./.sdpc
+    - target_patch_size : for example, vit_s need 224 as input
 
 #### **Dataset-Csv Construction**
 - You should construct a csv-file like the format of `/datasets/example_Dataset.csv`
