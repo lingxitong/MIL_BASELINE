@@ -39,6 +39,16 @@ A library that integrates different MIL methods into a unified framework
 * RET_MIL [Retentive Multiple Instance Learning for Histopathological WSI Classification](https://arxiv.org/abs/2403.10858) (MICCAI 2024)
 * UPDATING...
 
+###  ☑️ :ballot_box_with_check: Implementated Metrics
+* `AUC`: macro,micro,weighed (same when 2-classes)
+* `F1,PRE,RECALL`: macro,micro,weighed
+* `ACC,BACC`: BACC is macro-RECALL
+* `KAPPLE`: linear,quadratic
+* `Confusion_Mat`
+* 'FROC'
+* 'patch-ACC'
+
+
 ## :orange_book: Let's Begin Now
 ### 🔨 **Code Framework**
 - `/configs:` MIL_BASELINE defines MIL models through a YAML configuration file.
