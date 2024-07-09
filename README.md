@@ -19,11 +19,11 @@ A library that integrates different MIL methods into a unified framework
 ### :triangular_ruler: Feature Encoder
 * R50
 * VIT-S
-* CTRANSPATH
-* PLIP
-* CONCH
-* UNI
-* GIG
+* CTRANSPATH [Transformer-Based Self-supervised Learning for Histopathological Image Classification](https://link.springer.com/chapter/10.1007/978-3-030-87237-3_18) (MIA 2023)
+* PLIP [A visual–language foundation model for pathology image analysis using medical Twitter](https://www.nature.com/articles/s41591-023-02504-3) (NAT MED 2023)
+* CONCH [A visual-language foundation model for computational pathology](https://www.nature.com/articles/s41591-024-02856-4) (NAT MED 2024)
+* UNI [Towards a general-purpose foundation model for computational pathology](https://www.nature.com/articles/s41591-024-02857-3) (NAT MED 2024)
+* GIG [A whole-slide foundation model for digital pathology from real-world data](https://www.nature.com/articles/s41586-024-07441-w) (NAT 2024)
   
 ###  :gem: Implementated NetWork
 * MEAN_MIL
