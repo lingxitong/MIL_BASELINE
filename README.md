@@ -51,7 +51,7 @@ A library that integrates different MIL methods into a unified framework
 - `/test_mil.py:` Test Entry function of the framework.
 
 ### 📁 **Dataset Pre-Process**
-  #### **Feature Extracter**
+  #### :triangular_ruler: **Feature Extracter**
   - OpenSlide supported formats and SDPC formats
   - R50 and VIT-S are supported directly.
   - PLIP/UNI/COUCH/TRANSPATH/GIG are supported by push the model-weights in `/feature_extracter/PLIP` `/feature_extracter/UNI` `/feature_extracter/COUCH ` `/feature_extracter/CTRANSPATH` `/feature_extracter/GIG`.
