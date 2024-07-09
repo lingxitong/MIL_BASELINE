@@ -21,7 +21,7 @@ A library that integrates different MIL methods into a unified framework
 * VIT-S
 * TRANSPATH
 * PLIP
-* COUCH
+* CONCH
 * UNI
 * GIG
   
