@@ -7,7 +7,7 @@ A library that integrates different MIL methods into a unified framework
 * A library that provides different Datasets-Split-Methods which commonly used
 * A library that easily extend by following a uniform definition
 
-### :bookmark: Dataset Uniform Interface
+### :bulb: Dataset Uniform Interface
 * User only need to provide the following csvs whether Public/Private Dataset<br/>
 `/datasets/example_Dataset.csv`
   
@@ -16,7 +16,7 @@ A library that integrates different MIL methods into a unified framework
 * Train-Val split with K-fold
 * Train-Val-Test split with K-fold
 
-### :bookmark: Feature Encoder
+### :triangular_ruler Feature Encoder
 * R50
 * VIT-S
 * CTRANSPATH
@@ -25,7 +25,7 @@ A library that integrates different MIL methods into a unified framework
 * UNI
 * GIG
   
-### :bookmark: Implementated NetWork
+###  :gem: Implementated NetWork
 * MEAN_MIL
 * MAX_MIL
 * AB_MIL [Attention-based Deep Multiple Instance Learning](https://arxiv.org/abs/1802.04712) (ICML 2018)
