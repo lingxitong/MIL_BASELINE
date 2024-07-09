@@ -232,3 +232,103 @@ def rnn_val_loop(device,num_classes,model,loader,criterion):
     val_loss_log /= len(loader)
     val_metrics= cal_scores(bag_predictions_after_normal,labels,num_classes)
     return val_loss_log,val_metrics
+
+
+def dtfd_train_loop(device,model_list,loader,criterion,optimizer_list,scheduler_list,num_Group,grad_clipping):
+    train_loss_log = 0
+    start = time.time()
+    classifier,attention,dimReduction,attCls = model_list
+    classifier.train()
+    attention.train()
+    dimReduction.train()
+    attCls.train()
+    optimizer_A,optimizer_B = optimizer_list
+    scheduler_A,scheduler_B = scheduler_list
+    
+    total_loss = 0
+    for i, data in enumerate(loader):
+        optimizer_A.zero_grad()
+        optimizer_B.zero_grad()
+        label = data[1].long().to(device)
+        bag = data[0].to(device).float()
+        slide_sub_preds=[]
+        slide_sub_labels=[]
+        slide_pseudo_feat=[]
+        inputs_pseudo_bags=torch.chunk(bag.squeeze(0), num_Group,dim=0)
+    
+        for subFeat_tensor in inputs_pseudo_bags:
+
+            slide_sub_labels.append(label)
+            subFeat_tensor=subFeat_tensor.to(device)
+            tmidFeat = dimReduction(subFeat_tensor)
+            tAA = attention(tmidFeat).squeeze(0)
+            tattFeats = torch.einsum('ns,n->ns', tmidFeat, tAA)  ### n x fs
+            tattFeat_tensor = torch.sum(tattFeats, dim=0).unsqueeze(0)  ## 1 x fs
+            tPredict = classifier(tattFeat_tensor)  ### 1 x 2
+            slide_sub_preds.append(tPredict)
+            slide_pseudo_feat.append(tattFeat_tensor)
+
+        slide_pseudo_feat = torch.cat(slide_pseudo_feat, dim=0)
+        slide_sub_preds = torch.cat(slide_sub_preds, dim=0) ### numGroup x fs
+        slide_sub_labels = torch.cat(slide_sub_labels, dim=0) ### numGroup
+        loss_A = criterion(slide_sub_preds, slide_sub_labels).mean()
+        total_loss += loss_A.item()
+        loss_A.backward(retain_graph=True)
+        torch.nn.utils.clip_grad_norm_(dimReduction.parameters(), grad_clipping)
+        torch.nn.utils.clip_grad_norm_(attention.parameters(), grad_clipping)
+        torch.nn.utils.clip_grad_norm_(classifier.parameters(), grad_clipping)
+        optimizer_A.step()
+
+        ## optimization for the second tier
+        gSlidePred = attCls(slide_pseudo_feat)
+        loss_B = criterion(gSlidePred, label).mean()
+        total_loss += loss_B.item()
+        optimizer_B.zero_grad()
+        loss_B.backward()
+        torch.nn.utils.clip_grad_norm_(attCls.parameters(), grad_clipping)
+        optimizer_B.step()
+    scheduler_A.step()
+    scheduler_B.step()
+    end = time.time()
+    total_loss /= len(loader)
+    total_time = end - start
+    
+    return total_loss,total_time
+
+
+def dtfd_val_loop(device,num_classes,model_list,loader,criterion,num_Group,grad_clipping):
+    classifier,attention,dimReduction,attCls = model_list
+    classifier.eval()
+    attention.eval()
+    dimReduction.eval()
+    attCls.eval()
+    total_loss = 0
+    y_score=[]
+    y_true=[]
+    for i, data in enumerate(loader):
+        bag, label=data
+
+        label=label.data.numpy().tolist()
+        slide_pseudo_feat=[]
+        inputs_pseudo_bags=torch.chunk(bag.squeeze(0), num_Group,dim=0)
+        
+        for subFeat_tensor in inputs_pseudo_bags:
+            subFeat_tensor=subFeat_tensor.to(device)
+            with torch.no_grad():
+                tmidFeat = dimReduction(subFeat_tensor)
+                tAA = attention(tmidFeat).squeeze(0)
+            tattFeats = torch.einsum('ns,n->ns', tmidFeat, tAA)  ### n x fs
+            tattFeat_tensor = torch.sum(tattFeats, dim=0).unsqueeze(0)  ## 1 x fs
+            slide_pseudo_feat.append(tattFeat_tensor)
+
+        slide_pseudo_feat = torch.cat(slide_pseudo_feat, dim=0)
+        gSlidePred = torch.softmax(attCls(slide_pseudo_feat), dim=1)
+        loss = criterion(gSlidePred, label)
+        total_loss += loss.item()
+        pred=(gSlidePred.cpu().data.numpy()).tolist()
+        y_score.extend(pred)
+        y_true.extend(label)
+    
+    total_loss /= len(loader)
+    val_metrics= cal_scores(y_score,y_true,num_classes)
+    return total_loss,val_metrics

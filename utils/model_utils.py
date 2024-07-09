@@ -53,6 +53,21 @@ def get_optimizer(args,model):
        optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=lr, weight_decay=weight_decay)
        return optimizer,lr
    
+   
+def get_optimizer(args,trainable_parameters):
+    opt = args.Model.optimizer.which
+    if opt == 'adam':
+       lr = args.Model.optimizer.adam_config.lr
+       weight_decay = args.Model.optimizer.adam_config.weight_decay
+       optimizer = torch.optim.Adam(trainable_parameters, lr=lr, weight_decay=weight_decay)
+       return optimizer,lr
+    elif opt == 'adamw':
+       lr = args.Model.optimizer.adamw_config.lr
+       weight_decay = args.Model.optimizer.adamw_config.weight_decay
+       optimizer = torch.optim.AdamW(trainable_parameters, lr=lr, weight_decay=weight_decay)
+       return optimizer,lr
+
+
 def get_scheduler(args,optimizer,base_lr):
     sch = args.Model.scheduler.which
     warmup = args.Model.scheduler.warmup
@@ -96,6 +111,16 @@ def save_best_model(args,model,best_epoch):
 def save_last_model(args,model,last_epoch):
     save_path = os.path.join(args.Logs.now_log_dir,f'Last_EPOCH_{last_epoch}.pth')
     torch.save(model.state_dict(),save_path)
+    
+    
+def dtfd_save_best_model(args,state_dict,best_epoch):
+    save_path = os.path.join(args.Logs.now_log_dir,f'Best_EPOCH_{best_epoch}.pth')
+    _delete_best_pth_files(args.Logs.now_log_dir)
+    torch.save(state_dict,save_path)
+    
+def dtfd_save_last_model(args,state_dict,last_epoch):
+    save_path = os.path.join(args.Logs.now_log_dir,f'Last_EPOCH_{last_epoch}.pth')
+    torch.save(state_dict,save_path)
 
 def save_log(args,epoch_info_log,best_epoch):
     log_df = pd.DataFrame(epoch_info_log)
