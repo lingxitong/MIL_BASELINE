@@ -47,7 +47,8 @@ A library that integrates different MIL methods into a unified framework
 - `/feature_extracter:` Supports different feature extractors.
 - `/datasets:` User-Datasets path information.
 - `/utils:` Framework's utility scripts.
-- `/train_mil.py:` Entry function of the framework.
+- `/train_mil.py:` Train Entry function of the framework.
+- `/test_mil.py:` Test Entry function of the framework.
 
 ### 📁 **Dataset Pre-Process**
 #### **Feature Extracter**
