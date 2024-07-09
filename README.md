@@ -1,31 +1,31 @@
 # MIL_BASELINE
 A library that integrates different MIL methods into a unified framework
-
-## Library Introduction
+## :memo: **Overall Introduction**
+### Library Introduction
 * A library that integrates different MIL methods into a unified framework
 * A library that integrates different Datasets into a unified Interface
 * A library that provides different Datasets-Split-Methods which commonly used
 * A library that easily extend by following a uniform definition
 
-## Dataset Uniform Interface
+### Dataset Uniform Interface
 * User only need to provide the following csvs whether Public/Private Dataset<br/>
 `/datasets/example_Dataset.csv`
   
-## Supported Dataset-Split-Method
+### Supported Dataset-Split-Method
 * User-difined Train-Val-Test split
 * Train-Val split with K-fold
 * Train-Val-Test split with K-fold
 
-## Feature Encoder
+### Feature Encoder
 * R50
 * VIT-S
-* TRANSPATH
+* CTRANSPATH
 * PLIP
 * CONCH
 * UNI
 * GIG
   
-## Implementated NetWork
+### Implementated NetWork
 * MEAN_MIL
 * MAX_MIL
 * AB_MIL [Attention-based Deep Multiple Instance Learning](https://arxiv.org/abs/1802.04712) (ICML 2018)
@@ -53,12 +53,12 @@ A library that integrates different MIL methods into a unified framework
 #### **Feature Extracter**
 - OpenSlide supported formats and SDPC formats
 - R50 and VIT-S are supported directly.
-- PLIP/UNI/COUCH/TRANSPATH/GIG are supported by push the model-weights in `/feature_extracter/PLIP` `/feature_extracter/UNI` `/feature_extracter/COUCH ` `/feature_extracter/TRANSPATH` `/feature_extracter/GIG`.
+- PLIP/UNI/COUCH/TRANSPATH/GIG are supported by push the model-weights in `/feature_extracter/PLIP` `/feature_extracter/UNI` `/feature_extracter/COUCH ` `/feature_extracter/CTRANSPATH` `/feature_extracter/GIG`.
 - To permform feature extracter </br>
   - First, you should get h5 file </br>
 `python /feature_extracter/CLAM/create_patches_fp.py --source /path/to/your/slide_dir --save_dir /path/to/your/save_dr --preset /feature_extractor/CLAM/presets/bwh_biopsy.csv --patch_level your_path_level --patch_size your_patch_size --seg --patch` 
   - Second, you should get pt file </br>
-`CUDA_VISIBLE_DEVICES=your_cuda_id python /feature_extractor/CLAM/extract_features_fp.py --data_h5_dir /path/to/your/h5_save_dir --data_slide_dir /path/to/your/slide_dir --csv_path /path/to/your/h5_save_dir/process_list_autogen.csv --feat_dir path/to/your/pt_save_dir --batch_size your_bach_size --slide_ext your_ext --backbone your_backbone --target_patch_size your_target_patch_size`
+`CUDA_VISIBLE_DEVICES=your_cuda_id python /feature_extractor/CLAM/extract_features_fp.py --data_h5_dir /path/to/your/h5_save_dir --data_slide_dir /path/to/your/slide_dir --csv_path /path/to/your/h5_save_dir/process_list_autogen.csv --feat_dir path/to/your/pt_save_dir --batch_size your_bach_size --slide_ext your_ext --backbone your_backbone --target_patch_size your_target_patch_size --model_dir your_backbone_dir` 
       - backbone : resnet50_imagenet/vit_s_imagenet/plip/uni
       - ext : .svs/.tif/.ndpi/......./.sdpc
       - target_patch_size : for example, vit_s need 224 as input
