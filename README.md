@@ -71,11 +71,12 @@ A library that integrates different MIL methods into a unified framework
 - You can use the dataset-split-scripts to perform different data-split.
 
 
-### :fire: **Train MIL**
+### :fire: **Train/Test MIL**
 #### :8ball: **Yaml Config**
 - you can config the yaml-file in `/configs`
 - for example, `/configs/AB_MIL.yaml`, A detailed explanation has been written in  `/configs/AB_MIL.yaml`
 - Then, `/train_mil.py` will help you !
+- `/test_mil.py` will help you test pretrained model !
 
 
 ### :sparkles: **Git Pull**
