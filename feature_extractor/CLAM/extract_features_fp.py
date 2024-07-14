@@ -188,7 +188,7 @@ if __name__ == '__main__':
 		checkpoint_path = os.path.join(local_dir, "pytorch_model.bin")
 		model, _ = create_model_from_pretrained("conch_ViT-B-16", checkpoint_path=checkpoint_path)
 		model = model.to(device)
-	elif args.backbone == 'ctranspaths':
+	elif args.backbone == 'ctranspath':
 		local_dir = model_dir
 		checkpoint_path = os.path.join(local_dir, "ctranspath.pth")
 		model = ctranspath()
