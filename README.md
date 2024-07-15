@@ -73,7 +73,7 @@ A library that integrates different MIL methods into a unified framework
     - backbone : resnet50_imagenet/vit_s_imagenet/plip/uni
     - ext : .svs/.tif/.ndpi/......./.sdpc
     - target_patch_size : for example, vit_s need 224 as input
-    - ctranspath needs timm== timm-0.5.4 / uni,conch... need timm==0.9.16 
+    - ctranspath needs timm== timm-0.5.4 / gig needs timm=>1.0.3 / uni,conch... need timm==0.9.16 
 
 #### :custard: **Dataset-Csv Construction**
 - You should construct a csv-file like the format of `/datasets/example_Dataset.csv`
