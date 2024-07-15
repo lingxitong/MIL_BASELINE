@@ -5,7 +5,6 @@ import os
 from torchvision import transforms
 import torch
 from typing import List, Union, Tuple
-from Ctranspath.ctrans import *
 from conch.open_clip_custom import *
 from torch.utils.data import DataLoader
 from transformers import CLIPModel, CLIPProcessor
@@ -19,7 +18,22 @@ from utils.utils import collate_features
 from utils.file_utils import save_hdf5
 import h5py
 import openslide
-
+gig_config = {
+        "architecture": "vit_giant_patch14_dinov2",
+        "num_classes": 0,
+        "num_features": 1536,
+        "global_pool": "token",
+        "model_args": {
+            "img_size": 224,
+            "in_chans": 3,
+            "patch_size": 16,
+            "embed_dim": 1536,
+            "depth": 40,
+            "num_heads": 24,
+            "init_values": 1e-05,
+            "mlp_ratio": 5.33334,
+            "num_classes": 0}}
+        
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 def plip_transforms(pretrained=False):
@@ -189,6 +203,7 @@ if __name__ == '__main__':
 		model, _ = create_model_from_pretrained("conch_ViT-B-16", checkpoint_path=checkpoint_path)
 		model = model.to(device)
 	elif args.backbone == 'ctranspath':
+		from Ctranspath.ctrans import *
 		local_dir = model_dir
 		checkpoint_path = os.path.join(local_dir, "ctranspath.pth")
 		model = ctranspath()
@@ -197,7 +212,9 @@ if __name__ == '__main__':
 	elif args.backbone == 'gig':
 		local_dir = model_dir
 		checkpoint_path = os.path.join(local_dir, "pytorch_model.bin")
-		model = timm.create_model(checkpoint_path, pretrained=True)
+		model = timm.create_model("vit_giant_patch14_dinov2", pretrained=False, **config['model_args'])
+	        state_dict = torch.load(pt_path, map_location="cpu")
+       	        model.load_state_dict(state_dict, strict=True)
 		model = model.to(device)
 
 	if torch.cuda.device_count() > 1:
