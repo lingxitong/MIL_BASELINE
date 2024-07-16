@@ -212,8 +212,8 @@ if __name__ == '__main__':
 	elif args.backbone == 'gig':
 		local_dir = model_dir
 		checkpoint_path = os.path.join(local_dir, "pytorch_model.bin")
-		model = timm.create_model("vit_giant_patch14_dinov2", pretrained=False, **config['model_args'])
-	        state_dict = torch.load(pt_path, map_location="cpu")
+		model = timm.create_model("vit_giant_patch14_dinov2", pretrained=False, **gig_config['model_args'])
+	        state_dict = torch.load(checkpoint_path, map_location="cpu")
        	        model.load_state_dict(state_dict, strict=True)
 		model = model.to(device)
 
