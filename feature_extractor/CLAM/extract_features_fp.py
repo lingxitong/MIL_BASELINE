@@ -19,40 +19,44 @@ from utils.file_utils import save_hdf5
 import h5py
 import openslide
 gig_config = {
-        "architecture": "vit_giant_patch14_dinov2",
-        "num_classes": 0,
-        "num_features": 1536,
-        "global_pool": "token",
-        "model_args": {
-            "img_size": 224,
-            "in_chans": 3,
-            "patch_size": 16,
-            "embed_dim": 1536,
-            "depth": 40,
-            "num_heads": 24,
-            "init_values": 1e-05,
-            "mlp_ratio": 5.33334,
-            "num_classes": 0}}
-        
+"architecture": "vit_giant_patch14_dinov2",
+"num_classes": 0,
+"num_features": 1536,
+"global_pool": "token",
+"model_args": {
+"img_size": 224,
+"in_chans": 3,
+"patch_size": 16,
+"embed_dim": 1536,
+"depth": 40,
+"num_heads": 24,
+"init_values": 1e-05,
+"mlp_ratio": 5.33334,
+"num_classes": 0}} 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+def resnet50_imagenet_transforms():
+	mean = (0.485, 0.456, 0.406)
+	std = (0.229, 0.224, 0.225)
+	transforms = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean = mean, std = std)])
+	return transforms
 
-def plip_transforms(pretrained=False):
-	if pretrained:
-		mean = (0.48145466,0.4578275,0.40821073)
-		std = (0.26862954,0.26130258,0.27577711)
+def vit_s_imagenet_transforms():
+    mean = (0.5,0.5,0.5)
+    std = (0.5,0.5,0.5)
+    transforms = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean = mean, std = std)])
+    return transforms
+    
 
-	else:
-		mean = (0.48145466,0.4578275,0.40821073)
-		std = (0.26862954,0.26130258,0.27577711)
+def plip_transforms():
 
-	transforms_val = transforms.Compose(
-					[
+	mean = (0.48145466,0.4578275,0.40821073)
+	std = (0.26862954,0.26130258,0.27577711)
+
+	transforms = transforms.Compose([
 					 transforms.ToTensor(),
-					 transforms.Normalize(mean = mean, std = std)
-					]
-				)
+					 transforms.Normalize(mean = mean, std = std)])
 
-	return transforms_val
+	return transforms
 
 def uni_transforms():
     uni_transform = transforms.Compose(
@@ -115,6 +119,10 @@ def compute_w_loader(args,file_path, output_path, wsi, model,
 		custom_transforms = ctranspath_transforms()
 	elif args.backbone == 'gig':
 		custom_transforms = gig_transforms()
+	elif args.backbone == 'vit_s_imagenet':
+		custom_transforms = vit_s_imagenet_transforms()
+	elif args.backbone == 'resnet50_imagenet':
+		custom_transforms = resnet50_imagenet_transforms()
 	else:
 		custom_transforms = None
      
@@ -189,7 +197,10 @@ if __name__ == '__main__':
 		model,_,_ = load_plip_model(name=model_dir, auth_token=None)
 		model = model.to(device)
 	elif args.backbone == 'vit_s_imagenet':
-		model = timm.create_model('vit_small_patch16_224', pretrained=True)
+		model = timm.create_model('vit_small_patch16_224')
+		local_dir = model_dir
+		checkpoint_path = os.path.join(local_dir, "pytorch_model.bin")
+		model.load_state_dict(torch.load(checkpoint_path, map_location=device), strict=False)
 		model.head = nn.Identity()
 		model = model.to(device)
 	elif args.backbone == 'uni':
@@ -213,8 +224,8 @@ if __name__ == '__main__':
 		local_dir = model_dir
 		checkpoint_path = os.path.join(local_dir, "pytorch_model.bin")
 		model = timm.create_model("vit_giant_patch14_dinov2", pretrained=False, **gig_config['model_args'])
-	        state_dict = torch.load(checkpoint_path, map_location="cpu")
-       	        model.load_state_dict(state_dict, strict=True)
+		state_dict = torch.load(checkpoint_path , map_location="cpu")
+		model.load_state_dict(state_dict, strict=True)
 		model = model.to(device)
 
 	if torch.cuda.device_count() > 1:
@@ -258,6 +269,3 @@ if __name__ == '__main__':
 		features = torch.from_numpy(features)
 		bag_base, _ = os.path.splitext(bag_name)
 		torch.save(features, os.path.join(args.feat_dir, 'pt_files', bag_base+'.pt'))
-
-
-
