@@ -1,4 +1,4 @@
-![image](https://github.com/lingxitong/MIL_BASELINE/blob/main/MIL_BASELINE.png)
+![image](https://github.com/lingxitong/MIL_BASELINE/blob/main/logo.png)
 # MIL_BASELINE
 A library that integrates different MIL methods into a unified framework
 
