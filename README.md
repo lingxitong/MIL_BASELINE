@@ -1,6 +1,6 @@
+![image](https://github.com/lingxitong/MIL_BASELINE/main/MIL_BASELINE.png)
 # MIL_BASELINE
-A library that integrates different MIL methods into a unified framework</br>
-![image](https://github.com/lingxitong/MIL_BASELINE/MIL_BASELINE.png)
+A library that integrates different MIL methods into a unified framework
 
 ## :white_check_mark: **UPDATES INFO**
 ## :memo: **Overall Introduction**
