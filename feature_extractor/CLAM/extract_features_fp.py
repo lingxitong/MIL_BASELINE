@@ -37,14 +37,14 @@ device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 def resnet50_imagenet_transforms():
 	mean = (0.485, 0.456, 0.406)
 	std = (0.229, 0.224, 0.225)
-	transforms = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean = mean, std = std)])
-	return transforms
+	r50_transforms = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean = mean, std = std)])
+	return r50_transforms
 
 def vit_s_imagenet_transforms():
     mean = (0.5,0.5,0.5)
     std = (0.5,0.5,0.5)
-    transforms = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean = mean, std = std)])
-    return transforms
+    vit_s_transforms = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean = mean, std = std)])
+    return vit_s_transforms
     
 
 def plip_transforms():
@@ -197,7 +197,7 @@ if __name__ == '__main__':
 		model,_,_ = load_plip_model(name=model_dir, auth_token=None)
 		model = model.to(device)
 	elif args.backbone == 'vit_s_imagenet':
-		model = timm.create_model('vit_small_patch16_224')
+		model = timm.create_model('vit_small_patch16_224.augreg_in21k_ft_in1k')
 		local_dir = model_dir
 		checkpoint_path = os.path.join(local_dir, "pytorch_model.bin")
 		model.load_state_dict(torch.load(checkpoint_path, map_location=device), strict=False)
@@ -218,7 +218,7 @@ if __name__ == '__main__':
 		local_dir = model_dir
 		checkpoint_path = os.path.join(local_dir, "ctranspath.pth")
 		model = ctranspath()
-		model.load_state_dict(torch.load(checkpoint_path, map_location=device), strict=True)
+		model.load_state_dict(torch.load(checkpoint_path, map_location=device), strict=False)
 		model = model.to(device)
 	elif args.backbone == 'gig':
 		local_dir = model_dir
