@@ -57,6 +57,7 @@ def process_RRT_MIL(args):
     'conv_type': args.Model.conv_type,
     'region_attn': args.Model.region_attn,
     'peg_1d': args.Model.peg_1d,}
+    num_classes = args.General.num_classes
     device = torch.device(f'cuda:{args.General.device}')
     mil_model = RRT_MIL(**model_params)
     mil_model.to(device)
@@ -87,7 +88,7 @@ def process_RRT_MIL(args):
         else:
             now_scheduler = scheduler
         train_loss,cost_time = train_loop(device,mil_model,train_dataloader,criterion,optimizer,now_scheduler)
-        val_loss,val_metrics = val_loop(args,mil_model,val_dataloader,criterion)
+        val_loss,val_metrics = val_loop(device,num_classes,mil_model,val_dataloader,criterion)
         if args.Dataset.VIST == True:
             test_loss,test_metrics = val_loss,val_metrics
         else:
@@ -98,24 +99,24 @@ def process_RRT_MIL(args):
         add_epoch_info_log(epoch_info_log,epoch,train_loss,val_loss,test_loss,val_metrics,test_metrics)
         
         if REVERSE and val_metrics[best_model_metric] < best_val_metric:
-            best_val_metric = val_metrics[best_model_metric]
-            save_best_model(args,mil_model,epoch_info_log)
             best_epoch = epoch+1
+            best_val_metric = val_metrics[best_model_metric]
+            save_best_model(args,mil_model,best_epoch)
+
         elif not REVERSE and val_metrics[best_model_metric] > best_val_metric:
-            best_val_metric = val_metrics[best_model_metric]
-            save_best_model(args,mil_model,epoch_info_log)
             best_epoch = epoch+1
+            best_val_metric = val_metrics[best_model_metric]
+            save_best_model(args,mil_model,best_epoch)
+
         '''
         early stop
         '''
         is_stop = cal_is_stopping(args,epoch_info_log)
         if is_stop:
             print(f'Early Stop In EPOCH {epoch+1}!')
-            save_last_model(args,mil_model,epoch_info_log)
+            save_last_model(args,mil_model,epoch+1)
             save_log(args,epoch_info_log,best_epoch)
             break
         if epoch+1 == args.General.num_epochs:
-            save_last_model(args,mil_model,epoch_info_log)
+            save_last_model(args,mil_model,epoch+1)
             save_log(args,epoch_info_log,best_epoch)
-
-

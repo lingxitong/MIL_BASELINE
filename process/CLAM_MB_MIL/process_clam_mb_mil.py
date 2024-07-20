@@ -73,7 +73,7 @@ def process_CLAM_MB_MIL(args):
             now_scheduler = warmup_scheduler
         else:
             now_scheduler = scheduler
-        train_loss,cost_time = train_loop(device,mil_model,train_dataloader,criterion,optimizer,now_scheduler)
+        train_loss,cost_time = clam_train_loop(device,mil_model,train_dataloader,criterion,optimizer,now_scheduler,bag_weight)
         val_loss,val_metrics = clam_val_loop(device,num_classes,mil_model,val_dataloader,criterion,bag_weight)
         if args.Dataset.VIST == True:
             test_loss,test_metrics = val_loss,val_metrics

@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 from .nystrom_attention import NystromAttention
-from utils.model_utils import get_act
+from utils.process_utils import get_act
 def initialize_weights(module):
     for m in module.modules():
         if isinstance(m, nn.Conv2d):

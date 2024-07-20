@@ -25,6 +25,7 @@ Logs:
 
 Model:
     in_dim: 1024  # depend on the pt dimensions，such resnet50——>1024 vit_s——>768
+    n_dim: 128
     dropout: 0.1
     act: relu  # relu or silu gule
     optimizer:

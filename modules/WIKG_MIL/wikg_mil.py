@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import SAGPooling, global_mean_pool, global_max_pool, GlobalAttention
 from torch_geometric.nn.aggr import AttentionalAggregation
-from utils.model_utils import get_act
+from utils.process_utils import get_act
 class WIKG_MIL(nn.Module):
     def __init__(self,in_dim=512, act = 'LeakyReLU',dim_hidden=512, topk=6, num_classes=2, agg_type='bi-interaction', dropout=0.1, pool='attn'):
         super().__init__()

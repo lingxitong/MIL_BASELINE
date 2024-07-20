@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 import pdb
-from utils.model_utils import get_act
+from utils.process_utils import get_act
 
 """
 Attention Network without Gating (2 fc layers)

@@ -32,7 +32,7 @@ def process_DTFD_MIL(args):
     device = torch.device(f'cuda:{args.General.device}')
     num_classes = args.General.num_classes
     in_dim = args.Model.in_dim
-    classifier_dropout = args.Model.clasifier_dropout
+    classifier_dropout = args.Model.classifier_dropout
     attCls_dropout = args.Model.attCls_dropout
     act = args.Model.act
     num_Group = args.Model.num_Group
@@ -53,10 +53,10 @@ def process_DTFD_MIL(args):
     
     trainable_parameters_B = attCls.parameters()
     
-    optimizer_A,base_lr = get_optimizer(args,trainable_parameters_A)
+    optimizer_A,base_lr = get_param_optimizer(args,trainable_parameters_A)
     scheduler_A,warmup_scheduler_A = get_scheduler(args,optimizer_A,base_lr)
     
-    optimizer_B,base_lr = get_optimizer(args,trainable_parameters_B)
+    optimizer_B,base_lr = get_param_optimizer(args,trainable_parameters_B)
     scheduler_B,warmup_scheduler_B = get_scheduler(args,optimizer_B,base_lr)
     
     criterion = get_criterion(args.Model.criterion)

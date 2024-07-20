@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from utils.model_utils import get_act
+from utils.process_utils import get_act
 class Attention(nn.Module):
     def __init__(self,input_dim=512,act='relu',bias=False,dropout=False):
         super(Attention, self).__init__()

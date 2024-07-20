@@ -168,7 +168,7 @@ def ds_val_loop(device,num_classes,model,loader,criterion):
 
     labels = []
     bag_predictions_after_normal = []
-    train_loss_log = 0
+    val_loss_log = 0
     model = model.to(device)
     with torch.autograd.set_detect_anomaly(True):
         for i, data in enumerate(loader):
@@ -177,7 +177,7 @@ def ds_val_loop(device,num_classes,model,loader,criterion):
             bag = data[0].to(device).float()
 
             max_prediction, val_logits = model(bag)
-            bag_predictions_after_normal.append(torch.softmax(val_logits,0).cpu().numpy())
+            bag_predictions_after_normal.append(torch.softmax(val_logits[0],0).cpu().detach().numpy())
             max_prediction, _ = torch.max(max_prediction, 0)
             max_prediction = max_prediction.unsqueeze(0)
             loss_bag = criterion(val_logits, label)
@@ -185,7 +185,9 @@ def ds_val_loop(device,num_classes,model,loader,criterion):
             val_loss = 0.5*loss_bag + 0.5*loss_max
             val_loss_log += val_loss.item()
 
-    train_loss_log /= len(loader)
+    val_loss_log /= len(loader)
+    print(bag_predictions_after_normal)
+    print(labels)
     val_metrics= cal_scores(bag_predictions_after_normal,labels,num_classes)
     return val_loss_log,val_metrics
 
@@ -197,11 +199,11 @@ def rnn_train_loop(device,model,loader,criterion,optimizer,scheduler):
     train_loss_log = 0
     for i, data in enumerate(loader):
         state  = model.init_hidden(1).to(device)
-        optimizer.zero_grad()
+        model.zero_grad()
         label = data[1].long().to(device)
         bag = data[0].to(device).float().squeeze(0)
         for j in range(len(bag)):
-            train_logits,state = model(bag[j],state)
+            train_logits,state = model(bag[j].to(device),state)
         train_loss = criterion(train_logits, label)
         train_loss_log += train_loss.item()
         train_loss.backward()
@@ -234,66 +236,84 @@ def rnn_val_loop(device,num_classes,model,loader,criterion):
     return val_loss_log,val_metrics
 
 
-def dtfd_train_loop(device,model_list,loader,criterion,optimizer_list,scheduler_list,num_Group,grad_clipping):
+def dtfd_train_loop(device, model_list, loader, criterion, optimizer_list, scheduler_list, num_Group, grad_clipping):
     train_loss_log = 0
     start = time.time()
-    classifier,attention,dimReduction,attCls = model_list
+
+    # Unpack model list
+    classifier, attention, dimReduction, attCls = model_list
     classifier.train()
     attention.train()
     dimReduction.train()
     attCls.train()
-    optimizer_A,optimizer_B = optimizer_list
-    scheduler_A,scheduler_B = scheduler_list
-    
+
+    # Unpack optimizer and scheduler lists
+    optimizer_A, optimizer_B = optimizer_list
+    scheduler_A, scheduler_B = scheduler_list
+
     total_loss = 0
     for i, data in enumerate(loader):
-        optimizer_A.zero_grad()
-        optimizer_B.zero_grad()
         label = data[1].long().to(device)
         bag = data[0].to(device).float()
-        slide_sub_preds=[]
-        slide_sub_labels=[]
-        slide_pseudo_feat=[]
-        inputs_pseudo_bags=torch.chunk(bag.squeeze(0), num_Group,dim=0)
-    
-        for subFeat_tensor in inputs_pseudo_bags:
 
+        slide_sub_preds = []
+        slide_sub_labels = []
+        slide_pseudo_feat = []
+
+        # Split bag into chunks
+        inputs_pseudo_bags = torch.chunk(bag.squeeze(0), num_Group, dim=0)
+
+        for subFeat_tensor in inputs_pseudo_bags:
             slide_sub_labels.append(label)
-            subFeat_tensor=subFeat_tensor.to(device)
+            subFeat_tensor = subFeat_tensor.to(device)
+
+            # Forward pass through models
             tmidFeat = dimReduction(subFeat_tensor)
             tAA = attention(tmidFeat).squeeze(0)
-            tattFeats = torch.einsum('ns,n->ns', tmidFeat, tAA)  ### n x fs
-            tattFeat_tensor = torch.sum(tattFeats, dim=0).unsqueeze(0)  ## 1 x fs
-            tPredict = classifier(tattFeat_tensor)  ### 1 x 2
+            tattFeats = torch.einsum('ns,n->ns', tmidFeat, tAA)  # n x fs
+            tattFeat_tensor = torch.sum(tattFeats, dim=0, keepdim=True)  # 1 x fs
+            tPredict = classifier(tattFeat_tensor)  # 1 x 2
+
             slide_sub_preds.append(tPredict)
             slide_pseudo_feat.append(tattFeat_tensor)
 
+        # Concatenate tensors
         slide_pseudo_feat = torch.cat(slide_pseudo_feat, dim=0)
-        slide_sub_preds = torch.cat(slide_sub_preds, dim=0) ### numGroup x fs
-        slide_sub_labels = torch.cat(slide_sub_labels, dim=0) ### numGroup
-        loss_A = criterion(slide_sub_preds, slide_sub_labels).mean()
-        total_loss += loss_A.item()
+        slide_sub_preds = torch.cat(slide_sub_preds, dim=0)  # numGroup x fs
+        slide_sub_labels = torch.cat(slide_sub_labels, dim=0)  # numGroup
+
+        # Calculate and backpropagate loss for the first tier
+        loss_A = criterion(slide_sub_preds, slide_sub_labels)
+        optimizer_A.zero_grad()
         loss_A.backward(retain_graph=True)
+        total_loss += loss_A.item()
+
+        # Clip gradients and update weights
         torch.nn.utils.clip_grad_norm_(dimReduction.parameters(), grad_clipping)
         torch.nn.utils.clip_grad_norm_(attention.parameters(), grad_clipping)
         torch.nn.utils.clip_grad_norm_(classifier.parameters(), grad_clipping)
         optimizer_A.step()
 
-        ## optimization for the second tier
+        # Second tier optimization
         gSlidePred = attCls(slide_pseudo_feat)
         loss_B = criterion(gSlidePred, label).mean()
-        total_loss += loss_B.item()
         optimizer_B.zero_grad()
         loss_B.backward()
+        total_loss += loss_B.item()
+
+        # Clip gradients and update weights
         torch.nn.utils.clip_grad_norm_(attCls.parameters(), grad_clipping)
         optimizer_B.step()
+
+    # Step schedulers
     scheduler_A.step()
     scheduler_B.step()
+
     end = time.time()
     total_loss /= len(loader)
     total_time = end - start
-    
-    return total_loss,total_time
+
+    return total_loss, total_time
 
 
 def dtfd_val_loop(device,num_classes,model_list,loader,criterion,num_Group,grad_clipping):

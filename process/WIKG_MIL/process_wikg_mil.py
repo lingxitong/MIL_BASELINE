@@ -38,7 +38,7 @@ def process_WIKG_MIL(args):
     agg_type = args.Model.agg_type
     pool = args.Model.pool
     act = args.Model.act
-    mil_model = WIKG_MIL(num_classes=num_classes,act = act,topk = topk,dim_hidden=dim_hidden,dropout=dropout,act=act,in_dim=in_dim,agg_type=agg_type,pool = pool)
+    mil_model = WIKG_MIL(num_classes=num_classes,act = act,topk = topk,dim_hidden=dim_hidden,dropout=dropout,in_dim=in_dim,agg_type=agg_type,pool = pool)
     mil_model.to(device)
     
     print('Model Ready!')

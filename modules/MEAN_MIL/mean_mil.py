@@ -1,5 +1,5 @@
 import torch.nn as nn
-from utils.model_utils import get_act
+from utils.process_utils import get_act
 def initialize_weights(module):
     for m in module.modules():
         if isinstance(m,nn.Linear):

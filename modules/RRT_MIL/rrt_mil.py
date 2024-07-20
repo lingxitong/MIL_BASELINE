@@ -6,8 +6,6 @@ from .datten import *
 from .rmsa import *
 from .translayer import *
 
-
-
 def initialize_weights(module):
     for m in module.modules():
         if isinstance(m, nn.Conv2d):

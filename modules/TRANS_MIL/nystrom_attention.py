@@ -92,9 +92,7 @@ class NystromAttention(nn.Module):
 
         l = ceil(n / m)
         landmark_einops_eq = '... (n l) d -> ... n d'
-        print(q.shape)
         q_landmarks = reduce(q, landmark_einops_eq, 'sum', l = l)
-        print(q_landmarks.shape)
         k_landmarks = reduce(k, landmark_einops_eq, 'sum', l = l)
 
         # calculate landmark mask, and also get sum of non-masked elements in preparation for masked mean

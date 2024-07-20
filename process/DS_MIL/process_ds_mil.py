@@ -74,24 +74,26 @@ def process_DS_MIL(args):
         add_epoch_info_log(epoch_info_log,epoch,train_loss,val_loss,test_loss,val_metrics,test_metrics)
         
         if REVERSE and val_metrics[best_model_metric] < best_val_metric:
-            best_val_metric = val_metrics[best_model_metric]
-            save_best_model(args,mil_model,epoch_info_log)
             best_epoch = epoch+1
+            best_val_metric = val_metrics[best_model_metric]
+            save_best_model(args,mil_model,best_epoch)
+
         elif not REVERSE and val_metrics[best_model_metric] > best_val_metric:
-            best_val_metric = val_metrics[best_model_metric]
-            save_best_model(args,mil_model,epoch_info_log)
             best_epoch = epoch+1
+            best_val_metric = val_metrics[best_model_metric]
+            save_best_model(args,mil_model,best_epoch)
+
         '''
         early stop
         '''
         is_stop = cal_is_stopping(args,epoch_info_log)
         if is_stop:
             print(f'Early Stop In EPOCH {epoch+1}!')
-            save_last_model(args,mil_model,epoch_info_log)
+            save_last_model(args,mil_model,epoch + 1)
             save_log(args,epoch_info_log,best_epoch)
             break
         if epoch+1 == args.General.num_epochs:
-            save_last_model(args,mil_model,epoch_info_log)
+            save_last_model(args,mil_model,epoch + 1)
             save_log(args,epoch_info_log,best_epoch)
         
 

@@ -32,8 +32,9 @@ def process_RNN_MIL(args):
     device = torch.device(f'cuda:{args.General.device}')
     num_classes = args.General.num_classes
     in_dim = args.Model.in_dim
+    n_dim = args.Model.n_dim
     act = args.Model.act
-    mil_model = RNN_MIL(num_classes=num_classes,act=act,in_dim=in_dim)
+    mil_model = RNN_MIL(num_classes=num_classes,act=act,in_dim=in_dim,n_dim=n_dim)
     mil_model.to(device)
     
     print('Model Ready!')

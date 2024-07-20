@@ -54,7 +54,9 @@ def get_optimizer(args,model):
        return optimizer,lr
    
    
-def get_optimizer(args,trainable_parameters):
+def get_param_optimizer(args,params):
+    # trainable_parameters = filter(lambda p: p.requires_grad, mil_model.parameters())
+    trainable_parameters = params
     opt = args.Model.optimizer.which
     if opt == 'adam':
        lr = args.Model.optimizer.adam_config.lr
@@ -193,18 +195,3 @@ def get_model(yaml_args):
         raise ValueError(f'Invalid model name: {model_name}')
     
     
-def get_act(act):
-    if act.lower() == 'relu':
-        return torch.nn.ReLU()
-    elif act.lower() == 'gelu':
-        return torch.nn.GELU()
-    elif act.lower() == 'leakyrelu':
-        return torch.nn.LeakyReLU()
-    elif act.lower() == 'sigmoid':
-        return torch.nn.Sigmoid()
-    elif act.lower() == 'tanh':
-        return torch.nn.Tanh()
-    elif act.lower() == 'silu':
-        return torch.nn.SiLU()
-    else:
-        raise ValueError(f'Invalid activation function: {act}')

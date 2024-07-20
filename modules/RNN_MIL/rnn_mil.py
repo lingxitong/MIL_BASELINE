@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from utils.model_utils import get_act
+from utils.process_utils import get_act
 
 class RNN_MIL(nn.Module):
 
@@ -23,4 +23,4 @@ class RNN_MIL(nn.Module):
         return output, state
 
     def init_hidden(self, batch_size):
-        return torch.zeros(batch_size, self.ndims)
+        return torch.zeros(batch_size, self.n_dim)
