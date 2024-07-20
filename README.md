@@ -3,7 +3,7 @@ A library that integrates different MIL methods into a unified framework
 
 ## :white_check_mark: **UPDATES INFO**
 **2024-07-20**
-- fix bug of all MIL-models
+- fix bug of all MIL-models expect DTFD-MIL
 - add patch-level metrics
 ## :memo: **Overall Introduction**
 ### :bookmark: Library Introduction
