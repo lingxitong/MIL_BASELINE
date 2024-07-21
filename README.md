@@ -24,7 +24,9 @@
 <a href="https://blog.salesforceairesearch.com/lavis-language-vision-library/">Blog</a>
 </div>
 
-# MIL_BASELINE - A library that integrates different MIL methods into a unified framework
+# MIL_BASELINE 
+
+- A library that integrates different MIL methods into a unified framework
 ## :white_check_mark: **UPDATES INFO**
 **2024-07-20**
 - fix bug of all MIL-models expect DTFD-MIL
