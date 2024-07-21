@@ -35,8 +35,10 @@ def process_DTFD_MIL(args):
     classifier_dropout = args.Model.classifier_dropout
     attCls_dropout = args.Model.attCls_dropout
     act = args.Model.act
+    total_instance = args.Model.total_instance
     num_Group = args.Model.num_Group
     grad_clipping = args.Model.grad_clipping
+    distill = args.Model.distill
     mdim = args.Model.mdim
     numLayer_Res = args.Model.numLayer_Res
     classifier = Classifier_1fc(mdim, num_classes, classifier_dropout).to(device)
@@ -87,8 +89,8 @@ def process_DTFD_MIL(args):
         
         scheduler_list = [now_scheduler_A,now_scheduler_B]
             
-        train_loss,cost_time = dtfd_train_loop(device,model_list,train_dataloader,criterion,optimizer_list,scheduler_list,num_Group,grad_clipping)
-        val_loss,val_metrics = dtfd_val_loop(device,num_classes,model_list,val_dataloader,criterion)
+        train_loss,cost_time = dtfd_train_loop(device,model_list,train_dataloader,criterion,optimizer_list,scheduler_list,num_Group,grad_clipping,distill,total_instance)
+        val_loss,val_metrics = dtfd_val_loop(device,num_classes,model_list,val_dataloader,criterion,num_Group,grad_clipping,distill,total_instance)
         if args.Dataset.VIST == True:
             test_loss,test_metrics = val_loss,val_metrics
         else:
