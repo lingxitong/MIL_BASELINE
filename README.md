@@ -19,7 +19,7 @@ A library that integrates different MIL methods into a unified framework
 **2024-07-20**
 - fix bug of all MIL-models expect DTFD-MIL
 
-**2024-07-20**
+**2024-07-21**
 - fix bug of DTFD-MIL
 - fix bug of test_mil.py
 
