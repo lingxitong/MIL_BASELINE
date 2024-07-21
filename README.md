@@ -10,7 +10,7 @@
   <a href="https://opensource.org/licenses/BSD-3-Clause">
   <img alt="license" src="https://img.shields.io/badge/License-BSD_3--Clause-blue.svg"/>
   </a> 
-  <a href="[https://pepy.tech/project/mil_baseline](https://github.com/lingxitong/MIL_BASELINE)">
+  <a href="https://github.com/lingxitong/MIL_BASELINE">
   <img alt="Downloads" src="https://pepy.tech/badge/salesforce-lavis">
   </a>
 </div>
