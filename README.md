@@ -3,7 +3,17 @@
     <img src="https://github.com/lingxitong/MIL_BASELINE/blob/main/lo.png" width="400"/>
     <br>
 <p>
-
+<div align="center">
+  <a href="https://github.com/lingxitong/MIL_BASELINE"><img alt="Latest Release" src="https://img.shields.io/github/release/salesforce/LAVIS.sv" /></a>
+  <a href="https://github.com/lingxitong/MIL_BASELINE">
+  <img alt="docs" src="https://github.com/salesforce/LAVIS/actions/workflows/docs.yaml/badge.svg"/>
+  <a href="https://opensource.org/licenses/BSD-3-Clause">
+  <img alt="license" src="https://img.shields.io/badge/License-BSD_3--Clause-blue.svg"/>
+  </a> 
+  <a href="https://pepy.tech/project/mil_baseline">
+  <img alt="Downloads" src="https://pepy.tech/badge/salesforce-lavis">
+  </a>
+</div>
 
 # MIL_BASELINE 
 A library that integrates different MIL methods into a unified framework
