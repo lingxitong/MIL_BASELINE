@@ -230,7 +230,7 @@ def dtfd_train_loop(device, model_list, loader, criterion, optimizer_list, sched
             tPredict = classifier(tattFeat_tensor)  # 1 x 2
 
             slide_sub_preds.append(tPredict)
-            slide_pseudo_feat.append(tattFeat_tensor)
+            slide_pseudo_feat.append(tattFeat_tensor.detach())
 
         # Concatenate tensors
         slide_pseudo_feat = torch.cat(slide_pseudo_feat, dim=0)
