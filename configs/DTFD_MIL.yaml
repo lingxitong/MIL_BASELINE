@@ -28,9 +28,11 @@ Model:
     mdim: 512
     numLayer_Res: 0
     num_Group: 5
+    distill: MaxMinS      # MaxMinS MaxS AFS
     grad_clipping: 5
     classifier_dropout: 0.1
     attCls_dropout: 0.1
+    total_instance: 4
     act: relu  # relu or silu gule
     optimizer:
         which: adam    # adam or adamw
