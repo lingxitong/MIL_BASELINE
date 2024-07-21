@@ -4,7 +4,7 @@
     <br>
 <p>
 <div align="center">
-  <a href="https://github.com/lingxitong/MIL_BASELINE"><img alt="Latest Release" src="https://img.shields.io/github/release/salesforce/LAVIS.sv" /></a>
+  <a href="https://github.com/lingxitong/MIL_BASELINE/blob/main/README.md"><img alt="Latest Release" src="https://img.shields.io/github/release/salesforce/LAVIS.sv" /></a>
   <a href="https://github.com/lingxitong/MIL_BASELINE">
   <img alt="docs" src="https://github.com/salesforce/LAVIS/actions/workflows/docs.yaml/badge.svg"/>
   <a href="https://opensource.org/licenses/BSD-3-Clause">
