@@ -24,7 +24,14 @@
 <a href="https://blog.salesforceairesearch.com/lavis-language-vision-library/">Blog</a>
 </div>
 
-# MIL_BASELINE 
+
+<p align="center">
+    <br>
+    # MIL_BASELINE 
+    <br>
+<p>
+
+<div align="center">
 
 - A library that integrates different MIL methods into a unified framework
 ## :white_check_mark: **UPDATES INFO**
