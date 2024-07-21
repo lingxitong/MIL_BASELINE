@@ -6,8 +6,6 @@ A library that integrates different MIL methods into a unified framework
 - fix bug of all MIL-models expect DTFD-MIL
 - add patch-level metrics<br/>
 
-**2024-07-21**
-- fix bug of RNN-MIL and DTFD-MIL
 ## :memo: **Overall Introduction**
 ### :bookmark: Library Introduction
 * A library that integrates different MIL methods into a unified framework
