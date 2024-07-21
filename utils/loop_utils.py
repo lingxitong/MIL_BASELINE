@@ -191,10 +191,15 @@ def ds_val_loop(device,num_classes,model,loader,criterion):
     val_metrics= cal_scores(bag_predictions_after_normal,labels,num_classes)
     return val_loss_log,val_metrics
 
-def dtfd_train_loop(device, model_list, loader, criterion, optimizer_list, scheduler_list, num_Group, grad_clipping):
+def get_cam_1d(classifier, features):
+    tweight = list(classifier.parameters())[-2]
+    cam_maps = torch.einsum('bgf,cf->bcg', [features, tweight])
+    return cam_maps
+
+def dtfd_train_loop(device, model_list, loader, criterion, optimizer_list, scheduler_list, num_Group, grad_clipping,distill,total_instance):
     train_loss_log = 0
     start = time.time()
-
+    instance_per_group = total_instance // num_Group
     # Unpack model list
     classifier, attention, dimReduction, attCls = model_list
     classifier.train()
@@ -228,9 +233,26 @@ def dtfd_train_loop(device, model_list, loader, criterion, optimizer_list, sched
             tattFeats = torch.einsum('ns,n->ns', tmidFeat, tAA)  # n x fs
             tattFeat_tensor = torch.sum(tattFeats, dim=0, keepdim=True)  # 1 x fs
             tPredict = classifier(tattFeat_tensor)  # 1 x 2
+            patch_pred_logits = get_cam_1d(classifier, tattFeats.unsqueeze(0)).squeeze(0)  ###  cls x n
+            patch_pred_logits = torch.transpose(patch_pred_logits, 0, 1)  ## n x cls
+            patch_pred_softmax = torch.softmax(patch_pred_logits, dim=1)  ## n x cls
 
+            _, sort_idx = torch.sort(patch_pred_softmax[:,-1], descending=True)
+            topk_idx_max = sort_idx[:instance_per_group].long()
+            topk_idx_min = sort_idx[-instance_per_group:].long()
+            topk_idx = torch.cat([topk_idx_max, topk_idx_min], dim=0)
+            MaxMin_inst_feat = tmidFeat.index_select(dim=0, index=topk_idx)   
+            max_inst_feat = tmidFeat.index_select(dim=0, index=topk_idx_max)
+            af_inst_feat = tattFeat_tensor
+
+            if distill == 'MaxMinS':
+                slide_pseudo_feat.append(MaxMin_inst_feat)
+            elif distill == 'MaxS':
+                slide_pseudo_feat.append(max_inst_feat)
+            elif distill == 'AFS':
+                slide_pseudo_feat.append(af_inst_feat)
             slide_sub_preds.append(tPredict)
-            slide_pseudo_feat.append(tattFeat_tensor)
+
 
         # Concatenate tensors
         slide_pseudo_feat = torch.cat(slide_pseudo_feat, dim=0)
@@ -247,7 +269,7 @@ def dtfd_train_loop(device, model_list, loader, criterion, optimizer_list, sched
         torch.nn.utils.clip_grad_norm_(dimReduction.parameters(), grad_clipping)
         torch.nn.utils.clip_grad_norm_(attention.parameters(), grad_clipping)
         torch.nn.utils.clip_grad_norm_(classifier.parameters(), grad_clipping)
-        optimizer_A.step()
+
 
         # Second tier optimization
         gSlidePred = attCls(slide_pseudo_feat)
@@ -258,6 +280,7 @@ def dtfd_train_loop(device, model_list, loader, criterion, optimizer_list, sched
 
         # Clip gradients and update weights
         torch.nn.utils.clip_grad_norm_(attCls.parameters(), grad_clipping)
+        optimizer_A.step()
         optimizer_B.step()
 
     # Step schedulers
@@ -271,7 +294,8 @@ def dtfd_train_loop(device, model_list, loader, criterion, optimizer_list, sched
     return total_loss, total_time
 
 
-def dtfd_val_loop(device,num_classes,model_list,loader,criterion,num_Group,grad_clipping):
+def dtfd_val_loop(device,num_classes,model_list,loader,criterion,num_Group,grad_clipping,distill,total_instance):
+    instance_per_group = total_instance // num_Group
     classifier,attention,dimReduction,attCls = model_list
     classifier.eval()
     attention.eval()
@@ -281,10 +305,12 @@ def dtfd_val_loop(device,num_classes,model_list,loader,criterion,num_Group,grad_
     y_score=[]
     y_true=[]
     for i, data in enumerate(loader):
-        bag, label=data
+        label = data[1].long().to(device)
+        bag = data[0].to(device).float()
 
-        label=label.data.numpy().tolist()
-        slide_pseudo_feat=[]
+        slide_sub_preds = []
+        slide_sub_labels = []
+        slide_pseudo_feat = []
         inputs_pseudo_bags=torch.chunk(bag.squeeze(0), num_Group,dim=0)
         
         for subFeat_tensor in inputs_pseudo_bags:
@@ -292,9 +318,30 @@ def dtfd_val_loop(device,num_classes,model_list,loader,criterion,num_Group,grad_
             with torch.no_grad():
                 tmidFeat = dimReduction(subFeat_tensor)
                 tAA = attention(tmidFeat).squeeze(0)
+                tattFeats = torch.einsum('ns,n->ns', tmidFeat, tAA)  # n x fs
+                tattFeat_tensor = torch.sum(tattFeats, dim=0, keepdim=True)  # 1 x fs
+                tPredict = classifier(tattFeat_tensor)  # 1 x 2
             tattFeats = torch.einsum('ns,n->ns', tmidFeat, tAA)  ### n x fs
             tattFeat_tensor = torch.sum(tattFeats, dim=0).unsqueeze(0)  ## 1 x fs
-            slide_pseudo_feat.append(tattFeat_tensor)
+            patch_pred_logits = get_cam_1d(classifier, tattFeats.unsqueeze(0)).squeeze(0)  ###  cls x n
+            patch_pred_logits = torch.transpose(patch_pred_logits, 0, 1)  ## n x cls
+            patch_pred_softmax = torch.softmax(patch_pred_logits, dim=1)  ## n x cls
+
+            _, sort_idx = torch.sort(patch_pred_softmax[:,-1], descending=True)
+            topk_idx_max = sort_idx[:instance_per_group].long()
+            topk_idx_min = sort_idx[-instance_per_group:].long()
+            topk_idx = torch.cat([topk_idx_max, topk_idx_min], dim=0)
+            MaxMin_inst_feat = tmidFeat.index_select(dim=0, index=topk_idx)   
+            max_inst_feat = tmidFeat.index_select(dim=0, index=topk_idx_max)
+            af_inst_feat = tattFeat_tensor
+
+            if distill == 'MaxMinS':
+                slide_pseudo_feat.append(MaxMin_inst_feat)
+            elif distill == 'MaxS':
+                slide_pseudo_feat.append(max_inst_feat)
+            elif distill == 'AFS':
+                slide_pseudo_feat.append(af_inst_feat)
+            slide_sub_preds.append(tPredict)
 
         slide_pseudo_feat = torch.cat(slide_pseudo_feat, dim=0)
         gSlidePred = torch.softmax(attCls(slide_pseudo_feat), dim=1)
