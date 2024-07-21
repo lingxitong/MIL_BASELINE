@@ -2,13 +2,13 @@
     <br>
     <img src="https://github.com/lingxitong/MIL_BASELINE/blob/main/lo.png" width="400"/>
     <br>
-<p>
+<!-- <p>
 <div align="center">
   <img alt="docs" src="https://github.com/salesforce/LAVIS/actions/workflows/docs.yaml/badge.svg"/>
   <a href="https://opensource.org/licenses/BSD-3-Clause">
   <img alt="license" src="https://img.shields.io/badge/License-BSD_3--Clause-blue.svg"/>
   </a> 
-</div>
+</div> -->
 
 # MIL_BASELINE 
 A library that integrates different MIL methods into a unified framework
