@@ -4,11 +4,13 @@ import pandas as pd
 import glob
 import pickle
 from modules.AB_MIL.ab_mil import AB_MIL
+from modules.GATE_AB_MIL.gate_ab_mil import GATE_AB_MIL
 from modules.CLAM_MB_MIL.clam_mb_mil import CLAM_MB_MIL
 from modules.CLAM_SB_MIL.clam_sb_mil import CLAM_SB_MIL
 from modules.MAX_MIL.max_mil import MAX_MIL
 from modules.MEAN_MIL.mean_mil import MEAN_MIL
 from modules.RRT_MIL.rrt_mil import RRT_MIL
+from modules.DS_MIL.ds_mil import FCLayer,BClassifier,DS_MIL
 from modules.TRANS_MIL.trans_mil import TRANS_MIL
 from modules.WIKG_MIL.wikg_mil import WIKG_MIL
 import torch
@@ -138,15 +140,28 @@ def get_model(yaml_args):
     if model_name == 'AB_MIL':
         mil_model = AB_MIL(yaml_args.General.num_classes,yaml_args.Model.dropout,yaml_args.Model.act,yaml_args.Model.in_dim)
         return mil_model
+    elif model_name == 'GATE_AB_MIL':
+        mil_model = GATE_AB_MIL(yaml_args.General.num_classes,yaml_args.Model.act,yaml_args.Model.dropout,yaml_args.Model.bias,yaml_args.Model.in_dim)
+        return mil_model
     elif model_name == 'CLAM_MB_MIL':
         instance_loss_fn = get_criterion(yaml_args.Model.instance_loss_fn)
         mil_model = CLAM_MB_MIL(yaml_args.Model.gate,yaml_args.Model.size_arg,yaml_args.Model.dropout,yaml_args.Model.k_sample,yaml_args.General.num_classes,
-                                instance_loss_fn,yaml_args.Model.subtyping,yaml_args.Model.in_dim)
+                                instance_loss_fn,yaml_args.Model.subtyping,yaml_args.Model.in_dim,yaml_args.Model.act,yaml_args.Model.instance_eval)
         return mil_model
     elif model_name == 'CLAM_SB_MIL':
         instance_loss_fn = get_criterion(yaml_args.Model.instance_loss_fn)
         mil_model = CLAM_SB_MIL(yaml_args.Model.gate,yaml_args.Model.size_arg,yaml_args.Model.dropout,yaml_args.Model.k_sample,yaml_args.General.num_classes,
-                                instance_loss_fn,yaml_args.Model.subtyping,yaml_args.Model.in_dim)
+                                instance_loss_fn,yaml_args.Model.subtyping,yaml_args.Model.in_dim,yaml_args.Model.act,yaml_args.Model.instance_eval)
+        return mil_model
+    elif model_name == 'DS_MIL':
+        device = torch.device(f'cuda:{yaml_args.General.device}')
+        num_classes = yaml_args.General.num_classes
+        in_dim = yaml_args.Model.in_dim
+        dropout = yaml_args.Model.dropout
+        act = yaml_args.Model.act
+        i_classifier = FCLayer(in_dim,num_classes)
+        b_classifier = BClassifier(in_dim,num_classes,dropout)
+        mil_model = DS_MIL(i_classifier,b_classifier)
         return mil_model
     elif model_name == 'MAX_MIL':
         mil_model = MAX_MIL(yaml_args.General.num_classes,yaml_args.Model.dropout,yaml_args.Model.act,yaml_args.Model.in_dim)
@@ -158,12 +173,12 @@ def get_model(yaml_args):
         mil_model = TRANS_MIL(yaml_args.General.num_classes,yaml_args.Model.dropout,yaml_args.Model.act,yaml_args.Model.in_dim)
         return mil_model
     elif model_name == 'WIKG_MIL':
-        mil_model = WIKG_MIL(yaml_args.Model.in_dim,yaml_args.Model.dim_hidden,yaml_args.Model.topk,yaml_args.General.num_classes,yaml_args.Model.agg_type,yaml_args.Model.dropout,yaml_args.Model.pool)
+        mil_model = WIKG_MIL(yaml_args.Model.in_dim,yaml_args.Model.act,yaml_args.Model.dim_hidden,yaml_args.Model.topk,yaml_args.General.num_classes,yaml_args.Model.agg_type,yaml_args.Model.dropout,yaml_args.Model.pool)
         return mil_model
     elif model_name == 'RRT_MIL':
         model_params = {
     'in_dim': yaml_args.Model.in_dim,
-    'n_classes': yaml_args.General.num_classes,
+    'num_classes': yaml_args.General.num_classes,
     'dropout': yaml_args.Model.dropout,
     'act': yaml_args.Model.act,
     'region_num': yaml_args.Model.region_num,

@@ -1,7 +1,7 @@
 import argparse
 from utils.yaml_utils import read_yaml
 from torch.utils.data import DataLoader
-from utils.loop_utils import val_loop,clam_val_loop
+from utils.loop_utils import val_loop,clam_val_loop,ds_val_loop
 import warnings
 from utils.wsi_utils import WSI_Dataset
 import torch
@@ -12,8 +12,6 @@ warnings.filterwarnings('ignore')
 
 def test(args):
     yaml_path = args.yaml_path
-    
-    
     print(f"MIL-model-yaml path: {yaml_path}")
     yaml_args = read_yaml(yaml_path)
     mil_model = get_model(yaml_args)
@@ -36,9 +34,13 @@ def test(args):
     
     # CLAM_SB_MIL and CLAM_MB_MIL models have different val loop pipeline (has instance loss)
     if yaml_args.General.MODEL_NAME == 'CLAM_MB_MIL':
-        test_loss,test_metrics = clam_val_loop(device,num_classes,mil_model,test_dataloader,criterion)
+        bag_weight = yaml_args.Model.bag_weight
+        test_loss,test_metrics = clam_val_loop(device,num_classes,mil_model,test_dataloader,criterion,bag_weight)
     elif yaml_args.General.MODEL_NAME == 'CLAM_SB_MIL':
-        test_loss,test_metrics = clam_val_loop(device,num_classes,mil_model,test_dataloader,criterion)
+        bag_weight = yaml_args.Model.bag_weight
+        test_loss,test_metrics = clam_val_loop(device,num_classes,mil_model,test_dataloader,criterion,bag_weight)
+    elif yaml_args.General.MODEL_NAME == 'DS_MIL':
+        test_loss,test_metrics =  ds_val_loop(device,num_classes,mil_model,test_dataloader,criterion)
     else:
         test_loss,test_metrics =  val_loop(device,num_classes,mil_model,test_dataloader,criterion)
     
