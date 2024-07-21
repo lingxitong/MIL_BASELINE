@@ -230,7 +230,7 @@ def dtfd_train_loop(device, model_list, loader, criterion, optimizer_list, sched
             tPredict = classifier(tattFeat_tensor)  # 1 x 2
 
             slide_sub_preds.append(tPredict)
-            slide_pseudo_feat.append(tattFeat_tensor.detach())
+            slide_pseudo_feat.append(tattFeat_tensor)
 
         # Concatenate tensors
         slide_pseudo_feat = torch.cat(slide_pseudo_feat, dim=0)
@@ -247,7 +247,7 @@ def dtfd_train_loop(device, model_list, loader, criterion, optimizer_list, sched
         torch.nn.utils.clip_grad_norm_(dimReduction.parameters(), grad_clipping)
         torch.nn.utils.clip_grad_norm_(attention.parameters(), grad_clipping)
         torch.nn.utils.clip_grad_norm_(classifier.parameters(), grad_clipping)
-        optimizer_A.step()
+
 
         # Second tier optimization
         gSlidePred = attCls(slide_pseudo_feat)
@@ -258,6 +258,7 @@ def dtfd_train_loop(device, model_list, loader, criterion, optimizer_list, sched
 
         # Clip gradients and update weights
         torch.nn.utils.clip_grad_norm_(attCls.parameters(), grad_clipping)
+        optimizer_A.step()
         optimizer_B.step()
 
     # Step schedulers
@@ -281,9 +282,8 @@ def dtfd_val_loop(device,num_classes,model_list,loader,criterion,num_Group,grad_
     y_score=[]
     y_true=[]
     for i, data in enumerate(loader):
-        bag, label=data
-
-        label=label.data.numpy().tolist()
+        label = data[1].long().to(device)
+        bag = data[0].to(device).float()
         slide_pseudo_feat=[]
         inputs_pseudo_bags=torch.chunk(bag.squeeze(0), num_Group,dim=0)
         
@@ -303,6 +303,10 @@ def dtfd_val_loop(device,num_classes,model_list,loader,criterion,num_Group,grad_
         pred=(gSlidePred.cpu().data.numpy()).tolist()
         y_score.extend(pred)
         y_true.extend(label)
+    
+    total_loss /= len(loader)
+    val_metrics= cal_scores(y_score,y_true,num_classes)
+    return total_loss,val_metrics
     
     total_loss /= len(loader)
     val_metrics= cal_scores(y_score,y_true,num_classes)
