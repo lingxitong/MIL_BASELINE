@@ -33,7 +33,7 @@ A library that integrates different MIL methods into a unified framework
 
 ### :bulb: Dataset Uniform Interface
 * User only need to provide the following csvs whether Public/Private Dataset<br/>
-`/datasets/example_Dataset.csv`
+  `/datasets/example_Dataset.csv`
   
 ### :closed_umbrella: Supported Dataset-Split-Method
 * User-difined Train-Val-Test split
@@ -41,8 +41,8 @@ A library that integrates different MIL methods into a unified framework
 * Train-Val-Test split with K-fold
 
 ### :triangular_ruler: Feature Encoder
-* R50
-* VIT-S
+* R50 [Deep Residual Learning for Image Recognition](https://openaccess.thecvf.com/content_cvpr_2016/html/He_Deep_Residual_Learning_CVPR_2016_paper.html) (CVPR 2016)
+* VIT-S [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://arxiv.org/pdf/2010.11929) (ICLR 2021)
 * CTRANSPATH [Transformer-Based Self-supervised Learning for Histopathological Image Classification](https://link.springer.com/chapter/10.1007/978-3-030-87237-3_18) (MIA 2023)
 * PLIP [A visual–language foundation model for pathology image analysis using medical Twitter](https://www.nature.com/articles/s41591-023-02504-3) (NAT MED 2023)
 * CONCH [A visual-language foundation model for computational pathology](https://www.nature.com/articles/s41591-024-02856-4) (NAT MED 2024)
@@ -91,9 +91,9 @@ A library that integrates different MIL methods into a unified framework
 - PLIP/UNI/COUCH/TRANSPATH/GIG are supported by push the model-weights in `/feature_extracter/PLIP` `/feature_extracter/UNI` `/feature_extracter/COUCH ` `/feature_extracter/CTRANSPATH` `/feature_extracter/GIG`.
 - To permform feature extracter </br>
   - First, you should get h5 file </br>
-`python /feature_extracter/CLAM/create_patches_fp.py --source /path/to/your/slide_dir --save_dir /path/to/your/save_dr --preset /feature_extractor/CLAM/presets/bwh_biopsy.csv --patch_level your_path_level --patch_size your_patch_size --seg --patch` 
+  `python /feature_extracter/CLAM/create_patches_fp.py --source /path/to/your/slide_dir --save_dir /path/to/your/save_dr --preset /feature_extractor/CLAM/presets/bwh_biopsy.csv --patch_level your_path_level --patch_size your_patch_size --seg --patch` 
   - Second, you should get pt file </br>
-`CUDA_VISIBLE_DEVICES=your_cuda_id python /feature_extractor/CLAM/extract_features_fp.py --data_h5_dir /path/to/your/h5_save_dir --data_slide_dir /path/to/your/slide_dir --csv_path /path/to/your/h5_save_dir/process_list_autogen.csv --feat_dir path/to/your/pt_save_dir --batch_size your_bach_size --slide_ext your_ext --backbone your_backbone --target_patch_size your_target_patch_size --model_dir your_backbone_dir` 
+    `CUDA_VISIBLE_DEVICES=your_cuda_id python /feature_extractor/CLAM/extract_features_fp.py --data_h5_dir /path/to/your/h5_save_dir --data_slide_dir /path/to/your/slide_dir --csv_path /path/to/your/h5_save_dir/process_list_autogen.csv --feat_dir path/to/your/pt_save_dir --batch_size your_bach_size --slide_ext your_ext --backbone your_backbone --target_patch_size your_target_patch_size --model_dir your_backbone_dir` 
     - backbone : resnet50_imagenet/vit_s_imagenet/plip/uni
     - ext : .svs/.tif/.ndpi/......./.sdpc
     - target_patch_size : for example, vit_s need 224 as input
