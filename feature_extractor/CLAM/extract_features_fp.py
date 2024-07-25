@@ -110,7 +110,7 @@ def compute_w_loader(args,file_path, output_path, wsi, model,
 		target_patch_size: custom defined, rescaled image size before embedding
 	"""
 	if args.backbone == 'plip':
-		custom_transforms = plip_transforms(pretrained=pretrained)
+		custom_transforms = plip_transforms()
 	elif args.backbone == 'uni':
 		custom_transforms = uni_transforms()
 	elif args.backbone == 'conch':
