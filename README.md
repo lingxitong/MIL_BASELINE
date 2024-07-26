@@ -23,6 +23,8 @@ A library that integrates different MIL methods into a unified framework
 - fix bug of DTFD-MIL
 - fix bug of test_mil.py
 
+**2024-07-27**
+- fix bug of plip-transforms
 
 ## :memo: **Overall Introduction**
 ### :bookmark: Library Introduction
