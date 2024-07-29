@@ -95,7 +95,15 @@ def dtfd_test(args):
     attCls = Attention_with_Classifier(L=mdim, num_cls=num_classes, droprate=attCls_dropout).to(device)
     criterion = get_criterion(yaml_args.Model.criterion)
     
+    model_weight_path = args.model_weight_path
+    print(f"Model weight path: {model_weight_path}")
+    state_dict = torch.load(model_weight_path)
     
+    classifier.load_state_dict(state_dict['classifier'])
+    attention.load_state_dict(state_dict['attention'])
+    dimReduction.load_state_dict(state_dict['dimReduction'])
+    attCls.load_state_dict(state_dict['attCls'])
+
     model_list = [classifier,attention,dimReduction,attCls]
     test_loss,test_metrics = dtfd_val_loop(device,num_classes,model_list,test_dataloader,criterion,num_Group,grad_clipping,distill,total_instance)
     FAIL = '\033[91m'
