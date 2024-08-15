@@ -104,7 +104,7 @@ A library that integrates different MIL methods into a unified framework
 #### :custard: **Dataset-Csv Construction**
 - You should construct a csv-file like the format of `/datasets/example_Dataset.csv`
 
-#### :cookie: **Dataset-Csv Construction**
+#### :cookie: **Dataset-Split Construction**
 - You can use the dataset-split-scripts to perform different data-split.
 
 
