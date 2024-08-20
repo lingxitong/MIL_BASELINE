@@ -75,6 +75,8 @@ def cal_is_stopping(args,epoch_info_log):
     
     if epoch_info_log['epoch'][-1] <= patience:
         return False
+    if 'val' not in judge_metric:
+        judge_metric = 'val_'+judge_metric
     judge_metric_list = epoch_info_log[judge_metric]
     if judge_metric == 'val_loss':
         judge_metric_list = -np.array(judge_metric_list)
