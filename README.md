@@ -26,6 +26,9 @@ A library that integrates different MIL methods into a unified framework
 **2024-07-27**
 - fix bug of plip-transforms
 
+**2024-08-20**
+- fix bug of early-stop
+
 ## :memo: **Overall Introduction**
 ### :bookmark: Library Introduction
 * A library that integrates different MIL methods into a unified framework
