@@ -20,7 +20,7 @@ def parse_annotations_to_list(xml_ann_path):
     root = tree.getroot()
     annotations_list = []
     for annotation in root.find('Annotations').findall('Annotation'):
-        part_of_group = annotation.attrib['PartOfGroup']
+        part_of_group = str.lower(annotation.attrib['PartOfGroup'])
         coordinates_list = []
         for coordinate in annotation.find('Coordinates').findall('Coordinate'):
             x = float(coordinate.attrib['X'])
@@ -132,14 +132,13 @@ consistency:
 '''
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset_name',type=str,default='your_ds_name',help='dataset name')
 parser.add_argument('--patch_level',type=int,default=1,help='patch level of slide')
 parser.add_argument('--patch_size',type=int,default=256,help='patch size of slide')
 parser.add_argument('--label2id',type=dict,default={"normal":0,"tumor":1}, help='slide label to id dict'  )
 parser.add_argument('--h5_path_csv',type=str,default='/data_sda/lxt/CAMELYON-BENCHMARK/MIL_BASELINE-add-patch-metrics-之前的版本/h5_path.csv',help='h5 path csv file containing h5 path of slide')
 parser.add_argument('--xml_path_csv',type=str,default='/data_sda/lxt/CAMELYON-BENCHMARK/MIL_BASELINE-add-patch-metrics-之前的版本/xml_path.csv',help='mask annotation csv file containing xml file path of slide')
 parser.add_argument('--consistency',type=str,default=True,help='consistency of slide and patch label')
-parser.add_argument('--json_path',type=str,default='/data_sda/lxt/CAMELYON-BENCHMARK/test_21.json',help='output json file containing slide path and mask annotation path')
+parser.add_argument('--json_path',type=str,default='/data_sda/lxt/CAMELYON-BENCHMARK/patch标签.json',help='output json file containing slide path and mask annotation path')
 
 
 if __name__ == '__main__':
@@ -147,7 +146,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     xml_path_csv = pd.read_csv(args.xml_path_csv)
     h5_path_csv = pd.read_csv(args.h5_path_csv)
-    dataset_name = args.dataset_name
     label2id = args.label2id
     json_path = args.json_path
     patch_level = args.patch_level
