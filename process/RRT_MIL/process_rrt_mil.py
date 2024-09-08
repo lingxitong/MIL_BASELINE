@@ -67,7 +67,7 @@ def process_RRT_MIL(args):
     optimizer,base_lr = get_optimizer(args,mil_model)
     scheduler,warmup_scheduler = get_scheduler(args,optimizer,base_lr)
     criterion = get_criterion(args.Model.criterion)
-    warmuo_epoch = args.Model.scheduler.warmup
+    warmup_epoch = args.Model.scheduler.warmup
     
     '''
     start training
