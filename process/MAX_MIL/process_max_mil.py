@@ -42,7 +42,7 @@ def process_MAX_MIL(args):
     optimizer,base_lr = get_optimizer(args,mil_model)
     scheduler,warmup_scheduler = get_scheduler(args,optimizer,base_lr)
     criterion = get_criterion(args.Model.criterion)
-    warmuo_epoch = args.Model.scheduler.warmup
+    warmup_epoch = args.Model.scheduler.warmup
     
     '''
     开始循环epoch进行训练
