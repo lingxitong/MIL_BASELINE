@@ -62,7 +62,7 @@ def process_DTFD_MIL(args):
     scheduler_B,warmup_scheduler_B = get_scheduler(args,optimizer_B,base_lr)
     
     criterion = get_criterion(args.Model.criterion)
-    warmuo_epoch = args.Model.scheduler.warmup
+    warmup_epoch = args.Model.scheduler.warmup
     
     '''
     begin training
