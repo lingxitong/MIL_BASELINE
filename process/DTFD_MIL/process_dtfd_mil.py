@@ -80,7 +80,7 @@ def process_DTFD_MIL(args):
     optimizer_list = [optimizer_A,optimizer_B]
     
     for epoch in tqdm(range(args.General.num_epochs),colour='GREEN'):
-        if epoch+1 <= warmuo_epoch:
+        if epoch+1 <= warmup_epoch:
             now_scheduler_A = warmup_scheduler_A
             now_scheduler_B = warmup_scheduler_B
         else:
