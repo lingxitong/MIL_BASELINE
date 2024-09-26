@@ -1,6 +1,6 @@
 <p align="center">
     <br>
-    <img src="https://github.com/lingxitong/MIL_BASELINE/blob/main/lo.png" width="400"/>
+    <img src="https://github.com/lingxitong/MIL_BASELINE/blob/main/fl.png" width="400"/>
     <br>
 <!-- <p>
 <div align="center">
