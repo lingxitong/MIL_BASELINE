@@ -87,12 +87,12 @@ def process_RRT_MIL(args):
             now_scheduler = warmup_scheduler
         else:
             now_scheduler = scheduler
-        train_loss,cost_time = train_loop(device,mil_model,train_dataloader,criterion,optimizer,now_scheduler)
+        train_loss,cost_time = train_loop(device,num_classes,mil_model,train_dataloader,criterion,optimizer,now_scheduler)
         val_loss,val_metrics = val_loop(device,num_classes,mil_model,val_dataloader,criterion)
         if args.Dataset.VIST == True:
             test_loss,test_metrics = val_loss,val_metrics
         else:
-            test_loss,test_metrics = val_loop(args,mil_model,test_dataloader,criterion)
+            test_loss,test_metrics = val_loop(args,num_classes,mil_model,test_dataloader,criterion)
         print(f'EPOCH:{epoch+1},  Train_Loss:{train_loss},  Val_Loss:{val_loss},  Test_Loss:{test_loss},  Cost_Time:{cost_time}')
         print(f'Val_Metrics:{val_metrics}')
         print(f'Test_Metrics:{test_metrics}')
