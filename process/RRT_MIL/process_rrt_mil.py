@@ -92,7 +92,7 @@ def process_RRT_MIL(args):
         if args.Dataset.VIST == True:
             test_loss,test_metrics = val_loss,val_metrics
         else:
-            test_loss,test_metrics = val_loop(args,num_classes,mil_model,test_dataloader,criterion)
+            test_loss,test_metrics = val_loop(device,num_classes,mil_model,test_dataloader,criterion)
         print(f'EPOCH:{epoch+1},  Train_Loss:{train_loss},  Val_Loss:{val_loss},  Test_Loss:{test_loss},  Cost_Time:{cost_time}')
         print(f'Val_Metrics:{val_metrics}')
         print(f'Test_Metrics:{test_metrics}')
