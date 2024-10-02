@@ -1,7 +1,7 @@
 # MIL_BASELINE 
 A library that integrates different MIL methods into a unified framework
 <img src="https://github.com/lingxitong/MIL_BASELINE/blob/main/logo.png"  width="280px" align="right" />
-
+With the advancement of computational power and artificial intelligence technologies, computational pathology has gradually been regarded as the most promising auxiliary diagnostic paradigm in the field of pathology diagnosis. However, due to the fact that pathological images often consist of hundreds of billions of pixels, traditional natural image analysis methods face significant limitations. Multiple Instance Learning (MIL) is one of the most successful paradigms for addressing computational pathology analysis. However, current MIL methods often adopt different frameworks, which poses challenges for subsequent research. We have developed the MIL_BASELINE library with the aim of providing a fundamental and simple template for Multiple Instance Learning.
 
 ## :white_check_mark: **UPDATES INFO**
 **2024-07-20**
