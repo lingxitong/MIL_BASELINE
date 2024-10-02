@@ -9,10 +9,10 @@ With the rapid advancement of computational power and artificial intelligence te
 **2024-08-20**
 - fix bug of early-stop
   
-- **2024-07-27**
+**2024-07-27**
 - fix bug of plip-transforms
   
-- **2024-07-21**
+**2024-07-21**
 - fix bug of DTFD-MIL
 - fix bug of test_mil.py
 
