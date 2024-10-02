@@ -9,6 +9,7 @@ from .CLAM_SB_MIL.process_clam_sb_mil import process_CLAM_SB_MIL
 from .CLAM_MB_MIL.process_clam_mb_mil import process_CLAM_MB_MIL
 from .DS_MIL.process_ds_mil import process_DS_MIL
 from .DTFD_MIL.process_dtfd_mil import process_DTFD_MIL
+from .FR_MIL.process_fr_mil import process_FR_MIL
 from utils.general_utils import *
 def process(args,yaml_path,now_fold=None):
     save_dataset_csv(args)
@@ -35,6 +36,8 @@ def process(args,yaml_path,now_fold=None):
         process_DS_MIL(args)
     elif args.General.MODEL_NAME == 'DTFD_MIL':
         process_DTFD_MIL(args)
+    elif args.General.MODEL_NAME == 'FR_MIL':
+        process_FR_MIL(args)
     else:
         raise ValueError('Model Not Found')
     

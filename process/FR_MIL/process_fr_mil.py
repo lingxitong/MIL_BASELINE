@@ -2,21 +2,21 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, RandomSampler
-from modules.GATE_AB_MIL.gate_ab_mil import *
+from modules.FR_MIL.fr_mil import FR_MIL
 from utils.wsi_utils import *
 from utils.general_utils import *
 from utils.model_utils import *
 from utils.loop_utils import *
 from tqdm import tqdm
     
-def process_GATE_AB_MIL(args):
+def process_FR_MIL(args):
     print_args(args)
 
     train_dataset = WSI_Dataset(args.Dataset.dataset_csv_path,'train')
     val_dataset = WSI_Dataset(args.Dataset.dataset_csv_path,'val')
     test_dataset = WSI_Dataset(args.Dataset.dataset_csv_path,'test')
     '''
-    generator settings
+    generator settings 
     '''
     
     generator = torch.Generator()
@@ -32,10 +32,11 @@ def process_GATE_AB_MIL(args):
     device = torch.device(f'cuda:{args.General.device}')
     num_classes = args.General.num_classes
     in_dim = args.Model.in_dim
-    dropout = args.Model.dropout
+    hidden_dim = args.Model.hidden_dim
+    k = args.Model.k
+    num_heads = args.Model.num_heads
     act = args.Model.act
-    bias = args.Model.bias
-    mil_model = GATE_AB_MIL(num_classes=num_classes,dropout=dropout,bias=bias,act=act,in_dim=in_dim)
+    mil_model = FR_MIL(num_classes=num_classes,hidden_dim = hidden_dim,k = k,num_heads= num_heads,act=act,in_dim=in_dim)
     mil_model.to(device)
     
     print('Model Ready!')
@@ -46,7 +47,7 @@ def process_GATE_AB_MIL(args):
     warmup_epoch = args.Model.scheduler.warmup
     
     '''
-    start training
+    begin training
     '''
     epoch_info_log = init_epoch_info_log()
     best_model_metric = args.General.best_model_metric

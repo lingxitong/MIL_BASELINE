@@ -57,7 +57,7 @@ def process_AB_MIL(args):
     best_epoch = 1
     print('Start Process!')
     for epoch in tqdm(range(args.General.num_epochs),colour='GREEN'):
-        if epoch+1 <= warmuo_epoch:
+        if epoch+1 <= warmup_epoch:
             now_scheduler = warmup_scheduler
         else:
             now_scheduler = scheduler
