@@ -1,18 +1,6 @@
-<p align="center">
-    <br>
-    <img src="https://github.com/lingxitong/MIL_BASELINE/blob/main/logo.png" style="max-width: 100%; height: auto;/>
-    <br>
-<!-- <p>
-<div align="center">
-  <img alt="docs" src="https://github.com/salesforce/LAVIS/actions/workflows/docs.yaml/badge.svg"/>
-  <a href="https://opensource.org/licenses/BSD-3-Clause">
-  <img alt="license" src="https://img.shields.io/badge/License-BSD_3--Clause-blue.svg"/>
-  </a> 
-</div> -->
-
 # MIL_BASELINE 
 A library that integrates different MIL methods into a unified framework
-
+<img src="https://github.com/lingxitong/MIL_BASELINE/blob/main/logo.png"  width="280px" align="right" />
 
 
 ## :white_check_mark: **UPDATES INFO**
