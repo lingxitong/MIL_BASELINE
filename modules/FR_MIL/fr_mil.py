@@ -47,7 +47,7 @@ class MAB(nn.Module):
 
 
 class FR_MIL(nn.Module):
-    def __init__(self, num_classes,num_heads,in_dim,k,act):
+    def __init__(self, num_classes,num_heads,in_dim,k,act,dim_hidden):
         super(FR_MIL,self).__init__()
         self.num_outputs = num_classes
         num_heads        = num_heads
