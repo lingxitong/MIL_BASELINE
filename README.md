@@ -3,18 +3,24 @@
 With the rapid advancement of computational power and artificial intelligence technologies, computational pathology has gradually been regarded as the most promising and transformative auxiliary diagnostic paradigm in the field of pathology diagnosis. However, due to the fact that pathological images often consist of hundreds of billions of pixels, traditional natural image analysis methods face significant computational and technical limitations. Multiple Instance Learning (MIL) is one of the most successful and widely adopted paradigms for addressing computational pathology analysis. However, current MIL methods often adopt different frameworks and structures, which poses challenges for subsequent research and reproducibility. We have developed the MIL_BASELINE library with the aim of providing a fundamental and simple template for Multiple Instance Learning applications.
 
 ## :white_check_mark: **UPDATES INFO**
-**2024-07-20**
-- fix bug of all MIL-models expect DTFD-MIL
-
-**2024-07-21**
-- fix bug of DTFD-MIL
-- fix bug of test_mil.py
-
-**2024-07-27**
-- fix bug of plip-transforms
+**2024-10-02**
+- add FR_MIL Implement
 
 **2024-08-20**
 - fix bug of early-stop
+  
+- **2024-07-27**
+- fix bug of plip-transforms
+  
+- **2024-07-21**
+- fix bug of DTFD-MIL
+- fix bug of test_mil.py
+
+**2024-07-20**
+- fix bug of all MIL-models expect DTFD-MIL
+
+
+
 
 ## :memo: **Overall Introduction**
 ### :bookmark: Library Introduction
