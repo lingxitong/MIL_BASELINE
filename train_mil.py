@@ -29,8 +29,7 @@ def main(arg):
         train-val with k-fold split or train-val with k-fold split then test
         '''
         dataset_root_dir = args.Dataset.dataset_root_dir
-        k = len(os.listdir(dataset_root_dir)) 
-        k_fold_csv_paths = [os.path.join(dataset_root_dir,path) for path in os.listdir(dataset_root_dir)]
+        k_fold_csv_paths = sorted([os.path.join(dataset_root_dir,path) for path in os.listdir(dataset_root_dir)])
         process_time = get_time()
         for k_idx,k_fold_csv_path in enumerate(k_fold_csv_paths):
             args.Dataset.dataset_csv_path = k_fold_csv_path
