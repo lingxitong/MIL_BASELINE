@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader, RandomSampler
 import argparse 
 import os
 import modules
-from modules.CLAM_MB_MIL.clam_mb_mil import *
+from modules.CLAM_MB_MIL.clam_mb_mil import CLAM_MB_MIL
 from utils.wsi_utils import *
 from utils.general_utils import *
 from utils.model_utils import *

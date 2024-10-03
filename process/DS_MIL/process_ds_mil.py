@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, RandomSampler
-from modules.DS_MIL.ds_mil import *
+from modules.DS_MIL.ds_mil import DS_MIL
 from utils.wsi_utils import *
 from utils.general_utils import *
 from utils.model_utils import *

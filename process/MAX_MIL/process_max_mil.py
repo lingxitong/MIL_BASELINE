@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, RandomSampler
-from modules.MAX_MIL.max_mil import *
+from modules.MAX_MIL.max_mil import MAX_MIL
 from utils.wsi_utils import *
 from utils.general_utils import *
 from utils.model_utils import *
@@ -57,7 +57,7 @@ def process_MAX_MIL(args):
     best_epoch = 1
     print('Start Process!')
     for epoch in tqdm(range(args.General.num_epochs),colour='GREEN'):
-        if epoch+1 <= warmuo_epoch:
+        if epoch+1 <= warmup_epoch:
             now_scheduler = warmup_scheduler
         else:
             now_scheduler = scheduler

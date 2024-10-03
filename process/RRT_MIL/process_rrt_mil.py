@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, RandomSampler
-from modules.RRT_MIL.rrt_mil import *
+from modules.RRT_MIL.rrt_mil import RRT_MIL
 from utils.wsi_utils import *
 from utils.general_utils import *
 from utils.model_utils import *

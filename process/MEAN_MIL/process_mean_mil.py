@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, RandomSampler
-from modules.MEAN_MIL.mean_mil import *
+from modules.MEAN_MIL.mean_mil import MEAN_MIL
 from utils.wsi_utils import *
 from utils.general_utils import *
 from utils.model_utils import *
