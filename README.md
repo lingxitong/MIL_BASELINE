@@ -5,6 +5,9 @@ With the rapid advancement of computational power and artificial intelligence te
 
 <details>
 <summary>:art:News of MIL-Baseline</summary>
+
+**2024-10-12**
+- fix bug of Ctranspath feature encoder
   
 **2024-10-02**
 - add FR_MIL Implement
