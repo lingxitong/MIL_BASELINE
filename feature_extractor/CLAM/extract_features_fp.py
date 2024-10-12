@@ -218,7 +218,9 @@ if __name__ == '__main__':
 		local_dir = model_dir
 		checkpoint_path = os.path.join(local_dir, "ctranspath.pth")
 		model = ctranspath()
-		model.load_state_dict(torch.load(checkpoint_path, map_location=device), strict=False)
+		model.head = nn.Identity()
+		state_dict = torch.load(checkpoint_path)
+		model.load_state_dict(state_dict['model'], strict=True)
 		model = model.to(device)
 	elif args.backbone == 'gig':
 		local_dir = model_dir
@@ -227,7 +229,6 @@ if __name__ == '__main__':
 		state_dict = torch.load(checkpoint_path , map_location="cpu")
 		model.load_state_dict(state_dict, strict=True)
 		model = model.to(device)
-
 	if torch.cuda.device_count() > 1:
 		model = nn.DataParallel(model)
 		
