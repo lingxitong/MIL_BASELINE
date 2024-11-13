@@ -32,9 +32,6 @@ def Balanced_Train_Val_Test(args):
     result.to_csv(args.save_path, index=False)
 
 
-
-
-
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
     argparser.add_argument('--csv_path', type=str, default='/path/to/your/dataset-csv-file.csv')
