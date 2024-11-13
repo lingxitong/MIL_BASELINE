@@ -72,8 +72,6 @@ With the rapid advancement of computational power and artificial intelligence te
 * `ACC,BACC`: BACC is macro-RECALL
 * `KAPPLE`: linear,quadratic
 * `Confusion_Mat`
-* `FROC`
-* `Patch-level-metrics`
 
 
 ## :orange_book: Let's Begin Now
@@ -82,6 +80,7 @@ With the rapid advancement of computational power and artificial intelligence te
 - `/modules:` Defined the network architectures of different MIL models.
 - `/process:` Defined the training frameworks for different MIL models.
 - `/feature_extracter:` Supports different feature extractors.
+- `/split_scripts:` Supports different dataset split methods.
 - `/datasets:` User-Datasets path information.
 - `/utils:` Framework's utility scripts.
 - `/train_mil.py:` Train Entry function of the framework.
