@@ -41,6 +41,7 @@ With the rapid advancement of computational power and artificial intelligence te
 * User-difined Train-Val-Test split
 * Train-Val split with K-fold
 * Train-Val-Test split with K-fold
+* Train-Val with K-fold then test
 
 ### :triangular_ruler: Feature Encoder
 * R50 [Deep Residual Learning for Image Recognition](https://openaccess.thecvf.com/content_cvpr_2016/html/He_Deep_Residual_Learning_CVPR_2016_paper.html) (CVPR 2016)
