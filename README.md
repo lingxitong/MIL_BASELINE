@@ -42,6 +42,7 @@ With the rapid advancement of computational power and artificial intelligence te
 * Train-Val split with K-fold
 * Train-Val-Test split with K-fold
 * Train-Val with K-fold then test
+The difference between the different divisions is in   `/splits_scripts/README.md`
 
 ### :triangular_ruler: Feature Encoder
 * R50 [Deep Residual Learning for Image Recognition](https://openaccess.thecvf.com/content_cvpr_2016/html/He_Deep_Residual_Learning_CVPR_2016_paper.html) (CVPR 2016)
