@@ -121,6 +121,12 @@ With the rapid advancement of computational power and artificial intelligence te
 - Then, `/train_mil.py` will help you !
 - `/test_mil.py` will help you test pretrained model !
 
+### :beers: **Acknowledgement**
+- Thanks to the following repositories for inspiring this repository
+  - https://github.com/mahmoodlab/CLAM
+  - https://github.com/WonderLandxD/opensdpc
+  - https://github.com/RenaoYan/Build-Patch-for-Sdpc
+  - https://github.com/DearCaat/MHIM-MIL
 
 ### :sparkles: **Git Pull**
 - Personal experience is limited, and code submissions are welcome !!
