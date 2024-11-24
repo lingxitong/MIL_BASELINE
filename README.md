@@ -6,6 +6,9 @@ With the rapid advancement of computational power and artificial intelligence te
 <details>
 <summary>:art:News of MIL-Baseline</summary>
 
+**2024-11-24**
+- will update mil-finetuning for rrt_mil
+
 **2024-10-12**
 - fix bug of Ctranspath feature encoder
   
