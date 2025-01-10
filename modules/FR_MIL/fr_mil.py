@@ -53,7 +53,7 @@ class FR_MIL(nn.Module):
         num_heads        = num_heads
         self.act        = act
         self.k           = k
-        dim_hidden       = 512
+        dim_hidden       = hidden_dim
         self.feature = nn.Linear(in_dim, dim_hidden)
         self.enc = nn.Sequential(
             nn.Linear(dim_hidden, 1),
@@ -105,7 +105,8 @@ class FR_MIL(nn.Module):
             Q  = torch.stack(Q)
             return A1, Q
             
-    def forward(self, inputs):
+    def forward(self, inputs, return_WSI_attn = False, return_WSI_feature = False):
+        forward_return = {}
         inputs = self.feature(inputs)
         
         A1, Q = self.recalib(inputs, 'max')
@@ -134,5 +135,11 @@ class FR_MIL(nn.Module):
         # Bag pooling with critical feature
         bag = self.selt_att(Q, x) 
         logits = self.fc(bag)
-        return logits 
+        forward_return['logits'] = logits
+        if return_WSI_feature:
+            forward_return['WSI_feature'] = bag
+        if return_WSI_attn:
+            WSI_attn = torch.matmul(feat_token, cls_token.transpose(0, 1)).squeeze(0)[:H,:]
+            forward_return['WSI_attn'] = WSI_attn
+        return forward_return
     

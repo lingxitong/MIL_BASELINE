@@ -54,13 +54,14 @@ class BClassifier(nn.Module):
         m_feats = torch.index_select(feats, dim=0, index=m_indices[0, :]) # select critical instances, m_feats in shape C x K 
         q_max = self.q(m_feats) # compute queries of critical instances, q_max in shape C x Q
         A = torch.mm(Q, q_max.transpose(0, 1)) # compute inner product of Q to each entry of q_max, A in shape N x C, each column contains unnormalized attention scores
+        A_ori = A.clone()
         A = F.softmax( A / torch.sqrt(torch.tensor(Q.shape[1], dtype=torch.float32, device=device)), 0) # normalize attention scores, A in shape N x C, 
         B = torch.mm(A.transpose(0, 1), V) # compute bag representation, B in shape C x V
                 
         B = B.view(1, B.shape[0], B.shape[1]) # 1 x C x V
         C = self.fcc(B) # 1 x C x 1
         C = C.view(1, -1)
-        return C, A, B 
+        return C, A_ori, B 
     
 class DS_MIL(nn.Module):
     def __init__(self, i_classifier, b_classifier):
@@ -68,9 +69,20 @@ class DS_MIL(nn.Module):
         self.i_classifier = i_classifier
         self.b_classifier = b_classifier
         
-    def forward(self, x):
+    def forward(self, x, return_WSI_attn = False, return_WSI_feature = False):
+        forward_return = {}
+        x = x.squeeze(0)
         feats, classes = self.i_classifier(x)
         logits, A, B = self.b_classifier(feats, classes)
-        max_pred, _ = torch.max(classes, 0) 
-        return max_pred,logits
+        _,Y_hat = torch.max(logits, 1)
+        Y_hat = Y_hat.item()
+        max_pred, _ = torch.max(classes, 0)
+        forward_return['logits'] = logits
+        forward_return['max_prediction'] = max_pred
+        if return_WSI_feature:
+            forward_return['WSI_feature'] = B[:,Y_hat,:]
+        if return_WSI_attn: 
+            WSI_attn = A[:,Y_hat].unsqueeze(1)
+            forward_return['WSI_attn'] = WSI_attn
+        return forward_return
         

@@ -4,15 +4,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import SAGPooling, global_mean_pool, global_max_pool, GlobalAttention
 from torch_geometric.nn.aggr import AttentionalAggregation
-from utils.process_utils import get_act
 class WIKG_MIL(nn.Module):
-    def __init__(self,in_dim=512, act = 'LeakyReLU',dim_hidden=512, topk=6, num_classes=2, agg_type='bi-interaction', dropout=0.1, pool='attn'):
+    def __init__(self,in_dim=512, act = nn.LeakyReLU(),dim_hidden=512, topk=6, num_classes=2, agg_type='bi-interaction', dropout=0.1, pool='attn'):
         super().__init__()
         self.topk = topk
         self.num_classes = num_classes
         self.agg_type = agg_type
         self.dropout = dropout
-        self._fc1 = nn.Sequential(nn.Linear(in_dim, dim_hidden), get_act(act))
+        self._fc1 = nn.Sequential(nn.Linear(in_dim, dim_hidden), act)
         
         self.W_head = nn.Linear(dim_hidden, dim_hidden)
         self.W_tail = nn.Linear(dim_hidden, dim_hidden)
@@ -35,7 +34,7 @@ class WIKG_MIL(nn.Module):
         else:
             raise NotImplementedError
         
-        self.activation = get_act(act)
+        self.activation = act
         if dropout:
             self.message_dropout = nn.Dropout(self.dropout)
         # self.cls_token = nn.Parameter(torch.randn(1, 1, dim_hidden))
@@ -43,21 +42,13 @@ class WIKG_MIL(nn.Module):
         # self.pooling = SAGPooling(in_channels=dim_hidden, ratio=0.5)
         self.norm = nn.LayerNorm(dim_hidden)
         self.fc = nn.Linear(dim_hidden, self.num_classes)
-
-        if pool == "mean":
-            self.readout = global_mean_pool 
-        elif pool == "max":
-            self.readout = global_max_pool 
-        elif pool == "attn":
-            att_net=nn.Sequential(nn.Linear(dim_hidden, dim_hidden // 2), nn.LeakyReLU(), nn.Linear(dim_hidden//2, 1))     
-            self.readout = GlobalAttention(att_net)
+        if pool == "attn":
+            self.att_net=nn.Sequential(nn.Linear(dim_hidden, dim_hidden // 2), nn.LeakyReLU(), nn.Linear(dim_hidden//2, 1))     
+            self.readout = GlobalAttention(self.att_net)
 
 
-    def forward(self, x):
-        try:
-            x = x["feature"]
-        except:
-            x = x
+    def forward(self, x, return_WSI_attn = False, return_WSI_feature = False):
+        forward_return = {}
         x = self._fc1(x)    # [B,N,C]
 
         # B, N, C = x.shape
@@ -109,25 +100,16 @@ class WIKG_MIL(nn.Module):
         # h = (h + h.mean(dim=1, keepdim=True)) * 0.5
 
         # h = self.pooling(h.squeeze(0), edge_index)[0]
+        h_ori = h.clone()
         h = self.readout(h.squeeze(0), batch=None)
         h = self.norm(h)
-        h = self.fc(h)
-        logits = h
-        
-        return logits
+        logits = self.fc(h)
+        forward_return['logits'] = logits
+        if return_WSI_feature:
+            forward_return['WSI_feature'] = h
+        if return_WSI_attn:
+            WSI_attn = self.att_net(h_ori).squeeze()
+            forward_return['WSI_attn'] = WSI_attn
+        return forward_return
 
             
-# if __name__ == "__main__":
-#     data = torch.randn((1, 10000, 384)).cuda()
-#     model = WiKGMIL(dim_in=384, dim_hidden=512, topk=6, n_classes=2, agg_type='bi-interaction', dropout=0.3, pool='attn').cuda()
-#     output = model(data)
-#     print(output.shape)
-#     # print(kg_loss.item())
-#     total_params = sum(p.numel() for p in model.parameters())
-#     total_m_params = total_params / 1e6  # 转换为以“M”为单位
-
-#     print(f"full parameter: {total_m_params:.2f} M")
-
-
-
-

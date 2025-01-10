@@ -47,7 +47,7 @@ class RRTEncoder(nn.Module):
             self.cls_token = nn.Parameter(torch.randn(1, 1, mlp_dim))
             nn.init.normal_(self.cls_token, std=1e-6)
         elif pool == 'attn':
-            print(self.final_dim)
+            # print(self.final_dim)
             self.pool_fn = DAttention(self.final_dim,da_act,gated=da_gated,bias=da_bias,dropout=da_dropout)
 
         self.norm = nn.LayerNorm(self.final_dim)
@@ -153,9 +153,9 @@ class RRTEncoder(nn.Module):
         else:
             return logits
 
-class RRT_MIL(nn.Module):
-    def __init__(self, in_dim=1024,mlp_dim=512,act='relu',num_classes=2,dropout=0.25,pos_pos=0,pos='ppeg',peg_k=7,attn='trans',pool='attn',region_num=8,n_layers=2,n_heads=8,multi_scale=False,drop_path=0.,da_act='relu',trans_dropout=0.1,ffn=False,ffn_act='gelu',mlp_ratio=4.,da_gated=False,da_bias=False,da_dropout=False,trans_dim=64,n_cycle=1,epeg=False,min_region_num=0,qkv_bias=True,shift_size=False,**kwargs):
-        super(RRT_MIL, self).__init__()
+class RRT_MIL_Linear(nn.Module):
+    def __init__(self, in_dim=1024,mlp_dim=512,act='relu',num_classes=2,dropout=0.25,pos_pos=0,pos='ppeg',peg_k=7,attn='trans',pool='attn',region_num=8,n_layers=2,n_heads=8,multi_scale=False,drop_path=0.,da_act='relu',trans_dropout=0.1,ffn=False,ffn_act='gelu',mlp_ratio=4.,da_gated=False,da_bias=False,da_dropout=False,trans_dim=64,n_cycle=1,epeg=False,min_region_num=0,qkv_bias=True,shift_size=False, **kwargs):
+        super(RRT_MIL_Linear, self).__init__()
 
         self.patch_to_emb = [nn.Linear(in_dim, 512)]
 
@@ -170,11 +170,12 @@ class RRT_MIL(nn.Module):
 
         self.online_encoder = RRTEncoder(mlp_dim=mlp_dim,pos_pos=pos_pos,pos=pos,peg_k=peg_k,attn=attn,region_num=region_num,n_layers=n_layers,n_heads=n_heads,multi_scale=multi_scale,drop_path=drop_path,pool=pool,da_act=da_act,drop_out=trans_dropout,ffn=ffn,ffn_act=ffn_act,mlp_ratio=mlp_ratio,da_gated=da_gated,da_bias=da_bias,da_dropout=da_dropout,trans_dim=trans_dim,n_cycle=n_cycle,epeg=epeg,min_region_num=min_region_num,qkv_bias=qkv_bias,shift_size=shift_size,**kwargs)
 
-        self.predictor = nn.Linear(self.online_encoder.final_dim,num_classes)
 
+        self.predictor = nn.Linear(self.online_encoder.final_dim,num_classes)
         self.apply(initialize_weights)
 
-    def forward(self, x, return_attn=False,no_norm=False):
+    def forward(self, x, return_WSI_attn = False, return_WSI_feature = False):
+        forward_return = {}
         x = self.patch_to_emb(x) # n*512
         
         x = self.dp(x)
@@ -182,15 +183,44 @@ class RRT_MIL(nn.Module):
         ps = x.size(1)
 
         # forward online network
-        if return_attn:
-            x,a = self.online_encoder(x,return_attn=True,no_norm=no_norm)
+        if return_WSI_attn:
+            x,a = self.online_encoder(x,return_attn=True,no_norm=True)
+            forward_return['WSI_attn'] = a
         else:
             x = self.online_encoder(x)
         
         # prediction
         logits = self.predictor(x)
+        forward_return['logits'] = logits
+        if return_WSI_feature:
+            forward_return['WSI_feature'] = x
+        return forward_return
 
-        if return_attn:
-            return logits,a
-        else:
-            return logits
+class RRT_MIL(nn.Module):
+    def __init__(self, head_type,**kwargs):
+        super(RRT_MIL, self).__init__()
+        if head_type == 'linear':
+            kwargs['pool'] = 'cls_token'
+            self.model = RRT_MIL_Linear(**kwargs)
+        elif head_type == 'abmil':
+            from modules.AB_MIL.ab_mil import AB_MIL
+            in_dim = kwargs['in_dim']
+            num_classes = kwargs['num_classes']
+            keep_keys = ['region_num','drop_path','n_layers','attn','epeg','cr_msa','all_shortcut','crmsa_mlp','crmsa_heads','crmsa_k','epeg_k','need_init']
+            kwargs = {k:v for k,v in kwargs.items() if k in keep_keys}
+            kwargs['pool'] = 'other'
+            self.rrt_encoder = RRTEncoder(**kwargs)
+            self.model = AB_MIL(in_dim = in_dim,num_classes = num_classes,rrt = self.rrt_encoder)
+        elif head_type == 'gate_abmil':
+            from modules.GATE_AB_MIL.gate_ab_mil import GATE_AB_MIL
+            in_dim = kwargs['in_dim']
+            num_classes = kwargs['num_classes']
+            keep_keys = ['region_num','drop_path','n_layers','attn','epeg','cr_msa','all_shortcut','crmsa_mlp','crmsa_heads','crmsa_k','epeg_k','need_init']
+            kwargs = {k:v for k,v in kwargs.items() if k in keep_keys}
+            kwargs['pool'] = 'other'
+            self.rrt_encoder = RRTEncoder(**kwargs)
+            self.model = GATE_AB_MIL(in_dim = in_dim,num_classes = num_classes,rrt = self.rrt_encoder)
+            
+    def forward(self, x, return_WSI_attn = False, return_WSI_feature = False):
+        return self.model(x, return_WSI_attn, return_WSI_feature)
+            

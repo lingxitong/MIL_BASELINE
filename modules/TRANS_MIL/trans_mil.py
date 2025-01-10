@@ -66,7 +66,7 @@ class TRANS_MIL(nn.Module):
         # self._fc1 = nn.Sequential(nn.Linear(1024, 512), nn.ReLU(),nn.Dropout(0.25))
         self._fc1 = [nn.Linear(self.in_dim, 512)]
 
-        self._fc1 += [get_act(act)]
+        self._fc1 += [act]
 
         if dropout:
             self._fc1 += [nn.Dropout(self.dropout)]
@@ -84,8 +84,10 @@ class TRANS_MIL(nn.Module):
 
         self.apply(initialize_weights)
 
-    def forward(self, x):
-
+    def forward(self, x, return_WSI_attn = False, return_WSI_feature = False):
+        forward_return = {}
+        print(x.shape)
+        n = x.shape[1]
         h = x.float() #[B, n, 1024]
         
         h = self._fc1(h) #[B, n, 512]
@@ -111,13 +113,23 @@ class TRANS_MIL(nn.Module):
         #---->Translayer x2
         h = self.layer2(h) #[B, N, 512]
 
+
+        h = self.norm(h)
         #---->cls_token
-        h = self.norm(h)[:,0]
+        cls_token = h[:, 0]
+        #---->patch_tokens
+        patch_tokens = h[:, 1:n+1]
         # print(h.shape)
         #---->predict
-        logits = self._fc2(h) #[B, n_classes]
+        logits = self._fc2(cls_token) #[B, n_classes]
         # Y_hat = torch.argmax(logits, dim=1)
         # Y_prob = F.softmax(logits, dim = 1)
         # results_dict = {'logits': logits, 'Y_prob': Y_prob, 'Y_hat': Y_hat}
-        return logits
+        forward_return['logits'] = logits
+        if return_WSI_feature:
+            forward_return['WSI_feature'] = cls_token # cls_token can be seen as the global WSI feature
+        if return_WSI_attn:
+            WSI_attn = torch.matmul(patch_tokens, cls_token.transpose(0, 1)).squeeze(0)
+            forward_return['WSI_attn'] = WSI_attn
+        return forward_return
 

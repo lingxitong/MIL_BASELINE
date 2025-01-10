@@ -1,0 +1,57 @@
+General:
+    MODEL_NAME: AMD_MIL
+    seed: 2024
+    num_classes: 2
+    num_epochs: 5
+    device: 1
+    num_workers: 4
+    best_model_metric: macro_auc  
+    earlystop: 
+        use: False
+        patience: 5
+        metric: macro_auc
+
+Dataset:
+    DATASET_NAME: your_dataset_name
+    # to use train-val-test, open dataset_csv_dir
+    # to use k-fold train-val/k-fold train-val then test, open dataset_root_dir
+    
+    dataset_csv_path: /path/to/your/dataset.csv
+    # dataset_root_dir: /dir/to/your/dataset_dir/
+    
+Logs:
+    log_root_dir: /path/to/your/log_dir/
+
+Model:
+    in_dim: 1024  # depend on the pt dimensions，such resnet50——>1024 vit_s——>768
+    dropout: 0.25
+    embed_dim: 512
+    agent_num: 256
+    act: relu  # relu or silu gule
+    optimizer:
+        which: adam    # adam or adamw
+        adam_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+        adamw_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+    criterion: ce  
+    scheduler:
+        warmup: 2
+        which: step  # [step, cosine,multi_step,exponential]
+        step_config:
+            step_size: 3 # absolute step size, should ensure that step_size > warmup
+            gamma: 0.9
+        multi_step_config:
+            milestones: [20, 30, 40] # absolute milestones, should ensure that milestones > warmup
+            gamma: 0.9
+        exponential_config:
+            gamma: 0.9 # begin after warmup
+        cosine_config:
+            T_max: 10 # interval of cosine annealing, begin after warmup
+            eta_min: 0.0001
+            
+
+    
+     

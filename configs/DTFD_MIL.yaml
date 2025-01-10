@@ -18,7 +18,6 @@ Dataset:
     
     dataset_csv_path: /path/to/your/dataset.csv
     # dataset_root_dir: /dir/to/your/dataset_dir/
-    VIST: True # if your val is test, set it to True
 
 Logs:
     log_root_dir: /path/to/your/log_dir/

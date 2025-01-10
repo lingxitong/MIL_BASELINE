@@ -18,7 +18,6 @@ Dataset:
     
     dataset_csv_path: /path/to/your/dataset.csv
     # dataset_root_dir: /dir/to/your/dataset_dir/
-    VIST: True # if your val is test, set it to True
 
 Logs:
     log_root_dir: /path/to/your/log_dir/
@@ -29,7 +28,6 @@ Model:
     region_num: 8
     pos: 'none'
     pos_pos: 0
-    pool: 'cls_token'
     peg_k: 7
     drop_path: 0
     n_layers: 1
@@ -39,6 +37,7 @@ Model:
     trans_dropout: 0.1
     ffn: False
     mlp_ratio: 4.
+    mlp_dim: 512
     trans_dim: 64
     epeg: True
     min_region_num: 0
@@ -50,6 +49,7 @@ Model:
     region_attn: 'native'
     dropout: 0.1
     act: relu  # relu or silu gule
+    head_type: 'linear' # linear or abmil/gate_abmil
     optimizer:
         which: adam    # adam or adamw
         adam_config:

@@ -1,20 +1,20 @@
 import torch
-import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import DataLoader, RandomSampler
-from modules.DTFD_MIL.dtfd_mil import *
-from utils.wsi_utils import *
-from utils.general_utils import *
-from utils.model_utils import *
-from utils.loop_utils import *
+from torch.utils.data import DataLoader
+from modules.DTFD_MIL.dtfd_mil import Classifier_1fc, Attention, DimReduction, Attention_with_Classifier
+from utils.process_utils import get_process_pipeline,get_act
+from utils.wsi_utils import WSI_Dataset
+from utils.general_utils import set_global_seed,init_epoch_info_log,add_epoch_info_log,early_stop
+from utils.model_utils import get_optimizer,get_scheduler,get_criterion,save_last_model,save_log,model_select,get_param_optimizer
+from utils.loop_utils import dtfd_train_loop,dtfd_val_loop
 from tqdm import tqdm
     
 def process_DTFD_MIL(args):
-    print_args(args)
 
     train_dataset = WSI_Dataset(args.Dataset.dataset_csv_path,'train')
     val_dataset = WSI_Dataset(args.Dataset.dataset_csv_path,'val')
     test_dataset = WSI_Dataset(args.Dataset.dataset_csv_path,'test')
+    process_pipeline = get_process_pipeline(val_dataset,test_dataset) 
+    args.General.process_pipeline = process_pipeline
     '''
     generator settings 
     '''
@@ -64,6 +64,8 @@ def process_DTFD_MIL(args):
     criterion = get_criterion(args.Model.criterion)
     warmup_epoch = args.Model.scheduler.warmup
     
+    model_list = [classifier,attention,dimReduction,attCls]
+    optimizer_list = [optimizer_A,optimizer_B]
     '''
     begin training
     '''
@@ -76,9 +78,7 @@ def process_DTFD_MIL(args):
         best_val_metric = 9999
     best_epoch = 1
     print('Start Process!')
-    model_list = [classifier,attention,dimReduction,attCls]
-    optimizer_list = [optimizer_A,optimizer_B]
-    
+    print('Using Process Pipeline:',process_pipeline)
     for epoch in tqdm(range(args.General.num_epochs),colour='GREEN'):
         if epoch+1 <= warmup_epoch:
             now_scheduler_A = warmup_scheduler_A
@@ -86,15 +86,21 @@ def process_DTFD_MIL(args):
         else:
             now_scheduler_A = scheduler_A
             now_scheduler_B = scheduler_B
-        
         scheduler_list = [now_scheduler_A,now_scheduler_B]
-            
+        
         train_loss,cost_time = dtfd_train_loop(device,model_list,train_dataloader,criterion,optimizer_list,scheduler_list,num_Group,grad_clipping,distill,total_instance)
-        val_loss,val_metrics = dtfd_val_loop(device,num_classes,model_list,val_dataloader,criterion,num_Group,grad_clipping,distill,total_instance)
-        if args.Dataset.VIST == True:
-            test_loss,test_metrics = val_loss,val_metrics
-        else:
-            test_loss,test_metrics = dtfd_val_loop(device,num_classes,model_list,val_dataloader,criterion)
+        if process_pipeline == 'Train_Val_Test':
+            val_loss,val_metrics = dtfd_val_loop(device,num_classes,model_list,val_dataloader,criterion,num_Group,grad_clipping,distill,total_instance)
+            test_loss,test_metrics = dtfd_val_loop(device,num_classes,model_list,test_dataloader,criterion,num_Group,grad_clipping,distill,total_instance)
+        elif process_pipeline == 'Train_Val':
+            val_loss,val_metrics = dtfd_val_loop(device,num_classes,model_list,val_dataloader,criterion,num_Group,grad_clipping,distill,total_instance)
+            test_loss,test_metrics = None,None
+        elif process_pipeline == 'Train_Test':
+            val_loss,val_metrics,test_loss,test_metrics = None,None,None,None
+            if epoch+1 == args.General.num_epochs:
+                test_loss,test_metrics = dtfd_val_loop(device,num_classes,model_list,test_dataloader,criterion,num_Group,grad_clipping,distill,total_instance)
+
+
         FAIL = '\033[91m'
         ENDC = '\033[0m'
         print('----------------INFO----------------\n')
@@ -102,35 +108,21 @@ def process_DTFD_MIL(args):
         print(f'{FAIL}Val_Metrics:  {ENDC}{val_metrics}\n')
         print(f'{FAIL}Test_Metrics:  {ENDC}{test_metrics}\n')
         add_epoch_info_log(epoch_info_log,epoch,train_loss,val_loss,test_loss,val_metrics,test_metrics)
-        state_dict = {'classifier':classifier.state_dict(),
-                      'attention':attention.state_dict(),
-                      'dimReduction':dimReduction.state_dict(),
-                      'attCls':attCls.state_dict()}
-        if REVERSE and val_metrics[best_model_metric] < best_val_metric:
-            best_epoch = epoch+1
-            best_val_metric = val_metrics[best_model_metric]
-            dtfd_save_best_model(args,state_dict,best_epoch)
-
-        elif not REVERSE and val_metrics[best_model_metric] > best_val_metric:
-            best_epoch = epoch+1
-            best_val_metric = val_metrics[best_model_metric]
-            dtfd_save_best_model(args,state_dict,best_epoch)
+        mil_model_state_dict = {'classifier':classifier.state_dict(),'attention':attention.state_dict(),
+                      'dimReduction':dimReduction.state_dict(),'attCls':attCls.state_dict()}
+        
+        # model selection, it only works when process_pipeline is 'Train_Val_Test' or 'Train_Val'
+        best_val_metric,best_epoch = model_select(REVERSE,args,mil_model_state_dict,val_metrics,best_model_metric,best_val_metric,epoch,best_epoch)
 
         '''
         early stop
         '''
-        is_stop = cal_is_stopping(args,epoch_info_log)
-        if is_stop:
-            print(f'Early Stop In EPOCH {epoch+1}!')
-            dtfd_save_last_model(args,state_dict,epoch+1)
-            save_log(args,epoch_info_log,best_epoch)
+        if early_stop(args,epoch_info_log,process_pipeline,epoch,mil_model_state_dict,best_epoch):
             break
+
         if epoch+1 == args.General.num_epochs:
-            dtfd_save_last_model(args,state_dict,epoch+1)
-            save_log(args,epoch_info_log,best_epoch)
-
-
-
+            save_last_model(args,mil_model_state_dict,epoch+1)
+            save_log(args,epoch_info_log,best_epoch,process_pipeline)
 
 
 

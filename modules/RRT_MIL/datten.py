@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from utils.process_utils import get_act
 class Attention(nn.Module):
     def __init__(self,input_dim=512,act='relu',bias=False,dropout=False):
         super(Attention, self).__init__()
@@ -48,7 +47,7 @@ class AttentionGated(nn.Module):
             nn.Linear(self.L, self.D,bias=bias),
         ]
         
-        self.attention_a += [get_act(act)]
+        self.attention_a += [nn.ReLU()]
     
 
         self.attention_b = [nn.Linear(self.L, self.D,bias=bias),

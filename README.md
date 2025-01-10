@@ -4,29 +4,32 @@ With the rapid advancement of computational power and artificial intelligence te
 
 
 <details>
-<summary>:art:News of MIL-Baseline</summary>
+<summary>News of MIL-Baseline</summary>
+
+**2025-1-10**
+fix bug of MIL_BASELINE, update visualization tools, add new MIL methods, add new dataset split methods
 
 **2024-11-24**
-- update mil-finetuning for rrt_mil
+update `mil-finetuning` (gate_ab_mil,ab_mil) for rrt_mil
 
 **2024-10-12**
-- fix bug of Ctranspath feature encoder
+fix bug of `Ctranspath` feature encoder
   
 **2024-10-02**
-- add FR_MIL Implement
+add `FR_MIL` Implement
 
 **2024-08-20**
-- fix bug of early-stop
+fix bug of early-stop
   
 **2024-07-27**
-- fix bug of plip-transforms
+fix bug of plip-transforms
   
 **2024-07-21**
-- fix bug of DTFD-MIL
-- fix bug of test_mil.py
+fix bug of DTFD-MIL
+fix bug of test_mil.py
 
 **2024-07-20**
-- fix bug of all MIL-models expect DTFD-MIL
+fix bug of all MIL-models expect DTFD-MIL
 </details>
   
 ## :memo: **Overall Introduction**
@@ -54,8 +57,11 @@ With the rapid advancement of computational power and artificial intelligence te
 * PLIP [A visual–language foundation model for pathology image analysis using medical Twitter](https://www.nature.com/articles/s41591-023-02504-3) (NAT MED 2023)
 * CONCH [A visual-language foundation model for computational pathology](https://www.nature.com/articles/s41591-024-02856-4) (NAT MED 2024)
 * UNI [Towards a general-purpose foundation model for computational pathology](https://www.nature.com/articles/s41591-024-02857-3) (NAT MED 2024)
-* GIG [A whole-slide foundation model for digital pathology from real-world data](https://www.nature.com/articles/s41586-024-07441-w) (NAT 2024)
-  
+* GIGAPATH [A whole-slide foundation model for digital pathology from real-world data](https://www.nature.com/articles/s41586-024-07441-w) (NAT 2024)
+* VIRCHOW [A foundation model for clinical-grade computational pathology and rare cancers detection](https://www.nature.com/articles/s41591-024-03141-0)
+* VIRCHOW-V2 [Virchow2: Scaling Self-Supervised Mixed Magnification Models in Pathology](https://arxiv.org/pdf/2408.00738)
+* UPDATING...
+
 ###  :gem: Implementated NetWork
 * MEAN_MIL
 * MAX_MIL
@@ -64,12 +70,13 @@ With the rapid advancement of computational power and artificial intelligence te
 * DS_MIL [Dual-stream MIL Network for WSI Classification with Self-supervised Contrastive Learning](https://arxiv.org/abs/2011.08939) (CVPR 2021)
 * CLAM_MIL [Data Efficient and Weakly Supervised Computational Pathology on WSI](https://arxiv.org/abs/2004.09666) (NAT BIOMED ENG 2021)
 * DTFD_MIL [Double-Tier Feature Distillation MIL for Histopathology WSI Classification](https://arxiv.org/abs/2203.12081) (CVPR 2022)
+* ILRA_MIL [Exploring Low-rank Property in MIL for Whole Slide Image classification](https://openreview.net/pdf?id=01KmhBsEPFO) (ICLR 2023)
 * RRT_MIL [Towards Foundation Model-Level Performance in Computational Pathology](https://arxiv.org/abs/2402.17228) (CVPR 2024)
 * WIKG_MIL [Dynamic Graph Representation with Knowledge-aware Attention for WSI Analysis](https://arxiv.org/abs/2403.07719) (CVPR 2024)
 * FR-MIL [Distribution Re-calibration based MIL with Transformer for WSI Classification](https://ieeexplore.ieee.org/abstract/document/10640165) (TMI 2024)
-* SC_MIL [Sparse Context-aware MIL for Predicting Cancer Survival Probability](https://arxiv.org/abs/2407.00664) (MICCAI 2024) UD...
-* DGR_MIL [Exploring Diverse Global Representation in MIL for WSI Classification](https://arxiv.org/abs/2407.03575) (ECCV 2024) UD...
-* CDP_MIL [cDP-MIL: Robust Multiple Instance Learning via Cascaded Dirichlet Process](https://arxiv.org/abs/2407.11448) (ECCV 2024) UD...
+* LONG_MIL [Scaling Long Contextual MIL for Histopathology WSI Analysis](https://arxiv.org/abs/2311.12885) (NeurIPS 2024) 
+* DGR_MIL [Exploring Diverse Global Representation in MIL for WSI Classification](https://arxiv.org/abs/2407.03575) (ECCV 2024) 
+* CDP_MIL [cDP-MIL: Robust Multiple Instance Learning via Cascaded Dirichlet Process](https://arxiv.org/abs/2407.11448) (ECCV 2024) 
 * UPDATING...
 
 ### ☑️  Implementated Metrics
@@ -82,51 +89,59 @@ With the rapid advancement of computational power and artificial intelligence te
 
 ## :orange_book: Let's Begin Now
 ### 🔨 **Code Framework**
+`MIL_BASELINE` is constructed by the following parts：
 - `/configs:` MIL_BASELINE defines MIL models through a YAML configuration file.
 - `/modules:` Defined the network architectures of different MIL models.
 - `/process:` Defined the training frameworks for different MIL models.
-- `/feature_extracter:` Supports different feature extractors.
+- `/feature_extractor:` Supports different feature extractors.
 - `/split_scripts:` Supports different dataset split methods.
+- `/vis_scripts:` Visualization scripts for TSNE and Attention.
 - `/datasets:` User-Datasets path information.
 - `/utils:` Framework's utility scripts.
 - `/train_mil.py:` Train Entry function of the framework.
 - `/test_mil.py:` Test Entry function of the framework.
 
+
 ### 📁 **Dataset Pre-Process**
-####  :egg: **Feature Extracter**
-- OpenSlide supported formats and SDPC formats
-- R50 and VIT-S are supported directly.
-- PLIP/UNI/CONCH/TRANSPATH/GIG are supported by push the model-weights in `/feature_extracter/PLIP` `/feature_extracter/UNI` `/feature_extracter/COUCH ` `/feature_extracter/CTRANSPATH` `/feature_extracter/GIG`.
-- To permform feature extracter </br>
-  - First, you should get h5 file </br>
-  `python /feature_extracter/CLAM/create_patches_fp.py --source /path/to/your/slide_dir --save_dir /path/to/your/save_dr --preset /feature_extractor/CLAM/presets/bwh_biopsy.csv --patch_level your_path_level --patch_size your_patch_size --seg --patch` 
-  - Second, you should get pt file </br>
-    `CUDA_VISIBLE_DEVICES=your_cuda_id python /feature_extractor/CLAM/extract_features_fp.py --data_h5_dir /path/to/your/h5_save_dir --data_slide_dir /path/to/your/slide_dir --csv_path /path/to/your/h5_save_dir/process_list_autogen.csv --feat_dir path/to/your/pt_save_dir --batch_size your_bach_size --slide_ext your_ext --backbone your_backbone --target_patch_size your_target_patch_size --model_dir your_backbone_dir` 
-    - backbone : resnet50_imagenet/vit_s_imagenet/plip/uni
-    - ext : .svs/.tif/.ndpi/......./.sdpc
-    - target_patch_size : for example, vit_s need 224 as input
-    - ctranspath needs timm== timm-0.5.4 / gig needs timm=>1.0.3 / uni,conch... need timm==0.9.16 
+#### **Feature Extracter**
+Supported formats include `OpenSlide` and `SDPC` formats. The following backbones are supported: `R50, VIT-S, CTRANSPATH, PLIP, CONCH, UNI, GIGAPATH, VIRCHOW, and VIRCHOW-V2`. Detailed usage instructions can be found in `/feature_extractor/README.md`.
 
-#### :custard: **Dataset-Csv Construction**
-- You should construct a csv-file like the format of `/datasets/example_Dataset.csv`
+#### **Dataset-Csv Construction**
+You should construct a csv-file like the format of `/datasets/example_Dataset.csv`
 
-#### :cookie: **Dataset-Split Construction**
-- You can use the dataset-split-scripts to perform different data-split.
+#### **Dataset-Split Construction**
+You can use the dataset-split-scripts to perform different dataset-split, the detailed split method descriptions are in `/split_scripts/README.md`.
 
 
 ### :fire: **Train/Test MIL**
-#### :8ball: **Yaml Config**
-- you can config the yaml-file in `/configs`
-- for example, `/configs/AB_MIL.yaml`, A detailed explanation has been written in  `/configs/AB_MIL.yaml`
-- Then, `/train_mil.py` will help you !
-- `/test_mil.py` will help you test pretrained model !
+#### **Yaml Config**
+You can config the yaml-file in `/configs`. For example, `/configs/AB_MIL.yaml`, A detailed explanation has been written in  `/configs/AB_MIL.yaml`. 
+#### **Train & Test**
+Then, `/train_mil.py` will help you like this:
+``` shell
+python train_mil.py --yaml_path /configs/AB_MIL.yaml 
+```
+We also support dynamic parameter passing, and you can pass any parameters that exist in the `/configs/AB_MIL.yaml` file, for example:
+``` shell
+python train_mil.py --yaml_path /configs/AB_MIL.yaml --options General.seed=2024 General.num_epochs=20 Model.in_dim=768
+```
+The `/test_mil.py` will help you test pretrained MIL models like this:
+``` shell
+python test_mil.py --yaml_path /configs/AB_MIL.yaml --test_dataset_csv /your/test_csv/path --model_weight_path /your/model_weights/path --test_log_dir /your/test/log/dir
+```
+You should ensure the `--test_dataset_csv` contains the column of `test_slide_path` which contains the `/path/to/your_pt.pt`. If `--test_dataset_csv` also contains the 'test_slide_label' column, the metrics will be calculated and written to logs.
+
+
+### :fire: **Visualization**
+You can easily visualize the dimensionality reduction map of the features from the trained MIL model and the distribution of attention scores (or importance scores) by `/vis_scripts/draw_feature_map.py` and `/vis_scripts/draw_attention_map.py`. We have implemented standardized global feature and attention score output interfaces for all models, making the above visualization scripts compatible with most MIL model in the library. The detailed usage instructions are in `/vis_scripts/README.md`.
+
 
 ### :beers: **Acknowledgement**
-- Thanks to the following repositories for inspiring this repository
+Thanks to the following repositories for inspiring this repository
   - https://github.com/mahmoodlab/CLAM
   - https://github.com/WonderLandxD/opensdpc
   - https://github.com/RenaoYan/Build-Patch-for-Sdpc
   - https://github.com/DearCaat/MHIM-MIL
 
 ### :sparkles: **Git Pull**
-- Personal experience is limited, and code submissions are welcome !!
+Personal experience is limited, and code submissions are welcome 

@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
-from utils.process_utils import get_act
 def initialize_weights(module):
     for m in module.modules():
         if isinstance(m,nn.Linear):
@@ -43,17 +42,17 @@ class Resnet(nn.Module):
         x2=x2.view(1,-1)
         return x2,x
 class GATE_AB_MIL(nn.Module):
-    def __init__(self,num_classes=2,act='relu',bias=False,dropout=0,in_dim = 512):
+    def __init__(self,L = 512, D = 128, num_classes=2,act=nn.ReLU(),dropout=0,bias=False,in_dim = 512):
         super(GATE_AB_MIL, self).__init__()
         self.num_classes = num_classes
         self.dropout = dropout
         self.in_dim = in_dim
-        self.L = 512
-        self.D = 128 #128
+        self.L = L
+        self.D = D 
         self.K = 1
-
+        self.act = act
         self.feature = [nn.Linear(in_dim, 512)]
-        self.feature += [get_act(act)]
+        self.feature += [self.act]
         self.feature += [nn.Dropout(self.dropout)]
         self.feature = nn.Sequential(*self.feature)
 
@@ -84,21 +83,27 @@ class GATE_AB_MIL(nn.Module):
         self.attention_c = nn.Linear(self.D, self.K,bias=bias)
 
         self.apply(initialize_weights)
-    def forward(self, x):
+    def forward(self, x, return_WSI_attn = False, return_WSI_feature = False):
+        forward_return = {}
         x = self.feature(x.squeeze(0))
 
         a = self.attention_a(x)
         b = self.attention_b(x)
         A = a.mul(b)
         A = self.attention_c(A)
+        A_ori = A.clone()
 
         A = torch.transpose(A, -1, -2)  # KxN
         A = F.softmax(A, dim=-1)  # softmax over N
         x = torch.matmul(A,x)
 
         logits = self.classifier(x)
-
-        return logits
+        forward_return['logits'] = logits
+        if return_WSI_feature:
+            forward_return['WSI_feature'] = x
+        if return_WSI_attn:
+            forward_return['WSI_attn'] = A_ori
+        return forward_return
 
 
 
