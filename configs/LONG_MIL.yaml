@@ -1,0 +1,64 @@
+General:
+    MODEL_NAME: LONG_MIL
+    seed: 2024
+    num_classes: 2
+    num_epochs: 5
+    device: 3
+    num_workers: 4
+    best_model_metric: macro_auc  
+    earlystop: 
+        use: False
+        patience: 5
+        metric: macro_auc
+
+Dataset:
+    DATASET_NAME: your_dataset_name
+    # to use train-val-test, open dataset_csv_dir
+    # to use k-fold train-val/k-fold train-val then test, open dataset_root_dir
+    dataset_csv_path: /path/to/your/dataset.csv
+    # dataset_root_dir: /dir/to/your/dataset_dir/
+    h5_csv_path: /path/to/your/h5.csv # LONG_MIL needs coords as part of the input, so you need to provide the path to the h5 file
+    
+    # h5.csv should be like:
+    #  h5_path
+    #  /path/to/your/slide_name.h5
+    #  /path/to/your/slide_name.h5
+
+Logs:
+    log_root_dir: /path/to/your/log_dir/
+
+Model:
+    version: v1 # v1/v2 , v1(arxiv) v2(nips 2024)
+    in_dim: 1024  # depend on the pt dimensions，such resnet50——>1024 vit_s——>384
+    hidden_dim: 512
+    alibi_position_embedding_path: /path/to/your/alibi_position_embedding.pt # special need in LONG_MIL, you can generate it by /modules/LONG_MIL/get_alibi_position_embeddings.py
+    optimizer:
+        which: adam    # adam or adamw
+        adam_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+        adamw_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+    criterion: ce  
+    scheduler:
+        warmup: 2
+        which: step  # [step, cosine,multi_step,exponential]
+        step_config:
+            step_size: 3 # absolute step size, should ensure that step_size > warmup
+            gamma: 0.9
+        multi_step_config:
+            milestones: [20, 30, 40] # absolute milestones, should ensure that milestones > warmup
+            gamma: 0.9
+        exponential_config:
+            gamma: 0.9 # begin after warmup
+        cosine_config:
+            T_max: 10 # interval of cosine annealing, begin after warmup
+            eta_min: 0.0001
+            
+
+
+        
+
+    
+     

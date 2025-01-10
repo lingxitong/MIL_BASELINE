@@ -119,8 +119,14 @@ class Attention_with_Classifier(nn.Module):
         super(Attention_with_Classifier, self).__init__()
         self.attention = Attention(L, D, K)
         self.classifier = Classifier_1fc(L, num_cls, droprate)
-    def forward(self, x): ## x: N x L
+    def forward(self, x , return_WSI_attn = False, return_WSI_feature = False): ## x: N x L
+        forward_return = {}
         AA = self.attention(x)  ## K x N
         afeat = torch.mm(AA, x) ## K x L
         pred = self.classifier(afeat) ## K x num_cls
-        return pred
+        forward_return['logits'] = pred
+        if return_WSI_feature:
+            forward_return['WSI_feature'] = afeat
+        if return_WSI_attn:
+            forward_return['WSI_attn'] = AA.transpose(0,1)
+        return forward_return

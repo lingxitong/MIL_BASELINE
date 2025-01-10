@@ -1,8 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torchvision.models as models
-from utils.process_utils import get_act
 def initialize_weights(module):
     for m in module.modules():
         if isinstance(m,nn.Linear):
@@ -14,49 +12,24 @@ def initialize_weights(module):
             nn.init.constant_(m.bias, 0)
             nn.init.constant_(m.weight, 1.0)
 
-class Resnet(nn.Module):
-    def __init__(self):
-        super(Resnet, self).__init__()
-
-        self.model = list(models.resnet50(pretrained = True).children())[:-1]
-        self.features = nn.Sequential(*self.model)
-
-        self.feature_extractor_part2 = nn.Sequential(
-            nn.Linear(2048, 4096),
-            nn.ReLU(),
-            nn.Dropout(p=0.25),
-            nn.Linear(4096, 512),
-            nn.ReLU(),
-            nn.Dropout(p=0.25)
-        )
-        self.classifier = nn.Linear(512,1)
-        initialize_weights(self.feature_extractor_part2)
-        initialize_weights(self.classifier)
-    def forward(self, x):
-        x = self.features(x)
-        x = x.view(x.size(0), -1)
-        x=self.feature_extractor_part2(x)
-        # feat = torch.mean(x,dim=0)
-        x1 = self.classifier(x)
-        # x2 = torch.mean(x1, dim=0).view(1,-1)
-        x2,_ = torch.max(x1, dim=0)
-        x2=x2.view(1,-1)
-        return x2,x
-
 class AB_MIL(nn.Module):
-    def __init__(self,num_classes=1,dropout=0,act='relu',in_dim = 512):
+    def __init__(self,L = 512,D = 128,num_classes = 2,dropout=0,act= nn.ReLU() ,in_dim = 512, rrt = None):
         super(AB_MIL, self).__init__()
+        self.rrt = rrt
         self.in_dim = in_dim
         self.num_classes = num_classes
-        self.L = 512 #512
-        self.D = 128 #128
+        self.L = L
+        self.D = D
         self.K = 1
-        self.feature = [nn.Linear(in_dim, 512)]
+        self.feature = [nn.Linear(in_dim, self.L)]
         
-        self.feature += [get_act(act)]
+        self.feature += [act]
 
         if dropout:
             self.feature += [nn.Dropout(dropout)]
+            
+        if self.rrt != None:
+            self.feature += [self.rrt]
 
         self.feature = nn.Sequential(*self.feature)
 
@@ -70,23 +43,23 @@ class AB_MIL(nn.Module):
         )
 
         self.apply(initialize_weights)
-    def forward(self, x, return_attn=False,no_norm=False):
+    def forward(self, x, return_WSI_attn = False, return_WSI_feature = False):
+        forward_return = {}
         feature = self.feature(x)
-
         # feature = group_shuffle(feature)
         feature = feature.squeeze(0)
         A = self.attention(feature)
         A_ori = A.clone()
         A = torch.transpose(A, -1, -2)  # KxN
         A = F.softmax(A, dim=-1)  # softmax over N
-        M = torch.mm(A, feature)  # KxL
-        Y_prob = self.classifier(M)
+        M = torch.mm(A, feature)  # 1,KxL
+        logits = self.classifier(M)
+        forward_return['logits'] = logits
+        if return_WSI_feature:
+            forward_return['WSI_feature'] = M
+        if return_WSI_attn:
+            forward_return['WSI_attn'] = A_ori
+        return forward_return
 
-        if return_attn:
-            if no_norm:
-                return Y_prob,A_ori
-            else:
-                return Y_prob,A
-        else:
-            return Y_prob
+
 

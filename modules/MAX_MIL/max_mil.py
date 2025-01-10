@@ -13,7 +13,7 @@ def initialize_weights(module):
 
 
 class MAX_MIL(nn.Module):
-    def __init__(self,num_classes=2,dropout=0,act='relu',in_dim = 512):
+    def __init__(self,num_classes=2,dropout=0,act=nn.ReLU(),in_dim = 512):
         super(MAX_MIL, self).__init__()
         self.num_classes = num_classes
         self.dropout = dropout
@@ -22,16 +22,25 @@ class MAX_MIL(nn.Module):
 
         head = [nn.Linear(self.in_dim,512)]
 
-        head+=[get_act(act)]
+        head+=[act,]
 
         if self.dropout:
             head += [nn.Dropout(self.dropout)]
 
-        head += [nn.Linear(512,self.num_classes)]
+        self.classifier = nn.Linear(512,self.num_classes)
         self.head = nn.Sequential(*head)
 
         self.apply(initialize_weights)
 
-    def forward(self,x):
-        logits,_ = self.head(x).max(axis=1)
-        return logits
+    def forward(self,x,return_WSI_attn = False, return_WSI_feature = False):
+        forward_return = {}
+        all_features = self.head(x)
+        features_cls = self.classifier(all_features)
+        logits,indexs = features_cls.max(axis=1)
+        forward_return['logits'] = logits
+        if return_WSI_feature:
+            forward_return['WSI_feature'] = all_features[:,indexs,:].mean(axis=-2).squeeze(1)
+        if return_WSI_attn:
+            WSI_attn = features_cls.mean(axis=2).transpose(0,1)
+            forward_return['WSI_attn'] = WSI_attn
+        return forward_return

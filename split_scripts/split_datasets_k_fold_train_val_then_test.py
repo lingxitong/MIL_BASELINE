@@ -9,9 +9,9 @@ def Balanced_k_fold_train_val_then_test(args):
     test_ratio = args.test_ratio
     save_dir = args.save_dir
     dataset_name = args.dataset_name
-    train_df, test_df = train_test_split(df, test_size=test_ratio, stratify=df['label'])
+    train_df, test_df = train_test_split(df, test_size=test_ratio, stratify=df['label'], random_state=args.seed, shuffle=True)
     K=args.k
-    skf = StratifiedKFold(n_splits=K)
+    skf = StratifiedKFold(n_splits=K, random_state=args.seed, shuffle=True)
 
 
     for fold, (train_index, val_index) in enumerate(skf.split(train_df, train_df['label'])):
@@ -28,6 +28,7 @@ def Balanced_k_fold_train_val_then_test(args):
     
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
+    argparser.add_argument('--seed', type=int, default=42)
     argparser.add_argument('--csv_path', type=str, default='/path/to/your/dataset-csv-file.csv')
     argparser.add_argument('--dataset_name', type=str, default='your_dataset_name')
     argparser.add_argument('--test_ratio', type=float, default=0.2) # first select test_ratio of data as test data

@@ -203,7 +203,8 @@ class CLAM_MB_MIL(CLAM_SB_MIL):
         self.act = act
         self.instance_eval = instance_eval
 
-    def forward(self, h, label=None, instance_eval=False, return_features=False, attention_only=False):
+    def forward(self, h, label=None, instance_eval=False, return_features=False, attention_only=False,return_WSI_attn = False, return_WSI_feature = False):
+        forward_return = {}
         instance_eval = self.instance_eval
         h = h.squeeze(0)
         A, h = self.attention_net(h)  # NxK        
@@ -213,7 +214,7 @@ class CLAM_MB_MIL(CLAM_SB_MIL):
         A_raw = A
         A = F.softmax(A, dim=1)  # softmax over N
 
-        if instance_eval:
+        if instance_eval and label is not None:
             total_inst_loss = 0.0
             all_preds = []
             all_targets = []
@@ -245,11 +246,17 @@ class CLAM_MB_MIL(CLAM_SB_MIL):
 
         Y_hat = torch.topk(logits, 1, dim = 1)[1]
         Y_prob = F.softmax(logits, dim = 1)
-        if instance_eval:
+        if instance_eval and label is not None:
+            forward_return['instance_loss'] = total_inst_loss
             results_dict = {'instance_loss': total_inst_loss, 'inst_labels': np.array(all_targets), 
             'inst_preds': np.array(all_preds)}
         else:
             results_dict = {}
         if return_features:
             results_dict.update({'features': M})
-        return logits, Y_prob, Y_hat, A_raw, results_dict
+        if return_WSI_attn:
+            forward_return['WSI_attn'] = A_raw[Y_hat]
+        if return_WSI_feature:
+            forward_return['WSI_feature'] = M
+        forward_return['logits'] = logits
+        return forward_return

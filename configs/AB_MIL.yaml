@@ -18,13 +18,15 @@ Dataset:
     
     dataset_csv_path: /path/to/your/dataset.csv
     # dataset_root_dir: /dir/to/your/dataset_dir/
-    VIST: True # if your val is test, set it to True
 
 Logs:
     log_root_dir: /path/to/your/log_dir/
 
+
 Model:
     in_dim: 1024  # depend on the pt dimensions，such resnet50——>1024 vit_s——>384
+    L: 512
+    D: 128
     dropout: 0.1
     act: relu  # relu or silu gule
     optimizer:
@@ -35,7 +37,7 @@ Model:
         adamw_config:
             lr: 0.0002
             weight_decay: 0.00001
-    criterion: ce  
+    criterion: ce  # nll (only for survival)
     scheduler:
         warmup: 2
         which: step  # [step, cosine,multi_step,exponential]
