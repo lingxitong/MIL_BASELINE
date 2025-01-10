@@ -132,7 +132,7 @@ python test_mil.py --yaml_path /configs/AB_MIL.yaml --test_dataset_csv /your/tes
 You should ensure the `--test_dataset_csv` contains the column of `test_slide_path` which contains the `/path/to/your_pt.pt`. If `--test_dataset_csv` also contains the 'test_slide_label' column, the metrics will be calculated and written to logs.
 
 
-### :fire: **Visualization**
+### :fountain: **Visualization**
 You can easily visualize the dimensionality reduction map of the features from the trained MIL model and the distribution of attention scores (or importance scores) by `/vis_scripts/draw_feature_map.py` and `/vis_scripts/draw_attention_map.py`. We have implemented standardized global feature and attention score output interfaces for all models, making the above visualization scripts compatible with most MIL model in the library. The detailed usage instructions are in `/vis_scripts/README.md`.
 
 
