@@ -108,7 +108,7 @@ fix bug of all MIL-models expect DTFD-MIL
 
 ### 📁 **Dataset Pre-Process**
 #### **Feature Extracter**
-Supported formats include `OpenSlide` and `SDPC` formats. The following backbones are supported: `R50, VIT-S, CTRANSPATH, PLIP, CONCH, UNI, GIGAPATH, VIRCHOW, and VIRCHOW-V2`. Detailed usage instructions can be found in `/feature_extractor/README.md`.
+Supported formats include `OpenSlide` and `SDPC` formats. The following backbones are supported: `R50, VIT-S, CTRANSPATH, PLIP, CONCH, UNI, GIGAPATH, VIRCHOW, VIRCHOW-V2 and CONCH-V1.5`. Detailed usage instructions can be found in `/feature_extractor/README.md`.
 
 #### **Dataset-Csv Construction**
 You should construct a csv-file like the format of `/datasets/example_Dataset.csv`
