@@ -45,6 +45,8 @@ fix bug of all MIL-models expect DTFD-MIL
   
 ### :closed_umbrella: Supported Dataset-Split-Method
 * User-difined Train-Val-Test split
+* User-difined Train-Val split
+* User-difined Train-Test split
 * Train-Val split with K-fold
 * Train-Val-Test split with K-fold
 * Train-Val with K-fold then test
