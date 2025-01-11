@@ -37,7 +37,7 @@ Model:
         adamw_config:
             lr: 0.0002
             weight_decay: 0.00001
-    criterion: ce  # nll (only for survival)
+    criterion: ce  
     scheduler:
         warmup: 2
         which: step  # [step, cosine,multi_step,exponential]
