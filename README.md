@@ -102,8 +102,8 @@ fix bug of all MIL-models expect DTFD-MIL
 - `/vis_scripts:` Visualization scripts for TSNE and Attention.
 - `/datasets:` User-Datasets path information.
 - `/utils:` Framework's utility scripts.
-- `/train_mil.py:` Train Entry function of the framework.
-- `/test_mil.py:` Test Entry function of the framework.
+- `train_mil.py:` Train Entry function of the framework.
+- `test_mil.py:` Test Entry function of the framework.
 
 
 ### 📁 **Dataset Pre-Process**
