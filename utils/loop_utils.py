@@ -221,8 +221,6 @@ def ds_train_loop(device,model,loader,criterion,optimizer,scheduler):
         forward_return = model(bag)
         max_prediction = forward_return['max_prediction']
         train_logits = forward_return['logits']
-        max_prediction, _ = torch.max(max_prediction, 0)
-        max_prediction = max_prediction.unsqueeze(0)
         loss_bag = criterion(train_logits, label)
         loss_max = criterion(max_prediction, label)
         train_loss = 0.5*loss_bag + 0.5*loss_max
@@ -263,8 +261,6 @@ def ds_val_loop(device,num_classes,model,loader,criterion,retrun_WSI_feature = F
             max_prediction = forward_return['max_prediction']
             val_logits = forward_return['logits']
             bag_predictions_after_normal.append(torch.softmax(val_logits[0],0).cpu().detach().numpy())
-            max_prediction, _ = torch.max(max_prediction, 0)
-            max_prediction = max_prediction.unsqueeze(0)
             loss_bag = criterion(val_logits, label)
             loss_max = criterion(max_prediction, label)
             val_loss = 0.5*loss_bag + 0.5*loss_max
