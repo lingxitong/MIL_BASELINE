@@ -32,7 +32,7 @@ def process_TRANS_MIL(args):
     num_classes = args.General.num_classes
     in_dim = args.Model.in_dim
     dropout = args.Model.dropout
-    act = args.Model.act
+    act = get_act(args.Model.act)
     mil_model = TRANS_MIL(num_classes=num_classes,dropout=dropout,act=act,in_dim=in_dim)
     mil_model.to(device)
     
