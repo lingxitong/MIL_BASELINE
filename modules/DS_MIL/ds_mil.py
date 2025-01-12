@@ -77,6 +77,7 @@ class DS_MIL(nn.Module):
         _,Y_hat = torch.max(logits, 1)
         Y_hat = Y_hat.item()
         max_pred, _ = torch.max(classes, 0)
+        max_pred = max_pred.unsqueeze(0)
         forward_return['logits'] = logits
         forward_return['max_prediction'] = max_pred
         if return_WSI_feature:
