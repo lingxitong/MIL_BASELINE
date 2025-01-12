@@ -129,12 +129,12 @@ def main(args):
 
 
 parser = argparse.ArgumentParser(description='Feature Extraction')
-parser.add_argument('--data_h5_dir', default = '/mnt/net_sda/lxt/MB工程化/save_dir' ,type=str)
-parser.add_argument('--feat_dir', type=str, default='/mnt/net_sda/lxt/MB工程化/feat_dir')
+parser.add_argument('--data_h5_dir', default = '' ,type=str)
+parser.add_argument('--feat_dir', type=str, default='')
 parser.add_argument('--batch_size', type=int, default=256)
 parser.add_argument('--no_auto_skip', default=False, action='store_true')
 parser.add_argument('--target_patch_size', type=int, default=224)
-parser.add_argument('--backbone', default='uni',type=str,choices=['vit_s_imagenet','resnet50_imagenet','plip','conch','uni','ctranspath','gigapath','virchow','virchow_v2','conch_v1_5'], help='backbone model')
-parser.add_argument('--pretrained_weights_dir', type=str, default='/mnt/net_sda/lxt/MB工程化/UNI_weights', help='dir to the pretrained backbone')
+parser.add_argument('--backbone', default='',type=str,choices=['vit_s_imagenet','resnet50_imagenet','plip','conch','uni','ctranspath','gigapath','virchow','virchow_v2','conch_v1_5'], help='backbone model')
+parser.add_argument('--pretrained_weights_dir', type=str, default='/path/to/your/weights_dir', help='dir to the pretrained backbone')
 args = parser.parse_args()
 main(args)
