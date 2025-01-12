@@ -83,7 +83,7 @@ def get_backbone(backbone_name:str,device,pretrained_weights_dir):
     elif backbone_name == 'vit_s_imagenet':
         model = timm.create_model('vit_small_patch16_224.augreg_in21k_ft_in1k')
         checkpoint_path = os.path.join(model_dir, "pytorch_model.bin")
-        model.load_state_dict(torch.load(checkpoint_path, map_location=device,weights_only=True), strict=False)
+        model.load_state_dict(torch.load(checkpoint_path, map_location=device,weights_only=True), strict=True)
         model.head = nn.Identity()
         model = model.to(device)
     elif backbone_name == 'plip':
