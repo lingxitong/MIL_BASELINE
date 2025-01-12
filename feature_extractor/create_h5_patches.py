@@ -293,7 +293,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 	return seg_times, patch_times
 
 parser = argparse.ArgumentParser(description='seg and patch')
-parser.add_argument('--source', default = '/mnt/net_sda/lxt/BRACS3',type = str,
+parser.add_argument('--source', default = '',type = str,
 					help='path to folder containing raw wsi image files')
 parser.add_argument('--step_size', type = int, default=256,
 					help='step_size')
@@ -304,9 +304,9 @@ parser.add_argument('--seg', default=False, action='store_true')
 parser.add_argument('--stitch', default=False, action='store_true')
 parser.add_argument('--ext_list', default=['.svs','.mrxs'], type=list,help='list of file extensions to process, .svs, .tif, .sdpc, .ndpi, .mrxs .etc')
 parser.add_argument('--no_auto_skip', default=True, action='store_false')
-parser.add_argument('--save_dir', default='/mnt/net_sda/lxt/BRACS3-patch', type = str,
+parser.add_argument('--save_dir', default='', type = str,
 					help='directory to save processed data')
-parser.add_argument('--preset', default='/mnt/net_sda/lxt/MB工程化/MIL_BASELINE-main/feature_extractor/presets/tcga.csv', type=str,
+parser.add_argument('--preset', default='', type=str,
 					help='predefined profile of default segmentation and filter parameters (.csv)')
 parser.add_argument('--level_or_magnification_control', type=str, default='level', choices=['level', 'magnification'],
                     help='control whether to use patch level or magnification for segmentation and visualization')
