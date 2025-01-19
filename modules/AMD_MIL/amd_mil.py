@@ -87,7 +87,6 @@ class AMD_MIL(nn.Module):
 
     def forward(self, x, return_WSI_attn = False, return_WSI_feature = False):
         forward_return = {}
-        print(x.shape)
         B = x.shape[0]
         N = x.shape[1]
         h = self._fc1(x) 
