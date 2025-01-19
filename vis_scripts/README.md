@@ -17,7 +17,7 @@ python draw_feature_map.py --yaml_path Config.yaml --ckpt_path your_pretrained_w
 
 
 ## :ledger: **Draw Attention Map**
-Plot the attention(importance) map distribution of features within MIL aggregation process. Please note that not all MIL methods have the concept of Attention scores. For MIL methods without Attention scores, the visualization can be considered as contribution or importance scores. Since many MIL methods do not provide a way to visualize attention (or importance), the Representation for importance visualization implemented in this repository may differ somewhat from the original work.
+Plot the attention(importance) map distribution of features within MIL aggregation process. Please note that not all MIL methods have the concept of Attention scores. For MIL methods without Attention scores, the visualization can be considered as contribution or importance scores. Since many MIL methods do not provide a way to visualize attention (or importance), the Representation for importance visualization implemented in this repository may differ somewhat from the original work. For some self-Attention based MIL Framework (with cls-token), we use the similarity between cls-token and patch-tokens to represent the importance of each patch. You can also use the last attention block attn score to represent. 
 ```shell
 python draw_attention_map.py --heatmap_config_yaml your_heatmap_config_yaml
 ```
