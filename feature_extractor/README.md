@@ -94,7 +94,7 @@ virchow_v2_weightes_dir/
 Model Download Link and timm-version:
 - [resnet50_imagenet](https://download.pytorch.org/models/resnet50-19c8e357.pth)
 - [vit_s_imagenet](https://huggingface.co/timm/vit_small_patch16_224.augreg_in21k_ft_in1k/tree/main)
-- [ctranspath](https://drive.google.com/file/d/1DoDx_70_TLj98gTf6YTXnu4tFhsFocDX/view?usp=sharing) `custom-timm==0.5.4` [download-custom-timm==0.5.4](https://drive.google.com/file/d/1JV7aj9rKqGedXY1TdDfi3dP07022hcgZ/view)
+- [ctranspath](https://drive.google.com/file/d/1DoDx_70_TLj98gTf6YTXnu4tFhsFocDX/view?usp=sharing)/[chief_ctranspath](https://drive.google.com/drive/folders/1uRv9A1HuTW5m_pJoyMzdN31bE1i-tDaV) `custom-timm==0.5.4` [download-custom-timm==0.5.4](https://drive.google.com/file/d/1JV7aj9rKqGedXY1TdDfi3dP07022hcgZ/view)
 - [plip](https://huggingface.co/vinid/plip/tree/main) `timm>=0.9.16`
 - [conch](https://huggingface.co/MahmoodLab/CONCH) `timm>=0.9.16`
 - [uni](https://huggingface.co/MahmoodLab/UNI) `timm>=0.9.16`
