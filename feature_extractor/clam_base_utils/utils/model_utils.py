@@ -175,6 +175,7 @@ def feature_extractor_adapter(model, batch,model_name):
 		patch_tokens = features[:, 1:]  
 		features = torch.cat([class_token, patch_tokens.mean(1)], dim=-1) 
 	elif model_name == 'virchow_v2':
+		features = model(batch)
 		class_token = features[:, 0]    
 		patch_tokens = features[:, 5:] 
 		features = torch.cat([class_token, patch_tokens.mean(1)], dim=-1)
