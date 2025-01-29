@@ -140,7 +140,6 @@ def compute_from_patches(wsi_object, feature_extractor_name=None, feature_extrac
             features = feature_extractor_adapter(feature_extractor, roi, feature_extractor_name)t
             if len(features.shape) == 3:
                 features = features.squeeze(0)
-            features = features.unsqueeze(0)
 
             if attn_save_path is not None:
                 # A = mil_model(features, return_WSI_attn=True)
