@@ -3,9 +3,6 @@ import os
 from ..models.resnet_custom import resnet50_baseline
 from transformers import CLIPModel, CLIPProcessor
 import timm
-from .conch_v1_5_config import ConchConfig
-from .build_conch_v1_5 import build_conch_v1_5
-from timm.layers import SwiGLUPacked
 from ..conch.open_clip_custom import *
 from typing import List, Union, Tuple
 import torch.nn as nn
@@ -127,6 +124,7 @@ def get_backbone(backbone_name:str,device,pretrained_weights_dir):
         model.load_state_dict(state_dict['model'], strict=True)
         model = model.to(device)
     elif backbone_name == 'virchow':
+	from timm.layers import SwiGLUPacked
         virchow_config = {
         "img_size": 224,
         "init_values": 1e-5,
@@ -154,6 +152,8 @@ def get_backbone(backbone_name:str,device,pretrained_weights_dir):
         model.load_state_dict(state_dict, strict=True)
         model = model.to(device)
     elif backbone_name == 'conch_v1_5':
+	from .conch_v1_5_config import ConchConfig
+	from .build_conch_v1_5 import build_conch_v1_5
         checkpoint_path = os.path.join(model_dir, "conch_v1_5_pytorch_model.bin")
         conch_v1_5_config = ConchConfig()
         model = build_conch_v1_5(conch_v1_5_config, checkpoint_path)
