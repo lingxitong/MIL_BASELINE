@@ -86,7 +86,6 @@ class TRANS_MIL(nn.Module):
 
     def forward(self, x, return_WSI_attn = False, return_WSI_feature = False):
         forward_return = {}
-        print(x.shape)
         n = x.shape[1]
         h = x.float() #[B, n, 1024]
         
