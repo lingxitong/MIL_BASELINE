@@ -36,7 +36,7 @@ def process_FR_MIL(args):
     k = args.Model.k
     num_heads = args.Model.num_heads
     act = args.Model.act
-    mil_model = FR_MIL(num_classes=num_classes,hidden_dim = hidden_dim,k = k,num_heads= num_heads,act=act,in_dim=in_dim)
+    mil_model = FR_MIL(num_classes=num_classes,hidden_dim = hidden_dim,k = k,num_heads= num_heads,act=get_act(act),in_dim=in_dim)
     mil_model.to(device)
     
     print('Model Ready!')
