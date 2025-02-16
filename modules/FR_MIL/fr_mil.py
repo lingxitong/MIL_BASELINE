@@ -3,7 +3,6 @@ import sys
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
-from utils.process_utils import get_act
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -37,7 +36,7 @@ class MAB(nn.Module):
         A = torch.softmax(Q_.bmm(K_.transpose(1,2))/math.sqrt(self.dim_V), 2)
         O = torch.cat((Q_ + A.bmm(V_)).split(Q.size(0), 0), 2)
         O = O if getattr(self, 'ln0', None) is None else self.ln0(O)
-        O = O + get_act(self.act)(self.fc_o(O))
+        O = O + self.act(self.fc_o(O))
         O = O if getattr(self, 'ln1', None) is None else self.ln1(O)
         
         if inst_mode: #[N,K,D] --> [N,K,D]
@@ -111,7 +110,7 @@ class FR_MIL(nn.Module):
         
         A1, Q = self.recalib(inputs, 'max')
 
-        inputs  = get_act(self.act)(inputs - Q)
+        inputs  = self.act(inputs - Q)
         i_shift = inputs
         #---->pad inputs 
         H          = inputs.shape[1] # Number of Instances in Bag    
