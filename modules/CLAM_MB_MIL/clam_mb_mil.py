@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from utils.process_utils import get_act
 """
 Attention Network without Gating (2 fc layers)
 args:
@@ -181,11 +180,11 @@ class CLAM_SB_MIL(nn.Module):
 
 class CLAM_MB_MIL(CLAM_SB_MIL):
     def __init__(self, gate = True, size_arg = "small", dropout = 0., k_sample=8, num_classes=2,
-        instance_loss_fn=nn.CrossEntropyLoss(), subtyping=False, embed_dim=1024,act='relu',instance_eval=False):
+        instance_loss_fn=nn.CrossEntropyLoss(), subtyping=False, embed_dim=1024,act=nn.ReLU(),instance_eval=False):
         nn.Module.__init__(self)
         self.size_dict = {"small": [embed_dim, 512, 256], "big": [embed_dim, 512, 384]}
         size = self.size_dict[size_arg]
-        fc = [nn.Linear(size[0], size[1]), get_act(act), nn.Dropout(dropout)]
+        fc = [nn.Linear(size[0], size[1]), act, nn.Dropout(dropout)]
         if gate:
             attention_net = Attn_Net_Gated(L = size[1], D = size[2], dropout = dropout, n_classes = num_classes)
         else:
