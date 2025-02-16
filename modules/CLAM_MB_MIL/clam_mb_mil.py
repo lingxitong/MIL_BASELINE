@@ -256,6 +256,6 @@ class CLAM_MB_MIL(CLAM_SB_MIL):
         if return_WSI_attn:
             forward_return['WSI_attn'] = A_raw[Y_hat]
         if return_WSI_feature:
-            forward_return['WSI_feature'] = M
+            forward_return['WSI_feature'] = M[Y_hat].squeeze(0)
         forward_return['logits'] = logits
         return forward_return
