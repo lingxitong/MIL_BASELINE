@@ -82,6 +82,7 @@ fix bug of all MIL-models expect DTFD-MIL
 * DGR_MIL [Exploring Diverse Global Representation in MIL for WSI Classification](https://arxiv.org/abs/2407.03575) (ECCV 2024) 
 * CDP_MIL [cDP-MIL: Robust Multiple Instance Learning via Cascaded Dirichlet Process](https://arxiv.org/abs/2407.11448) (ECCV 2024)
 * CA_MIL [Context-Aware Multiple Instance Learning for WSI Classification](https://arxiv.org/pdf/2305.05314) (ICLR 2024)
+* AC_MIL [Attention-Challenging Multiple Instance Learning for WSI Classification](https://arxiv.org/pdf/2311.07125) (ECCV 2024)
 * UPDATING...
 
 ### ☑️  Implementated Metrics
