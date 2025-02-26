@@ -36,7 +36,7 @@ def process_CLAM_SB_MIL(args):
     dropout = args.Model.dropout
     num_classes = args.General.num_classes
     gate = args.Model.gate
-    act = args.Model.act
+    act = get_act(args.Model.act)
     instance_eval = args.Model.instance_eval
     device = torch.device(f'cuda:{args.General.device}')
     instance_loss_fn = args.Model.instance_loss_fn
