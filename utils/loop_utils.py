@@ -429,7 +429,7 @@ def dtfd_val_loop(device,num_classes,model_list,loader,criterion,num_Group,grad_
             slide_sub_preds.append(tPredict)
 
         slide_pseudo_feat = torch.cat(slide_pseudo_feat, dim=0)
-        # gSlidePred = torch.softmax(attCls(slide_pseudo_feat), dim=1)
+        gSlidePred = torch.softmax(attCls(slide_pseudo_feat), dim=1)
         forward_return = attCls(slide_pseudo_feat, return_WSI_attn = return_WSI_attn, return_WSI_feature = retrun_WSI_feature)
         if retrun_WSI_feature:
             WSI_feature = forward_return['WSI_feature']
