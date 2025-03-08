@@ -55,6 +55,9 @@ def process(args,yaml_path,options):
     elif args.General.MODEL_NAME == 'AMD_MIL':
         from .AMD_MIL.process_amd_mil import process_AMD_MIL
         process_AMD_MIL(args)
+    elif args.General.MODEL_NAME == 'AC_MIL':
+        from .AC_MIL.process_ac_mil import process_AC_MIL
+        process_AC_MIL(args)
     else:
         raise ValueError('Model Not Found')
     # save every slide softmax-logits (confidence for each slide towards each class)
