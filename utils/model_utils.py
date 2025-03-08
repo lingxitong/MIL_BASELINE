@@ -207,6 +207,9 @@ def get_model_from_yaml(yaml_args):
         from modules.AMD_MIL.amd_mil import AMD_MIL
         mil_model = AMD_MIL(yaml_args.General.num_classes,yaml_args.Model.in_dim,yaml_args.Model.embed_dim,yaml_args.Model.dropout,get_act(yaml_args.Model.act),yaml_args.Model.agent_num)
         return mil_model
+    elif model_name == 'AC_MIL':
+        from modules.AC_MIL.ac_mil import AC_MIL
+        mil_model = AC_MIL(yaml_args.Model.in_dim, yaml_args.Model.hidden_dim, yaml_args.General.num_classes,yaml_args.Model.n_token, yaml_args.Model.n_masked_patch, yaml_args.Model.mask_drop)
     elif model_name == 'RRT_MIL':
         from modules.RRT_MIL.rrt_mil import RRT_MIL
 
