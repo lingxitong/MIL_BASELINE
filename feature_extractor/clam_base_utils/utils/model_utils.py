@@ -124,19 +124,19 @@ def get_backbone(backbone_name:str,device,pretrained_weights_dir):
         model.load_state_dict(state_dict['model'], strict=True)
         model = model.to(device)
     elif backbone_name == 'virchow':
-	from timm.layers import SwiGLUPacked
-        virchow_config = {
+       from timm.layers import SwiGLUPacked
+       virchow_config = {
         "img_size": 224,
         "init_values": 1e-5,
         "num_classes": 0,
         "mlp_ratio": 5.3375,
         "global_pool": "",
         "dynamic_img_size": True}
-        checkpoint_path = os.path.join(model_dir, "pytorch_model.bin")
-        model = timm.create_model("vit_huge_patch14_224", pretrained=False,mlp_layer=SwiGLUPacked, act_layer=torch.nn.SiLU,**virchow_config)
-        state_dict = torch.load(checkpoint_path, map_location="cpu",weights_only=True)
-        model.load_state_dict(state_dict, strict=True)
-        model = model.to(device)
+       checkpoint_path = os.path.join(model_dir, "pytorch_model.bin")
+       model = timm.create_model("vit_huge_patch14_224", pretrained=False,mlp_layer=SwiGLUPacked, act_layer=torch.nn.SiLU,**virchow_config)
+       state_dict = torch.load(checkpoint_path, map_location="cpu",weights_only=True)
+       model.load_state_dict(state_dict, strict=True)
+       model = model.to(device)
     elif backbone_name == 'virchow_v2':
         virchow_config = {
         "img_size": 224,
@@ -152,13 +152,13 @@ def get_backbone(backbone_name:str,device,pretrained_weights_dir):
         model.load_state_dict(state_dict, strict=True)
         model = model.to(device)
     elif backbone_name == 'conch_v1_5':
-	from .conch_v1_5_config import ConchConfig
-	from .build_conch_v1_5 import build_conch_v1_5
-        checkpoint_path = os.path.join(model_dir, "conch_v1_5_pytorch_model.bin")
-        conch_v1_5_config = ConchConfig()
-        model = build_conch_v1_5(conch_v1_5_config, checkpoint_path)
-        model = model.to(device)
-    model.eval()
+      from .conch_v1_5_config import ConchConfig
+      from .build_conch_v1_5 import build_conch_v1_5
+      checkpoint_path = os.path.join(model_dir, "conch_v1_5_pytorch_model.bin")
+      conch_v1_5_config = ConchConfig()
+      model = build_conch_v1_5(conch_v1_5_config, checkpoint_path)
+      model = model.to(device)
+      model.eval()
     return model
         
 

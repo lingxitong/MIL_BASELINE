@@ -401,9 +401,9 @@ class WholeSlideImage(object):
             if (idx + 1) % fp_chunk_size == fp_chunk_size:
                 print('Processing contour {}/{}'.format(idx, n_contours))
             if strict_control:
-                asset_dict, attr_dict = self.process_contour_strict(cont, self.holes_tissue[idx], patch_level, save_path, real_patch_size, patch_size, step_size, **kwargs)
+                asset_dict, attr_dict = self.process_contour_strict(cont, self.holes_tissue[idx], patch_level, save_path,real_patch_size, patch_size, step_size, **kwargs)
             else:
-                asset_dict, attr_dict = self.process_contour(cont, self.holes_tissue[idx], patch_level, save_path, patch_size, step_size, **kwargs)
+                asset_dict, attr_dict = self.process_contour(cont, self.holes_tissue[idx], patch_level, save_path,  patch_size, step_size, **kwargs)
             if len(asset_dict) > 0:
                 if init:
                     save_hdf5(save_path_hdf5, asset_dict, attr_dict, mode='w')
@@ -479,6 +479,7 @@ class WholeSlideImage(object):
         results = pool.starmap(WholeSlideImage.process_coord_candidate, iterable)
         pool.close()
         results = np.array([result for result in results if result is not None])
+
         
         print('Extracted {} coordinates'.format(len(results)))
 
@@ -565,6 +566,7 @@ class WholeSlideImage(object):
         results = pool.starmap(WholeSlideImage.process_coord_candidate, iterable)
         pool.close()
         results = np.array([result for result in results if result is not None])
+
         
         print('Extracted {} coordinates'.format(len(results)))
 

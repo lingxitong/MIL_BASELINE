@@ -99,7 +99,7 @@ class Whole_Slide_Bag_FP(Dataset):
 		pretrained=False,
 		custom_transforms=None,
 		custom_downsample=1,
-		target_patch_size=-1
+		target_patch_size=-1,
 		):
 		"""
 		Args:
@@ -117,7 +117,6 @@ class Whole_Slide_Bag_FP(Dataset):
 			self.roi_transforms = custom_transforms
 
 		self.file_path = file_path
-
 		with h5py.File(self.file_path, "r") as f:
 			dset = f['coords']
 			self.patch_level = f['coords'].attrs['patch_level']
@@ -162,16 +161,56 @@ class Whole_Slide_Bag_FP(Dataset):
 		img = self.roi_transforms(img).unsqueeze(0)
 		return img, coord
 
+class Whole_Slide_Bag_FP_Patch_Dir(Whole_Slide_Bag_FP):
+	def __init__(self,
+		file_path,
+		wsi,
+		pretrained=False,
+		custom_transforms=None,
+		custom_downsample=1,
+		target_patch_size=-1,
+		patch_img_save_dir = None,
+		):
+		super().__init__(file_path,wsi,pretrained,custom_transforms,custom_downsample,target_patch_size)
+		self.patch_img_save_dir = patch_img_save_dir
+		self.img_list = os.listdir(self.patch_img_save_dir)
+		X = [int(os.path.basename(img_name).split('.')[0].split('_')[0]) for img_name in self.img_list]
+		Y = [int(os.path.basename(img_name).split('.')[0].split('_')[1]) for img_name in self.img_list]
+		self.img_list = [img_name for _, _, img_name in sorted(zip(X, Y, self.img_list))]
+		self.img_list = [os.path.join(self.patch_img_save_dir,img_name) for img_name in self.img_list]
+	
+
+	def __getitem__(self, idx):
+		img_path = self.img_list[idx]
+		img = Image.open(img_path)
+		X,Y = os.path.basename(img_path).split('.')[0].split('_')
+		coord = np.array([int(X),int(Y)])
+		if isinstance(img, Image.Image):
+			img = img.convert('RGB')
+		else:
+			img = Image.fromarray(img)
+		if self.patch_size != self.real_patch_size:
+			img = img.resize((self.real_patch_size, self.real_patch_size))
+
+		if self.target_patch_size is not None:
+			img = img.resize(self.target_patch_size)
+		img = self.roi_transforms(img).unsqueeze(0)
+		return img, coord
+	
+
+		
+
 class Dataset_All_Bags(Dataset):
 
-	def __init__(self, csv_path):
+	def __init__(self, csv_path, head):
 		self.df = pd.read_csv(csv_path)
+		self.head = head
 	
 	def __len__(self):
 		return len(self.df)
 
 	def __getitem__(self, idx):
-		return self.df['slide_id'][idx]
+		return self.df[self.head][idx]
 
 
 
