@@ -90,7 +90,7 @@ fix bug of all MIL-models expect DTFD-MIL
 * `AUC`: macro,micro,weighed (same when 2-classes)
 * `F1,PRE,RECALL`: macro,micro,weighed
 * `ACC,BACC`: BACC is macro-RECALL
-* `KAPPLE`: linear,quadratic
+* `KAPPA`: linear,quadratic
 * `Confusion_Mat`
 
 
