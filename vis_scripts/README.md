@@ -33,6 +33,6 @@ python draw_attention_map.py --heatmap_config_yaml your_heatmap_config_yaml
         /path/to/slide_6.ndpi
         ```
     - `encoder_arguments.model_name` : Patch encoder name
-    - `encoder_arguments.model_weights_di` : Patch encoder weights dir 
+    - `encoder_arguments.model_weights_dir` : Patch encoder weights dir 
     - `model_arguments.yaml_path` : MIL model yaml config
     - `model_arguments.ckpt_path` : MIL model pretrained weights
