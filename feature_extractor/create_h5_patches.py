@@ -310,7 +310,7 @@ def seg_and_patch(source, source_csv, save_dir, patch_save_dir,patch_img_save_di
 	assert ext_list is not None, 'ext_list must be provided'
 	if os.path.exists(source_csv):
 		source_df = pd.read_csv(source_csv)
-		slides = source_df['wsi_path'].to_list
+		slides = source_df['wsi_path'].to_list()
 	else:
 		slides = recursion_get_wsis(source, ext_list)
 	if process_list is None:
@@ -337,6 +337,7 @@ def seg_and_patch(source, source_csv, save_dir, patch_save_dir,patch_img_save_di
 	num_workers = multiprocess_slide
 	indexs_list = split_index_by_num_workers(num_workers,total)
 	num_workers = len(indexs_list)
+	save_patch_img = False
 	if patch_img_save_dir != None:
 		save_patch_img = True
 	with ThreadPoolExecutor(max_workers=num_workers) as executor:
