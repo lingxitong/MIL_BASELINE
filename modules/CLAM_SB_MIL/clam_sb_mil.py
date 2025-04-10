@@ -77,7 +77,7 @@ args:
 """
 class CLAM_SB_MIL(nn.Module):
     def __init__(self, gate = True, size_arg = "small", dropout = 0., k_sample=8, num_classes=2,
-        instance_loss_fn=nn.CrossEntropyLoss(), subtyping=False, in_dim=1024,act=nn.Relu(),instance_eval=True):
+        instance_loss_fn=nn.CrossEntropyLoss(), subtyping=False, in_dim=1024,act=nn.ReLU(),instance_eval=True):
         super().__init__()
         self.size_dict = {"small": [in_dim, 512, 256], "big": [in_dim, 512, 384]}
         size = self.size_dict[size_arg]
