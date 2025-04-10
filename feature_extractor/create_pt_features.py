@@ -130,10 +130,12 @@ def main(args):
 			except:
 				print(f'{slide_file_path} can not open')
 				continue
-		
-		output_file_path = compute_w_loader(args,h5_file_path, patch_img_save_dir, output_path, wsi, 
+		try:
+			output_file_path = compute_w_loader(args,h5_file_path, patch_img_save_dir, output_path, wsi, 
 		model = model, batch_size = args.batch_size, verbose = 1, print_every = 20, 
 		custom_downsample=custom_downsample, target_patch_size=args.target_patch_size,num_workers= args.num_workers)
+		except:
+			continue
 
 		time_elapsed = time.time() - time_start
 		print('\ncomputing features for {} took {} s'.format(output_file_path, time_elapsed))
