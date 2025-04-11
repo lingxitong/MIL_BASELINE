@@ -210,39 +210,6 @@ def get_model_from_yaml(yaml_args):
     elif model_name == 'AC_MIL':
         from modules.AC_MIL.ac_mil import AC_MIL
         mil_model = AC_MIL(yaml_args.Model.in_dim, yaml_args.Model.hidden_dim, yaml_args.General.num_classes,yaml_args.Model.n_token, yaml_args.Model.n_masked_patch, yaml_args.Model.mask_drop)
-    elif model_name == 'RRT_MIL':
-        from modules.RRT_MIL.rrt_mil import RRT_MIL
-
-        model_params = {
-        'in_dim': yaml_args.Model.in_dim,
-        'num_classes': yaml_args.General.num_classes,
-        'dropout': yaml_args.Model.dropout,
-        'act': yaml_args.Model.act,
-        'region_num': yaml_args.Model.region_num,
-        'pos': yaml_args.Model.pos,
-        'pos_pos': yaml_args.Model.pos_pos,
-        'peg_k': yaml_args.Model.peg_k,
-        'drop_path': yaml_args.Model.drop_path,
-        'n_layers': yaml_args.Model.n_layers,
-        'n_heads': yaml_args.Model.n_heads,
-        'attn': yaml_args.Model.attn,
-        'da_act': yaml_args.Model.da_act,
-        'trans_dropout': yaml_args.Model.trans_dropout,
-        'ffn': yaml_args.Model.ffn,
-        'mlp_ratio': yaml_args.Model.mlp_ratio,
-        'mlp_dim': yaml_args.Model.mlp_dim,
-        'trans_dim': yaml_args.Model.trans_dim,
-        'epeg': yaml_args.Model.epeg,
-        'min_region_num': yaml_args.Model.min_region_num,
-        'qkv_bias': yaml_args.Model.qkv_bias,
-        'conv_k': yaml_args.Model.conv_k,
-        'conv_2d':  yaml_args.Model.conv_2d,
-        'conv_bias': yaml_args.Model.conv_bias,
-        'conv_type': yaml_args.Model.conv_type,
-        'region_attn': yaml_args.Model.region_attn,
-        'peg_1d': yaml_args.Model.peg_1d,}
-        mil_model = RRT_MIL(yaml_args.Model.head_type,**model_params)
-        return mil_model
     elif model_name == 'DTFD_MIL':
         from modules.DTFD_MIL.dtfd_mil import Classifier_1fc,Attention,DimReduction,Attention_with_Classifier
         classifier = Classifier_1fc(yaml_args.Model.mdim, yaml_args.General.num_classes, yaml_args.Model.classifier_dropout)
