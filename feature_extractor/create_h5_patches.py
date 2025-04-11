@@ -370,7 +370,7 @@ parser.add_argument('--ext_list', default=['.svs','.mrxs'], type=list,help='list
 parser.add_argument('--no_auto_skip', default=True, action='store_false')
 parser.add_argument('--save_dir', default='', type = str,
 					help='directory to save processed data')
-parser.add_argument('--preset', default='/mnt/sdb/lxt/MB更新24/MIL_BASELINE-main/feature_extractor/presets/tcga.csv', type=str,
+parser.add_argument('--preset', default='./MIL_BASELINE-main/feature_extractor/presets/tcga.csv', type=str,
 					help='predefined profile of default segmentation and filter parameters (.csv)')
 parser.add_argument('--level_or_magnification_control', type=str, default='level', choices=['level', 'magnification'],
                     help='control whether to use patch level or magnification for segmentation and visualization')
