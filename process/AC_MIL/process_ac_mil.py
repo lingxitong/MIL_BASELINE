@@ -35,10 +35,10 @@ def process_AC_MIL(args):
     in_dim = args.Model.in_dim
     hidden_dim = args.Model.hidden_dim     
     n_token = args.Model.n_token
-    mask_drop = args.Model.mask_drop
+    mask_prob = args.Model.mask_prob
     n_masked_patch = args.Model.n_masked_patch
 
-    mil_model = AC_MIL(num_classes=num_classes,in_dim=in_dim,hidden_dim=hidden_dim,n_token=n_token,mask_drop=mask_drop,n_masked_patch=n_masked_patch)
+    mil_model = AC_MIL(num_classes=num_classes,in_dim=in_dim,hidden_dim=hidden_dim,n_token=n_token,mask_drop=mask_prob,n_masked_patch=n_masked_patch)
     mil_model.to(device)
     
     print('Model Ready!')
