@@ -22,9 +22,6 @@ def process(args,yaml_path,options):
     elif args.General.MODEL_NAME == 'TRANS_MIL':
         from .TRANS_MIL.process_trans_mil import process_TRANS_MIL
         process_TRANS_MIL(args)
-    elif args.General.MODEL_NAME == 'RRT_MIL':
-        from .RRT_MIL.process_rrt_mil import process_RRT_MIL
-        process_RRT_MIL(args)
     elif args.General.MODEL_NAME == 'CLAM_SB_MIL':
         from .CLAM_SB_MIL.process_clam_sb_mil import process_CLAM_SB_MIL
         process_CLAM_SB_MIL(args)
