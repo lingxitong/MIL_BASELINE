@@ -121,7 +121,7 @@ def patching(WSI_object, **kwargs):
 	return file_path, patch_time_elapsed
 
 def patching_index_list(index_list:list,df,process_stack,source,patch_level,patch_size,step_size,level_or_magnification_control,magnification,
-						use_default_params,legacy_support,seg,save_mask,stitch,patch,save_patch_img,mask_save_dir,patch_save_dir,stitch_save_dir,multiprocess_save_patch,save_dir):
+						use_default_params,legacy_support,seg,save_mask,stitch,patch,save_patch_img,mask_save_dir,patch_save_dir,stitch_save_dir,multiprocess_save_patch,save_dir,patch_img_save_dir):
 	for i in tqdm.tqdm(index_list):
 		idx = process_stack.index[i]
 		slide = process_stack.loc[idx, 'slide_id']
@@ -268,9 +268,6 @@ def patching_index_list(index_list:list,df,process_stack,source,patch_level,patc
 			h5_path = os.path.join(patch_save_dir, slide_id+'.h5')
 			adjust_coords_order(h5_path)
 			if save_patch_img:
-
-				this_patch_img_save_dir = os.path.join(patch_img_save_dir, slide_id)
-				os.makedirs(this_patch_img_save_dir, exist_ok=True)
 				save_patch_img_to_dir(WSI_object, h5_path, now_WSI_level, now_WSI_patch_size, patch_size,now_patch_img_save_dir,multiprocess_save_patch)
 		stitch_time_elapsed = -1
 		if stitch:
@@ -342,7 +339,7 @@ def seg_and_patch(source, source_csv, save_dir, patch_save_dir,patch_img_save_di
 		save_patch_img = True
 	with ThreadPoolExecutor(max_workers=num_workers) as executor:
 		futures = [executor.submit(patching_index_list,index_list,df,process_stack,source,patch_level,patch_size,step_size,level_or_magnification_control,magnification,
-						use_default_params,legacy_support,seg,save_mask,stitch,patch,save_patch_img,mask_save_dir,patch_save_dir,stitch_save_dir,multiprocess_save_patch,save_dir) for index_list in indexs_list]
+						use_default_params,legacy_support,seg,save_mask,stitch,patch,save_patch_img,mask_save_dir,patch_save_dir,stitch_save_dir,multiprocess_save_patch,save_dir,patch_img_save_dir) for index_list in indexs_list]
 		for future in futures:
 			future.result()
 	df.to_csv(os.path.join(save_dir, 'process_list_autogen.csv'), index=False)
