@@ -165,7 +165,7 @@ class DirichletProcess_VI(nn.Module):
         logits = logits.mean(0)
         assert not torch.isnan(logits).any()
         # logits = F.normalize(logits, dim=2)
-        forward_return['logits'] = logits
+        forward_return['logits'] = logits.unsqueeze(0)
         
         return forward_return
 
