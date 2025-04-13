@@ -42,7 +42,7 @@ def process_CLAM_MB_MIL(args):
     instance_loss_fn = args.Model.instance_loss_fn
     instance_loss_fn = get_criterion(instance_loss_fn)
     bag_weight = args.Model.bag_weight
-    mil_model = CLAM_MB_MIL(gate, size_arg, dropout, k_sample, num_classes, instance_loss_fn, subtyping, in_dim,get_act(act),instance_eval)
+    mil_model = CLAM_MB_MIL(gate, size_arg, dropout, k_sample, num_classes, instance_loss_fn, subtyping, in_dim,act,instance_eval)
     mil_model.to(device)
     
     print('Model Ready!')
