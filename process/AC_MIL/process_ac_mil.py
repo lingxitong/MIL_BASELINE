@@ -5,7 +5,7 @@ from utils.process_utils import get_process_pipeline,get_act
 from utils.wsi_utils import WSI_Dataset
 from utils.general_utils import set_global_seed,init_epoch_info_log,add_epoch_info_log,early_stop
 from utils.model_utils import get_optimizer,get_scheduler,get_criterion,save_last_model,save_log,model_select
-from utils.loop_utils import train_loop,val_loop
+from utils.loop_utils import ac_train_loop,ac_val_loop
 from tqdm import tqdm
     
 def process_AC_MIL(args):
@@ -66,17 +66,17 @@ def process_AC_MIL(args):
             now_scheduler = warmup_scheduler
         else:
             now_scheduler = scheduler
-        train_loss,cost_time = train_loop(device,mil_model,train_dataloader,criterion,optimizer,now_scheduler)
+        train_loss,cost_time = ac_train_loop(device,mil_model,train_dataloader,criterion,optimizer,now_scheduler,n_token)
         if process_pipeline == 'Train_Val_Test':
-            val_loss,val_metrics = val_loop(device,num_classes,mil_model,val_dataloader,criterion)
-            test_loss,test_metrics = val_loop(device,num_classes,mil_model,test_dataloader,criterion)
+            val_loss,val_metrics = ac_val_loop(device,num_classes,mil_model,val_dataloader,criterion,n_token)
+            test_loss,test_metrics = ac_val_loop(device,num_classes,mil_model,test_dataloader,criterion,n_token)
         elif process_pipeline == 'Train_Val':
-            val_loss,val_metrics = val_loop(device,num_classes,mil_model,val_dataloader,criterion)
+            val_loss,val_metrics = ac_val_loop(device,num_classes,mil_model,val_dataloader,criterion,n_token)
             test_loss,test_metrics = None,None
         elif process_pipeline == 'Train_Test':
             val_loss,val_metrics,test_loss,test_metrics = None,None,None,None
             if epoch+1 == args.General.num_epochs:
-                test_loss,test_metrics = val_loop(device,num_classes,mil_model,test_dataloader,criterion)
+                test_loss,test_metrics = ac_val_loop(device,num_classes,mil_model,test_dataloader,criterion,n_token)
 
 
         FAIL = '\033[91m'

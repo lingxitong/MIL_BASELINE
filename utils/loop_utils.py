@@ -99,6 +99,83 @@ def val_loop(device,num_classes,model,loader,criterion,retrun_WSI_feature = Fals
     val_loss_log /= len(loader)
     return val_loss_log,val_metrics
 
+def ac_train_loop(device,model,loader,criterion,optimizer,scheduler,n_token):
+    start = time.time()
+    model.train()
+    train_loss_log = 0
+    for i, data in enumerate(loader):
+        optimizer.zero_grad()
+        label = data[1].long().to(device)
+        bag = data[0].to(device).float()
+        forward_return = model(bag)
+        train_logits = forward_return['logits']
+        sub_preds = forward_return['sub_preds']
+        attns = forward_return['attns']
+        if n_token > 1:
+            loss0 = criterion(sub_preds, label.repeat_interleave(n_token))
+        else:
+            loss0 = torch.tensor(0.)
+        diff_loss = torch.tensor(0).to(device, dtype=torch.float)
+        attns = torch.softmax(attns, dim=-1)
+
+        for i in range(n_token):
+            for j in range(i + 1, n_token): 
+                diff_loss += torch.cosine_similarity(attns[:, i], attns[:, j], dim=-1).mean() / (
+                            n_token * (n_token - 1) / 2)
+        train_loss = criterion(train_logits, label)
+        train_loss = diff_loss + loss0 + train_loss
+        train_loss_log += train_loss.item()
+        train_loss.backward()
+        optimizer.step()
+    if scheduler is not None:
+        scheduler.step()
+    train_loss_log /= len(loader)
+    end = time.time()
+    total_time = end - start
+    return train_loss_log,total_time
+
+
+def ac_val_loop(device,num_classes,model,loader,criterion,n_token,retrun_WSI_feature = False,return_WSI_attn=False):
+    model.eval()
+    val_loss_log = 0
+    labels = []
+    bag_predictions_after_normal = []
+    model = model.to(device)
+    WSI_features = []
+    WSI_attns = []
+    with torch.no_grad():
+        for i, data in enumerate(loader):
+            label = data[1].long().to(device)
+            bag = data[0].to(device).float()
+            forward_return = model(bag)
+            val_logits = forward_return['logits']
+            val_logits = val_logits.squeeze(0)
+            bag_predictions_after_normal.append(torch.softmax(val_logits,0).cpu().numpy())
+            val_logits = val_logits.unsqueeze(0)
+            sub_preds = forward_return['sub_preds']
+            attns = forward_return['attns']
+            if n_token > 1:
+                loss0 = criterion(sub_preds, label.repeat_interleave(n_token))
+            else:
+                loss0 = torch.tensor(0.)
+            diff_loss = torch.tensor(0).to(device, dtype=torch.float)
+            attns = torch.softmax(attns, dim=-1)
+            for i in range(n_token):
+                for j in range(i + 1, n_token): 
+                    diff_loss += torch.cosine_similarity(attns[:, i], attns[:, j], dim=-1).mean() / (
+                                n_token * (n_token - 1) / 2)
+            val_loss = criterion(val_logits, label)
+            val_loss = diff_loss + loss0 + val_loss
+            val_loss_log += val_loss.item()
+    if retrun_WSI_feature:
+        WSI_features = torch.cat(WSI_features, dim=0).cpu().numpy()
+        return WSI_features
+    if return_WSI_attn:
+        return WSI_attns
+    val_metrics= cal_scores(bag_predictions_after_normal,labels,num_classes)
+    val_loss_log /= len(loader)
+    return val_loss_log,val_metrics
+
 
 # clam has instance-loss defferent from other mil models
 def clam_train_loop(device,model,loader,criterion,optimizer,scheduler,bag_weight):

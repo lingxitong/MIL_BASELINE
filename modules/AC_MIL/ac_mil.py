@@ -78,11 +78,12 @@ class AC_MIL(nn.Module):
         attns = torch.cat(attns, 1)
         feat_bag = self.bag_attention(v, attns.softmax(dim=-1).mean(1, keepdim=True))
         forward_return['logits'] = self.Slide_classifier(feat_bag)
+        forward_return['sub_preds'] = torch.cat(outputs, dim=0)
+        forward_return['attns'] = attns
         if return_WSI_feature:
             forward_return['WSI_feature'] = feat_bag
         if return_WSI_attn:
             forward_return['WSI_attn'] = attns.mean(0).transpose(0, 1)
-
         return forward_return
 
 
