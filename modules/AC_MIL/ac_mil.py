@@ -83,7 +83,7 @@ class AC_MIL(nn.Module):
         if return_WSI_feature:
             forward_return['WSI_feature'] = feat_bag
         if return_WSI_attn:
-            forward_return['WSI_attn'] = attns.mean(0).transpose(0, 1)
+            forward_return['WSI_attn'] = attns.mean(0).mean(0).unsqueeze(-1)
         return forward_return
 
 
