@@ -146,6 +146,7 @@ def ac_val_loop(device,num_classes,model,loader,criterion,n_token,retrun_WSI_fea
     with torch.no_grad():
         for i, data in enumerate(loader):
             label = data[1].long().to(device)
+            labels.append(label.cpu().numpy())
             bag = data[0].to(device).float()
             forward_return = model(bag)
             val_logits = forward_return['logits']
