@@ -93,7 +93,7 @@ def main(args):
 
     WSI_labels = np.array(test_ds.labels_list)
     WSI_labels = WSI_labels.astype(int)
-    draw_tsne(WSI_features, WSI_labels, args.id2class, args.save_path, args.fig_size,args.seed)
+    draw_tsne(WSI_features, WSI_labels, args.id2class, args.save_path, (10,8) ,args.seed)
     print(f"TSNE plot saved at {args.save_path}")
 
 if __name__ == "__main__":    
@@ -102,7 +102,6 @@ if __name__ == "__main__":
     argparser.add_argument('--seed', type=int,default = 42, help='seed for reproducibility')
     argparser.add_argument('--ckpt_path', type=str,default='',help='path to pretrained weights')
     argparser.add_argument('--save_path', type=str, default='',help='path to save the model')
-    argparser.add_argument('--fig_size', type=tuple,default = (10,8),help='size of the figure')
     argparser.add_argument('--id2class', type=str,default='',help='str type dictionary mapping label ids to class names')
     argparser.add_argument('--test_dataset_csv', type=str,default='',help='path to dataset csv file')
     args = argparser.parse_args()
