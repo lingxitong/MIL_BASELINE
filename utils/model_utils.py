@@ -158,7 +158,7 @@ def get_model_from_yaml(yaml_args):
         return mil_model
     elif model_name == 'FR_MIL':
         from modules.FR_MIL.fr_mil import FR_MIL
-        mil_model = FR_MIL(yaml_args.General.num_classes,yaml_args.Model.num_heads,yaml_args.Model.in_dim,yaml_args.Model.k,yaml_args.Model.act,yaml_args.Model.hidden_dim)
+        mil_model = FR_MIL(yaml_args.General.num_classes,yaml_args.Model.num_heads,yaml_args.Model.in_dim,yaml_args.Model.k,get_act(yaml_args.Model.act),yaml_args.Model.hidden_dim)
         return mil_model
     elif model_name == 'DS_MIL':
         from modules.DS_MIL.ds_mil import FCLayer,BClassifier,DS_MIL
