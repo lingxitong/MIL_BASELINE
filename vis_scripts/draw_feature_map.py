@@ -40,7 +40,7 @@ def draw_tsne(feature_tensor, label_tensor, id2class, save_path, fig_size = (10,
 
     plt.figure(figsize=fig_size)
     for label_id, class_name in id2class.items():
-        indices = np.where(label_tensor == label_id)[0]
+        indices = np.where(label_tensor == int(label_id))[0]
         plt.scatter(tsne_result[indices, 0], tsne_result[indices, 1], label=class_name)
     plt.legend()
     plt.savefig(save_path)
@@ -92,6 +92,7 @@ def main(args):
         WSI_features =  val_loop(device,num_classes,mil_model,test_dataloader,criterion,retrun_WSI_feature=True)
 
     WSI_labels = np.array(test_ds.labels_list)
+    WSI_labels = WSI_labels.astype(int)
     draw_tsne(WSI_features, WSI_labels, args.id2class, args.save_path, args.fig_size,args.seed)
     print(f"TSNE plot saved at {args.save_path}")
 
