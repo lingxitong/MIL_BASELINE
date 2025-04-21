@@ -148,13 +148,13 @@ def get_model_from_yaml(yaml_args):
         from modules.CLAM_MB_MIL.clam_mb_mil import CLAM_MB_MIL
         instance_loss_fn = get_criterion(yaml_args.Model.instance_loss_fn)
         mil_model = CLAM_MB_MIL(yaml_args.Model.gate,yaml_args.Model.size_arg,yaml_args.Model.dropout,yaml_args.Model.k_sample,yaml_args.General.num_classes,
-                                instance_loss_fn,yaml_args.Model.subtyping,yaml_args.Model.in_dim,yaml_args.Model.act,yaml_args.Model.instance_eval)
+                                instance_loss_fn,yaml_args.Model.subtyping,yaml_args.Model.in_dim,get_act(yaml_args.Model.act),yaml_args.Model.instance_eval)
         return mil_model
     elif model_name == 'CLAM_SB_MIL':
         from modules.CLAM_SB_MIL.clam_sb_mil import CLAM_SB_MIL
         instance_loss_fn = get_criterion(yaml_args.Model.instance_loss_fn)
         mil_model = CLAM_SB_MIL(yaml_args.Model.gate,yaml_args.Model.size_arg,yaml_args.Model.dropout,yaml_args.Model.k_sample,yaml_args.General.num_classes,
-                                instance_loss_fn,yaml_args.Model.subtyping,yaml_args.Model.in_dim,yaml_args.Model.act,yaml_args.Model.instance_eval)
+                                instance_loss_fn,yaml_args.Model.subtyping,yaml_args.Model.in_dim,get_act(yaml_args.Model.act),yaml_args.Model.instance_eval)
         return mil_model
     elif model_name == 'FR_MIL':
         from modules.FR_MIL.fr_mil import FR_MIL
