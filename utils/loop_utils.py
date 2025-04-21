@@ -233,7 +233,7 @@ def dgr_train_loop(device,model,loader,criterion,optimizer,scheduler,now_epoch,e
             train_loss = criterion(train_logits, label)
             lesion_norm = lesion.squeeze(0)
             lesion_norm = torch.nn.functional.normalize(lesion_norm)
-            div_loss = -torch.logdet(lesion_norm@lesion_norm.T+1e-10*torch.eye(n_lesion).cuda())
+            div_loss = -torch.logdet(lesion_norm@lesion_norm.T+1e-10*torch.eye(n_lesion).to(device))
             sim_loss = tripleloss(lesion,p_center,nc_center)
             train_loss = train_loss + 0.1*div_loss + 0.1*sim_loss 
 
