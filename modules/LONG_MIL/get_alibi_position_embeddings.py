@@ -18,7 +18,7 @@ def get_alibi_position_embeddings(save_path=None):
             alibi_biases[pos_x, pos_y] = -val
     alibi_biases = torch.tril(alibi_biases)
     x2 = alibi_biases + alibi_biases.T
-    torch.save(x2,'alibi_tensor_core.pt')
+    torch.save(x2,save_path)
 
 
 
