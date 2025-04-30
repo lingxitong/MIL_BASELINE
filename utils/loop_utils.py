@@ -334,7 +334,7 @@ def ds_val_loop(device,num_classes,model,loader,criterion,retrun_WSI_feature = F
                 continue
             if return_WSI_attn:
                 WSI_attn = model(bag,return_WSI_attn=True)['WSI_attn']
-                WSIs_attns.append(WSI_attn)
+                WSI_attns.append(WSI_attn)
                 continue
             max_prediction = forward_return['max_prediction']
             val_logits = forward_return['logits']
