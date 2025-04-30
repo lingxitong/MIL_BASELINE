@@ -142,6 +142,9 @@ You should ensure the `--test_dataset_csv` contains the column of `test_slide_pa
 You can easily visualize the dimensionality reduction map of the features from the trained MIL model and the distribution of attention scores (or importance scores) by `/vis_scripts/draw_feature_map.py` and `/vis_scripts/draw_attention_map.py`. We have implemented standardized global feature and attention score output interfaces for most models, making the above visualization scripts compatible with most MIL model in the library. The detailed usage instructions are in `/vis_scripts/README.md`.
 
 
+### :card_file_box: **Tips**
+You can use `MIL_BASELINE` as a package, but you should rename the folder `MIL_BASELINE-main` to `MIL_BASELINE`.
+
 ### :beers: **Acknowledgement**
 Thanks to the following repositories for inspiring this repository
   - https://github.com/mahmoodlab/CLAM
