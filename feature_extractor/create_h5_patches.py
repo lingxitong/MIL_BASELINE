@@ -358,7 +358,7 @@ parser.add_argument('--patch_size', type = int, default=256,
 					help='patch_size')
 parser.add_argument('--patch', default=True, action='store_true')
 parser.add_argument('--seg', default=True, action='store_true')
-parser.add_argument('--use_otsu', default=True, action='store_true')
+parser.add_argument('--use_otsu', default=False, action='store_true')
 parser.add_argument('--stitch', default=True, action='store_true')
 parser.add_argument('--save_patch_img', default=True, action='store_true')
 parser.add_argument('--multiprocess_save_patch', default=32,type=int,help='multprocess threads')
