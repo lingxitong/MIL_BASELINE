@@ -159,4 +159,4 @@ Thanks to the following repositories for inspiring this repository
   - https://github.com/DearCaat/MHIM-MIL
 
 ### :sparkles: **Git Pull**
-Personal experience is limited, and code submissions are welcome 
+Personal experience is limited, and code submissions are welcome.
