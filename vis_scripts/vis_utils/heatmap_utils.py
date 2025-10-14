@@ -137,7 +137,7 @@ def compute_from_patches(wsi_object, feature_extractor_name=None, feature_extrac
         coords = coords.numpy()
         
         with torch.inference_mode():
-            features = feature_extractor_adapter(feature_extractor, roi, feature_extractor_name)t
+            features = feature_extractor_adapter(feature_extractor, roi, feature_extractor_name)
             if len(features.shape) == 3:
                 features = features.squeeze(0)
 
