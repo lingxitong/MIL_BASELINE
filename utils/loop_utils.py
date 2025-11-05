@@ -6,12 +6,11 @@ from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, cohen_kappa
 import time
 import torch.nn as nn
 
-def cal_scores(logits, labels, num_classes):       # logits:[batch_size, num_classes]   labels:[batch_size, ]
-    logits = torch.tensor(logits)
+def cal_scores(probs, labels, num_classes):       # probs:[batch_size, num_classes]   labels:[batch_size, ]
+    probs = torch.tensor(probs)
     labels = torch.tensor(labels)
-    predicted_classes = torch.argmax(logits, dim=1)
+    predicted_classes = torch.argmax(probs, dim=1)
     accuracy = accuracy_score(labels.numpy(), predicted_classes.numpy())
-    probs = F.softmax(logits, dim=1)
     if num_classes > 2:
         macro_auc = roc_auc_score(y_true=labels.numpy(), y_score=probs.numpy(), average='macro', multi_class='ovr')
         micro_auc = roc_auc_score(y_true=labels.numpy(), y_score=probs.numpy(), average='micro', multi_class='ovr')
