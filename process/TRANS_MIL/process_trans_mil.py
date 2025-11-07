@@ -22,7 +22,12 @@ def process_TRANS_MIL(args):
     generator.manual_seed(args.General.seed) 
     set_global_seed(args.General.seed)
     num_workers = args.General.num_workers
-    train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers = num_workers,generator=generator)
+    use_balanced_sampler = args.Dataset.balanced_sampler.use
+    if use_balanced_sampler:
+        sampler = train_dataset.get_balanced_sampler(replacement = args.Dataset.balanced_sampler.replacement)
+        train_dataloader = DataLoader(train_dataset, batch_size=1, num_workers = num_workers,generator=generator,sampler=sampler)
+    else:
+        train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers = num_workers,generator=generator)
     val_dataloader = DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=num_workers)
     test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=num_workers)
     

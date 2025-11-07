@@ -12,6 +12,9 @@ With the rapid advancement of computational power and artificial intelligence te
 <details>
 <summary>News of MIL-Baseline</summary>
 
+**2025-11-08**
+Adapt the H5 format feature file for Trident (https://github.com/mahmoodlab/TRIDENT) and add the balanced_sampler plugin.
+
 **2025-1-10**
 fix bug of MIL_BASELINE, update visualization tools, add new MIL methods, add new dataset split methods
 

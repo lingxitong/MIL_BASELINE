@@ -18,6 +18,9 @@ Dataset:
     dataset_csv_path: /path/to/your/dataset.csv
     # dataset_root_dir: /dir/to/your/dataset_dir/
     h5_csv_path: /path/to/your/h5.csv # LONG_MIL needs coords as part of the input, so you need to provide the path to the h5 file
+    balanced_sampler:
+        use: False
+        replacement: True
     
     # h5.csv should be like:
     #  h5_path

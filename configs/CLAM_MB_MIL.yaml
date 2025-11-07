@@ -18,6 +18,9 @@ Dataset:
     
     dataset_csv_path: /path/to/your/dataset.csv
     # dataset_root_dir: /dir/to/your/dataset_dir/
+    balanced_sampler:
+        use: False
+        replacement: True
 
 Logs:
     log_root_dir: /data_sda/lxt/logs

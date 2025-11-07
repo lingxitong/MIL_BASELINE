@@ -22,7 +22,14 @@ class WSI_Dataset(Dataset):
         slide_path = self.slide_path_list[idx]
         label = int(self.labels_list[idx])
         label = torch.tensor(label)
-        feat = torch.load(slide_path)
+
+        # adapting to different feature file types(https://github.com/mahmoodlab/TRIDENT)
+        if slide_path.endswith('.h5'):
+            with h5py.File(slide_path, 'r') as h5_file:
+                feat = h5_file['features'][:]
+                feat = torch.from_numpy(feat)
+        else:
+            feat = torch.load(slide_path)
         if len(feat.shape) == 3:
             feat = feat.squeeze(0)
         return feat,label
@@ -33,6 +40,16 @@ class WSI_Dataset(Dataset):
     def is_with_labels(self):
         return (len(self.labels_list) != 0)
     
+    def get_balanced_sampler(self, replacement=True):
+        from collections import Counter
+        from torch.utils.data import WeightedRandomSampler
+
+        label_counts = Counter(self.labels_list)
+        weights = [1.0 / label_counts[label] for label in self.labels_list]
+        num_samples = len(self.labels_list)
+
+        sampler = WeightedRandomSampler(weights=weights, num_samples=num_samples, replacement=replacement)
+        return sampler
 
     
 class CDP_MIL_WSI_Dataset(WSI_Dataset):

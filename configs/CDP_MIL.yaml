@@ -19,6 +19,9 @@ Dataset:
     dataset_csv_path: /path/to/your/dataset.csv
     BeyesGuassian_pt_dir: /path/to/your/BeyesGuassian_npy_dir/ # speicial dependences for CDP_MIL,you can get it by running /modules/CDP_MIL/get_BayesianGaussian_pt.py
     # dataset_root_dir: /dir/to/your/dataset_dir/
+    balanced_sampler:
+        use: False
+        replacement: True
 
 Logs:
     log_root_dir: /path/to/your/log_dir/
