@@ -40,6 +40,22 @@ fix bug of test_mil.py
 **2024-07-20**
 fix bug of all MIL-models expect DTFD-MIL
 </details>
+
+
+This project was originally developed for our previous work and is continuously maintained to be more user-friendly and support more approaches for histopathology WSI analysis.  
+**If you find this codebase helpful in your research, please consider citing:**
+
+```bibtex
+@inproceedings{ling2024agent,
+  title        = {Agent Aggregator with Mask Denoise Mechanism for Histopathology Whole Slide Image Analysis},
+  author       = {Ling, Xitong and Ouyang, Minxi and Wang, Yizhi and Chen, Xinrui and Yan, Renao and Chu, Hongbo
+                  and Cheng, Junru and Guan, Tian and Tian, Sufang and Liu, Xiaoping and others},
+  booktitle    = {Proceedings of the 32nd ACM International Conference on Multimedia},
+  pages        = {2795--2803},
+  year         = {2024}
+}
+```
+    		
   
 ## :memo: **Overall Introduction**
 ### :bookmark: Library Introduction
