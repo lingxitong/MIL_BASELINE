@@ -41,7 +41,7 @@ fix bug of test_mil.py
 fix bug of all MIL-models expect DTFD-MIL
 </details>
 
-
+---
 This project was originally developed for our previous work and is continuously maintained to be more user-friendly and support more approaches for histopathology WSI analysis.  
 **If you find this codebase helpful in your research, please consider citing:**
 
