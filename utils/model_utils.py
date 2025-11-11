@@ -211,6 +211,14 @@ def get_model_from_yaml(yaml_args):
         from modules.AC_MIL.ac_mil import AC_MIL
         mil_model = AC_MIL(yaml_args.Model.in_dim, yaml_args.Model.hidden_dim, yaml_args.General.num_classes,yaml_args.Model.n_token, yaml_args.Model.n_masked_patch, yaml_args.Model.mask_prob)
         return mil_model
+    elif model_name == 'ADD_MIL':
+        from modules.ADD_MIL.add_mil import ADD_MIL
+        mil_model = ADD_MIL(yaml_args.Model.L, yaml_args.Model.D, yaml_args.General.num_classes, yaml_args.Model.dropout, get_act(yaml_args.Model.act), yaml_args.Model.in_dim)
+        return mil_model
+    elif model_name == 'CA_MIL':
+        from modules.CA_MIL.ca_mil import CA_MIL
+        mil_model = CA_MIL(yaml_args.Model.L, yaml_args.Model.D, yaml_args.General.num_classes, yaml_args.Model.dropout, get_act(yaml_args.Model.act), yaml_args.Model.in_dim)
+        return mil_model
     elif model_name == 'DTFD_MIL':
         from modules.DTFD_MIL.dtfd_mil import Classifier_1fc,Attention,DimReduction,Attention_with_Classifier
         classifier = Classifier_1fc(yaml_args.Model.mdim, yaml_args.General.num_classes, yaml_args.Model.classifier_dropout)
