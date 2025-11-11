@@ -13,7 +13,7 @@ def initialize_weights(module):
             nn.init.constant_(m.weight, 1.0)
 
 class AB_MIL(nn.Module):
-    def __init__(self,L = 512,D = 128,num_classes = 2,dropout=0,act= nn.ReLU() ,in_dim = 512):
+    def __init__(self,L = 512,D = 128,num_classes = 2,dropout=0,act= nn.ReLU() ,in_dim = 512, rrt = None):
         super(AB_MIL, self).__init__()
         self.rrt = rrt
         self.in_dim = in_dim
@@ -27,6 +27,9 @@ class AB_MIL(nn.Module):
 
         if dropout:
             self.feature += [nn.Dropout(dropout)]
+            
+        if self.rrt != None:
+            self.feature += [self.rrt]
 
         self.feature = nn.Sequential(*self.feature)
 
