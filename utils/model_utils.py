@@ -231,10 +231,10 @@ def get_model_from_yaml(yaml_args):
             act=get_act(yaml_args.Model.act)
         )
         return mil_model
-    elif model_name == 'DGMIL_MIL':
-        from modules.DGMIL_MIL.dgmil_mil import DGMIL_MIL
+    elif model_name == 'DG_MIL':
+        from modules.DG_MIL.dg_mil import DG_MIL
         projection_dim = yaml_args.Model.projection_dim if hasattr(yaml_args.Model, 'projection_dim') else 768
-        mil_model = DGMIL_MIL(
+        mil_model = DG_MIL(
             in_dim=yaml_args.Model.in_dim,
             num_classes=yaml_args.General.num_classes,
             dropout=yaml_args.Model.dropout,

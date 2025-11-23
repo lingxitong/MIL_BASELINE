@@ -1,5 +1,5 @@
 General:
-    MODEL_NAME: DGMIL_MIL
+    MODEL_NAME: DG_MIL
     seed: 2024
     num_classes: 2
     num_epochs: 5
@@ -49,3 +49,4 @@ Model:
         cosine_config:
             T_max: 10
             eta_min: 0.0001
+

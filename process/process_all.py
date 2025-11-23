@@ -64,9 +64,9 @@ def process(args,yaml_path,options):
     elif args.General.MODEL_NAME == 'DyHG_MIL':
         from .DyHG_MIL.process_dyhg_mil import process_DyHG_MIL
         process_DyHG_MIL(args)
-    elif args.General.MODEL_NAME == 'DGMIL_MIL':
-        from .DGMIL_MIL.process_dgmil_mil import process_DGMIL_MIL
-        process_DGMIL_MIL(args)
+    elif args.General.MODEL_NAME == 'DG_MIL':
+        from .DG_MIL.process_dg_mil import process_DG_MIL
+        process_DG_MIL(args)
     elif args.General.MODEL_NAME == 'DT_MIL':
         from .DT_MIL.process_dt_mil import process_DT_MIL
         process_DT_MIL(args)

@@ -1,5 +1,5 @@
 """
-DGMIL_MIL - Distribution-Guided Multiple Instance Learning
+DG_MIL - Distribution-Guided Multiple Instance Learning
 """
 import torch
 import torch.nn as nn
@@ -15,14 +15,14 @@ def initialize_weights(module):
             nn.init.constant_(m.weight, 1.0)
             nn.init.constant_(m.bias, 0.0)
 
-class DGMIL_MIL(nn.Module):
+class DG_MIL(nn.Module):
     """
     Distribution-Guided Multiple Instance Learning
     Uses projection head and distribution-guided attention
     """
     def __init__(self, in_dim=1024, num_classes=2, dropout=0.1, act=nn.ReLU(), 
                  projection_dim=768, **kwargs):
-        super(DGMIL_MIL, self).__init__()
+        super(DG_MIL, self).__init__()
         
         self.in_dim = in_dim
         self.num_classes = num_classes
@@ -108,3 +108,4 @@ class DGMIL_MIL(nn.Module):
             forward_return['WSI_attn'] = A_ori.squeeze(-1)  # (N,)
         
         return forward_return
+

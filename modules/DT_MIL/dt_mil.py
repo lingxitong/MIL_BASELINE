@@ -1,7 +1,4 @@
-"""
-DT_MIL - Deformable Transformer Multiple Instance Learning (Original Implementation)
-Adapted from DT-MIL-main to work with feature vectors instead of feature maps
-"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -405,11 +402,7 @@ class DT_MIL(nn.Module):
         return x, mask, pos_embed, grid_size, num_patches
     
     def forward(self, x, return_WSI_attn=False, return_WSI_feature=False):
-        """
-        前向传播
-        输入: x - (B, N, D) 或 (N, D) 形状的tensor
-        输出: forward_return - 包含 'logits' 的字典
-        """
+        
         forward_return = {}
         
         # Handle input format

@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
-from modules.DGMIL_MIL.dgmil_mil import DGMIL_MIL
+from modules.DG_MIL.dg_mil import DG_MIL
 from utils.process_utils import get_process_pipeline, get_act
 from utils.wsi_utils import WSI_Dataset
 from utils.general_utils import set_global_seed, init_epoch_info_log, add_epoch_info_log, early_stop
@@ -8,7 +8,7 @@ from utils.model_utils import get_optimizer, get_scheduler, get_criterion, save_
 from utils.loop_utils import train_loop, val_loop
 from tqdm import tqdm
 
-def process_DGMIL_MIL(args):
+def process_DG_MIL(args):
     train_dataset = WSI_Dataset(args.Dataset.dataset_csv_path, 'train')
     val_dataset = WSI_Dataset(args.Dataset.dataset_csv_path, 'val')
     test_dataset = WSI_Dataset(args.Dataset.dataset_csv_path, 'test')
@@ -37,7 +37,7 @@ def process_DGMIL_MIL(args):
     act = get_act(args.Model.act)
     projection_dim = args.Model.projection_dim if hasattr(args.Model, 'projection_dim') else 768
     
-    mil_model = DGMIL_MIL(
+    mil_model = DG_MIL(
         in_dim=in_dim,
         num_classes=num_classes,
         dropout=dropout,
@@ -97,3 +97,4 @@ def process_DGMIL_MIL(args):
         if epoch + 1 == args.General.num_epochs:
             save_last_model(args, mil_model.state_dict(), epoch + 1)
             save_log(args, epoch_info_log, best_epoch, process_pipeline)
+
