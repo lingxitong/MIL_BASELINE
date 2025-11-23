@@ -100,7 +100,7 @@ def main(args):
     if mil_model_name == 'DTFD_MIL':
         classifier,attention,dimReduction,attCls = get_model_from_yaml(mil_yaml_args)
         attention_kwargs = {'total_instance': mil_yaml_args.Model.total_instance, 'num_Group': mil_yaml_args.Model.num_Group, 'grad_clipping': mil_yaml_args.Model.grad_clipping, 'distill': mil_yaml_args.Model.distill}
-        state_dict = torch.load(mil_model_ckpt_path,weights_only=True)
+        state_dict = torch.load(mil_model_ckpt_path, weights_only=True, map_location=device)
         classifier.load_state_dict(state_dict['classifier'])
         attention.load_state_dict(state_dict['attention'])
         dimReduction.load_state_dict(state_dict['dimReduction'])
@@ -111,7 +111,7 @@ def main(args):
         attention_kwargs = {}
         mil_model = get_model_from_yaml(mil_yaml_args)
         mil_model = mil_model.to(device)
-        mil_model.load_state_dict(torch.load(mil_model_ckpt_path,weights_only=True))
+        mil_model.load_state_dict(torch.load(mil_model_ckpt_path, weights_only=True, map_location=device))
         mil_model.eval()
     # Load feature extractor
     feature_extractor_name = encoder_args.model_name

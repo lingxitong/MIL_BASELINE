@@ -55,9 +55,23 @@ class ADD_MIL(nn.Module):
     def forward(self, x, return_WSI_attn=False, return_WSI_feature=False):
         forward_return = {}
         
-        # Extract features
-        feature = self.feature(x)
-        feature = feature.squeeze(0)
+        # Handle input format - support both 2D and 3D inputs
+        if len(x.shape) == 2:
+            # Input is (N, D) - already 2D
+            x = x.unsqueeze(0)  # (1, N, D)
+        elif len(x.shape) == 3:
+            # Input is (1, N, D) or (B, N, D)
+            pass  # Already 3D
+        else:
+            raise ValueError(f"Unexpected input shape: {x.shape}")
+        
+        # Extract features - feature layer expects (B, N, D) or (N, D)
+        # Reshape to (B*N, D) for feature extraction, then reshape back
+        batch_size, num_instances, feat_dim = x.shape
+        x_flat = x.view(-1, feat_dim)  # (B*N, D)
+        feature_flat = self.feature(x_flat)  # (B*N, L)
+        feature = feature_flat.view(batch_size, num_instances, -1)  # (B, N, L)
+        feature = feature.squeeze(0)  # [N, L]
         
         # Compute attention weights
         A = self.attention(feature)  # NxK where K=1
