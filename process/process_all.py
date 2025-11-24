@@ -55,6 +55,36 @@ def process(args,yaml_path,options):
     elif args.General.MODEL_NAME == 'AC_MIL':
         from .AC_MIL.process_ac_mil import process_AC_MIL
         process_AC_MIL(args)
+    elif args.General.MODEL_NAME == 'ADD_MIL':
+        from .ADD_MIL.process_add_mil import process_ADD_MIL
+        process_ADD_MIL(args)
+    elif args.General.MODEL_NAME == 'CA_MIL':
+        from .CA_MIL.process_ca_mil import process_CA_MIL
+        process_CA_MIL(args)
+    elif args.General.MODEL_NAME == 'DyHG_MIL':
+        from .DyHG_MIL.process_dyhg_mil import process_DyHG_MIL
+        process_DyHG_MIL(args)
+    elif args.General.MODEL_NAME == 'DG_MIL':
+        from .DG_MIL.process_dg_mil import process_DG_MIL
+        process_DG_MIL(args)
+    elif args.General.MODEL_NAME == 'DT_MIL':
+        from .DT_MIL.process_dt_mil import process_DT_MIL
+        process_DT_MIL(args)
+    elif args.General.MODEL_NAME == 'Mamba_MIL':
+        from .Mamba_MIL.process_mamba_mil import process_Mamba_MIL
+        process_Mamba_MIL(args)
+    elif args.General.MODEL_NAME == 'MHIM_MIL':
+        from .MHIM_MIL.process_mhim_mil import process_MHIM_MIL
+        process_MHIM_MIL(args)
+    elif args.General.MODEL_NAME == 'Micro_MIL':
+        from .Micro_MIL.process_micro_mil import process_Micro_MIL
+        process_Micro_MIL(args)
+    elif args.General.MODEL_NAME == 'MSM_MIL':
+        from .MSM_MIL.process_msm_mil import process_MSM_MIL
+        process_MSM_MIL(args)
+    elif args.General.MODEL_NAME == 'PA_MIL':
+        from .PA_MIL.process_pa_mil import process_PA_MIL
+        process_PA_MIL(args)
     else:
         raise ValueError('Model Not Found')
     # save every slide softmax-logits (confidence for each slide towards each class)
