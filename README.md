@@ -102,7 +102,7 @@ This project was originally developed for our previous work and is continuously 
 * DTFD_MIL [Double-Tier Feature Distillation MIL for Histopathology WSI Classification](https://arxiv.org/abs/2203.12081) (CVPR 2022)
 * ADD_MIL [Additive MIL: Intrinsically Interpretable MIL for Pathology](https://arxiv.org/pdf/2206.01794) (NeurIPS 2022)
 * ILRA_MIL [Exploring Low-rank Property in MIL for Whole Slide Image classification](https://openreview.net/pdf?id=01KmhBsEPFO) (ICLR 2023)
-* MHIM_MIL [Multiple Instance Learning Framework with Masked Hard Instance Mining for WSI Classification](https://arxiv.org/abs/2307.15254) (ICCV 2023)
+* MHIM_MIL [MIL Framework with Masked Hard Instance Mining for WSI Classification](https://arxiv.org/abs/2307.15254) (ICCV 2023)
 * WIKG_MIL [Dynamic Graph Representation with Knowledge-aware Attention for WSI Analysis](https://arxiv.org/abs/2403.07719) (CVPR 2024)
 * AMD_MIL [Agent Aggregator with Mask Denoise Mechanism for Histopathology WSI Analysis](https://dl.acm.org/doi/10.1145/3664647.3681425) (MM 2024)
 * FR_MIL [Distribution Re-calibration based MIL with Transformer for WSI Classification](https://ieeexplore.ieee.org/abstract/document/10640165) (TMI 2024)
@@ -111,11 +111,11 @@ This project was originally developed for our previous work and is continuously 
 * CDP_MIL [cDP-MIL: Robust Multiple Instance Learning via Cascaded Dirichlet Process](https://arxiv.org/abs/2407.11448) (ECCV 2024)
 * CA_MIL [Context-Aware Multiple Instance Learning for WSI Classification](https://arxiv.org/pdf/2305.05314) (ICLR 2024)
 * AC_MIL [Attention-Challenging Multiple Instance Learning for WSI Classification](https://arxiv.org/pdf/2311.07125) (ECCV 2024)
-* MAMBA_MIL [Enhancing Long Sequence Modeling with Sequence Reordering in Computational Pathology](https://arxiv.org/abs/2403.06800) (MICCAI 2024)
-* PA_MIL [Dynamic Policy-Driven Adaptive Multi-Instance Learning for Whole Slide Image Classification](https://ieeexplore.ieee.org/document/10656273) (CVPR 2024)
-* MICRO_MIL [Graph-Based Multiple Instance Learning for Context-Aware Diagnosis with Microscopic Images](https://arxiv.org/abs/2403.06800) (MICCAI 2025)
+* MAMBA_MIL [Enhancing Long Sequence Modeling with Sequence Reordering in CPath](https://arxiv.org/abs/2403.06800) (MICCAI 2024)
+* PA_MIL [Dynamic Policy-Driven Adaptive Multi-Instance Learning for WSI Classification](https://ieeexplore.ieee.org/document/10656273) (CVPR 2024)
+* MICRO_MIL [Graph-Based MIL for Context-Aware Diagnosis with Microscopic Images](https://arxiv.org/abs/2403.06800) (MICCAI 2025)
 * DYHG_MIL [Dynamic Hypergraph Representation for Bone Metastasis Cancer Analysis](https://arxiv.org/abs/2501.16787) (CMPB 2025)
-* MSM_MIL [Multi-scan Mamba-based Multiple Instance Learning for whole slide image classification](https://www.sciencedirect.com/science/article/abs/pii/S0950705125009177) (KBS 2025)
+* MSM_MIL [Multi-scan Mamba-based Multiple Instance Learning for WSI classification](https://www.sciencedirect.com/science/article/abs/pii/S0950705125009177) (KBS 2025)
 * UPDATING...
 
 ### ☑️  Implementated Metrics
