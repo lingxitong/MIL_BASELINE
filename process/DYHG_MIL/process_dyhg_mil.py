@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
-from modules.Micro_MIL.micro_mil import Micro_MIL
+from modules.DYHG_MIL.dyhg_mil import DYHG_MIL
 from utils.process_utils import get_process_pipeline, get_act
 from utils.wsi_utils import WSI_Dataset
 from utils.general_utils import set_global_seed, init_epoch_info_log, add_epoch_info_log, early_stop
@@ -8,7 +8,7 @@ from utils.model_utils import get_optimizer, get_scheduler, get_criterion, save_
 from utils.loop_utils import train_loop, val_loop
 from tqdm import tqdm
 
-def process_Micro_MIL(args):
+def process_DYHG_MIL(args):
     train_dataset = WSI_Dataset(args.Dataset.dataset_csv_path, 'train')
     val_dataset = WSI_Dataset(args.Dataset.dataset_csv_path, 'val')
     test_dataset = WSI_Dataset(args.Dataset.dataset_csv_path, 'test')
@@ -33,24 +33,22 @@ def process_Micro_MIL(args):
     device = torch.device(f'cuda:{args.General.device}')
     num_classes = args.General.num_classes
     in_dim = args.Model.in_dim
+    emb_dim = args.Model.emb_dim
     dropout = args.Model.dropout
+    hyper_num = args.Model.hyper_num
+    num_layers = args.Model.num_layers
+    tau = args.Model.tau
     act = get_act(args.Model.act)
-    cluster_number = args.Model.cluster_number if hasattr(args.Model, 'cluster_number') else 36
-    hidden_dim = args.Model.hidden_dim if hasattr(args.Model, 'hidden_dim') else 128
-    layer = args.Model.layer if hasattr(args.Model, 'layer') else 2
-    alpha = args.Model.alpha if hasattr(args.Model, 'alpha') else 1.0
-    shuffle = args.Model.shuffle if hasattr(args.Model, 'shuffle') else False
     
-    mil_model = Micro_MIL(
+    mil_model = DYHG_MIL(
         in_dim=in_dim,
+        emb_dim=emb_dim,
         num_classes=num_classes,
         dropout=dropout,
-        act=act,
-        cluster_number=cluster_number,
-        hidden_dim=hidden_dim,
-        layer=layer,
-        alpha=alpha,
-        shuffle=shuffle
+        hyper_num=hyper_num,
+        num_layers=num_layers,
+        tau=tau,
+        act=act
     )
     mil_model.to(device)
     
@@ -105,3 +103,4 @@ def process_Micro_MIL(args):
         if epoch + 1 == args.General.num_epochs:
             save_last_model(args, mil_model.state_dict(), epoch + 1)
             save_log(args, epoch_info_log, best_epoch, process_pipeline)
+

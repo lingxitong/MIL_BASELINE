@@ -39,7 +39,7 @@ class Attn_Net_Gated(nn.Module):
         return A, x
 
 
-class DyHG_MIL(nn.Module):
+class DYHG_MIL(nn.Module):
     def __init__(self, in_dim=1024, emb_dim=256, num_classes=2, dropout=0.25, hyper_num=20, num_layers=1, tau=0.05, act=nn.ReLU()):
         super().__init__()
         self.message_dropout = nn.Dropout(dropout)

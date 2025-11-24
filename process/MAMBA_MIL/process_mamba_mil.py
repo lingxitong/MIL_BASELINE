@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
-from modules.Mamba_MIL.mamba_mil import Mamba_MIL
+from modules.MAMBA_MIL.mamba_mil import MAMBA_MIL
 from utils.process_utils import get_process_pipeline, get_act
 from utils.wsi_utils import WSI_Dataset
 from utils.general_utils import set_global_seed, init_epoch_info_log, add_epoch_info_log, early_stop
@@ -8,7 +8,7 @@ from utils.model_utils import get_optimizer, get_scheduler, get_criterion, save_
 from utils.loop_utils import train_loop, val_loop
 from tqdm import tqdm
 
-def process_Mamba_MIL(args):
+def process_MAMBA_MIL(args):
     train_dataset = WSI_Dataset(args.Dataset.dataset_csv_path, 'train')
     val_dataset = WSI_Dataset(args.Dataset.dataset_csv_path, 'val')
     test_dataset = WSI_Dataset(args.Dataset.dataset_csv_path, 'test')
@@ -39,7 +39,7 @@ def process_Mamba_MIL(args):
     rate = args.Model.rate if hasattr(args.Model, 'rate') else 10
     mamba_type = args.Model.mamba_type if hasattr(args.Model, 'mamba_type') else 'SRMamba'
     
-    mil_model = Mamba_MIL(
+    mil_model = MAMBA_MIL(
         in_dim=in_dim,
         num_classes=num_classes,
         dropout=dropout,

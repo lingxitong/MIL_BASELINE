@@ -48,14 +48,14 @@ class DEC(nn.Module):
         cluster_assignment = numerator / torch.sum(numerator, dim=1, keepdim=True)
         return cluster_assignment
 
-class Micro_MIL(nn.Module):
+class MICRO_MIL(nn.Module):
     """
     Micro MIL with Graph Attention Network
     Uses clustering and graph neural networks for instance aggregation
     """
     def __init__(self, in_dim=1024, num_classes=2, dropout=0.5, act=nn.ReLU(), 
                  cluster_number=36, hidden_dim=128, layer=2, alpha=1.0, shuffle=False, **kwargs):
-        super(Micro_MIL, self).__init__()
+        super(MICRO_MIL, self).__init__()
         
         if GATConv is None or dgl is None:
             raise ImportError("dgl is required. Install with: pip install dgl")

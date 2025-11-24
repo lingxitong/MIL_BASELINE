@@ -34,14 +34,14 @@ def initialize_weights(module):
             nn.init.constant_(m.bias, 0)
             nn.init.constant_(m.weight, 1.0)
 
-class Mamba_MIL(nn.Module):
+class MAMBA_MIL(nn.Module):
     """
     Mamba-based Multiple Instance Learning
     Reference: MambaMIL paper
     """
     def __init__(self, in_dim=1024, num_classes=2, dropout=0.1, act=nn.ReLU(), 
                  layer=2, rate=10, mamba_type="SRMamba", **kwargs):
-        super(Mamba_MIL, self).__init__()
+        super(MAMBA_MIL, self).__init__()
         
         # Convert act to string for compatibility
         if isinstance(act, nn.ReLU):
