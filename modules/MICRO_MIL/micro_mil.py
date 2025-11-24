@@ -91,11 +91,6 @@ class MICRO_MIL(nn.Module):
         self.apply(initialize_weights)
 
     def forward(self, x, return_WSI_attn=False, return_WSI_feature=False):
-        """
-        前向传播
-        输入: x - (1, N, D) 或 (N, D) 形状的tensor
-        输出: forward_return - 包含 'logits' 的字典
-        """
         forward_return = {}
         
         # Handle input format - support both 2D and 3D inputs

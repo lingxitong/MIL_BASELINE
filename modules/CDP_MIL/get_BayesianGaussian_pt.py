@@ -27,10 +27,12 @@ def get_bayesian_gaussian_pt(pt_file_path,save_path):
 if __name__ == '__main__':
     os.environ["OPENBLAS_NUM_THREADS"] = "4"
     parser = argparse.ArgumentParser(description='base dictionary construction')
-    parser.add_argument('--dataset_csv_path',default = '/Data/lxt166/MB工程化/cdp_extra_dir/Camelyon-16.csv', type=str)
+    parser.add_argument('--dataset_csv_path', type=str, required=True,
+                        help='Path to dataset CSV file (format: /datasets/example_Dataset.csv)')
     parser.add_argument('--num_clusters', type=int, default=10)
     parser.add_argument('--concentration', type=float, default=0.1)
-    parser.add_argument('--save_dir', type=str, default='/Data/lxt166/MB工程化/cdp_extra_dir/cdp_bayesianGaussion_dir2')
+    parser.add_argument('--save_dir', type=str, required=True,
+                        help='Directory to save Bayesian Gaussian mixture centroids')
     args = parser.parse_args()
     
     '''

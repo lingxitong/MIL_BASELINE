@@ -34,7 +34,7 @@ def draw_tsne(feature_tensor, label_tensor, id2class, save_path, fig_size = (10,
     None
     """
     id2class = ast.literal_eval(id2class)
-    perplexity = min(30, feature_tensor.shape[0] - 1)  # 默认 30，且保证小于样本数
+    perplexity = min(30, feature_tensor.shape[0] - 1)  # Default 30, ensure it's less than the number of samples
     tsne = TSNE(perplexity=perplexity, n_components=2, random_state=seed)
     tsne_result = tsne.fit_transform(feature_tensor)
 
