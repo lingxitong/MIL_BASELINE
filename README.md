@@ -113,7 +113,7 @@ This project was originally developed for our previous work and is continuously 
 * AC_MIL [Attention-Challenging Multiple Instance Learning for WSI Classification](https://arxiv.org/pdf/2311.07125) (ECCV 2024)
 * MAMBA_MIL [Enhancing Long Sequence Modeling with Sequence Reordering in CPath](https://arxiv.org/abs/2403.06800) (MICCAI 2024)
 * PA_MIL [Dynamic Policy-Driven Adaptive Multi-Instance Learning for WSI Classification](https://ieeexplore.ieee.org/document/10656273) (CVPR 2024)
-* MICRO_MIL [Graph-Based MIL for Context-Aware Diagnosis with Microscopic Images](https://arxiv.org/abs/2403.06800) (MICCAI 2025)
+* MICRO_MIL [Graph-Based MIL for Context-Aware Diagnosis with Microscopic Images](https://arxiv.org/abs/2407.21604) (MICCAI 2025)
 * DYHG_MIL [Dynamic Hypergraph Representation for Bone Metastasis Cancer Analysis](https://arxiv.org/abs/2501.16787) (CMPB 2025)
 * MSM_MIL [Multi-scan Mamba-based Multiple Instance Learning for WSI classification](https://www.sciencedirect.com/science/article/abs/pii/S0950705125009177) (KBS 2025)
 * UPDATING...
