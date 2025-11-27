@@ -112,7 +112,7 @@ This project was originally developed for our previous work and is continuously 
 * CA_MIL [Context-Aware Multiple Instance Learning for WSI Classification](https://arxiv.org/pdf/2305.05314) (ICLR 2024)
 * AC_MIL [Attention-Challenging Multiple Instance Learning for WSI Classification](https://arxiv.org/pdf/2311.07125) (ECCV 2024)
 * MAMBA_MIL [Enhancing Long Sequence Modeling with Sequence Reordering in CPath](https://arxiv.org/abs/2403.06800) (MICCAI 2024)
-* NCIE_MIL [Rethinking Decoupled Multiple Instance Learning Framework for Histopathological Slide Classification](https://openreview.net/pdf?id=1GxyidfQzc) (MIDL 2024)
+* NCIE_MIL [Rethinking Decoupled MIL Framework for Histopathological Slide Classification](https://openreview.net/pdf?id=1GxyidfQzc) (MIDL 2024)
 * PA_MIL [Dynamic Policy-Driven Adaptive Multi-Instance Learning for WSI Classification](https://ieeexplore.ieee.org/document/10656273) (CVPR 2024)
 * MICRO_MIL [Graph-Based MIL for Context-Aware Diagnosis with Microscopic Images](https://arxiv.org/abs/2407.21604) (MICCAI 2025)
 * DYHG_MIL [Dynamic Hypergraph Representation for Bone Metastasis Cancer Analysis](https://arxiv.org/abs/2501.16787) (CMPB 2025)
