@@ -85,6 +85,12 @@ def process(args,yaml_path,options):
     elif args.General.MODEL_NAME == 'PA_MIL':
         from .PA_MIL.process_pa_mil import process_PA_MIL
         process_PA_MIL(args)
+    elif args.General.MODEL_NAME == 'NCIE_MIL':
+        from .NCIE_MIL.process_ncie_mil import process_NCIE_MIL
+        process_NCIE_MIL(args)
+    elif args.General.MODEL_NAME == 'GDF_MIL':
+        from .GDF_MIL.process_gdf_mil import process_GDF_MIL
+        process_GDF_MIL(args)
     else:
         raise ValueError('Model Not Found')
     # save every slide softmax-logits (confidence for each slide towards each class)
