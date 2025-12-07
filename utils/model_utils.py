@@ -403,6 +403,85 @@ def get_model_from_yaml(yaml_args):
             baseline=baseline
         )
         return mil_model
+    elif model_name == 'IB_MIL':
+        from modules.IB_MIL.ib_mil import IB_MIL
+        L = yaml_args.Model.L if hasattr(yaml_args.Model, 'L') else 512
+        D = yaml_args.Model.D if hasattr(yaml_args.Model, 'D') else 128
+        beta = yaml_args.Model.beta if hasattr(yaml_args.Model, 'beta') else 0.1
+        mil_model = IB_MIL(
+            L=L,
+            D=D,
+            num_classes=yaml_args.General.num_classes,
+            dropout=yaml_args.Model.dropout,
+            act=get_act(yaml_args.Model.act),
+            in_dim=yaml_args.Model.in_dim,
+            beta=beta
+        )
+        return mil_model
+    elif model_name == 'RRT_MIL':
+        from modules.RRT_MIL.rrt_mil import RRT_MIL
+        L = yaml_args.Model.L if hasattr(yaml_args.Model, 'L') else 512
+        D = yaml_args.Model.D if hasattr(yaml_args.Model, 'D') else 128
+        mil_model = RRT_MIL(
+            L=L,
+            D=D,
+            num_classes=yaml_args.General.num_classes,
+            dropout=yaml_args.Model.dropout,
+            act=get_act(yaml_args.Model.act),
+            in_dim=yaml_args.Model.in_dim
+        )
+        return mil_model
+    elif model_name == 'S4_MIL':
+        from modules.S4_MIL.s4_mil import S4_MIL
+        d_model = yaml_args.Model.d_model if hasattr(yaml_args.Model, 'd_model') else 512
+        d_state = yaml_args.Model.d_state if hasattr(yaml_args.Model, 'd_state') else 32
+        n_layers = yaml_args.Model.n_layers if hasattr(yaml_args.Model, 'n_layers') else 1
+        mil_model = S4_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            num_classes=yaml_args.General.num_classes,
+            dropout=yaml_args.Model.dropout,
+            act=get_act(yaml_args.Model.act),
+            d_model=d_model,
+            d_state=d_state,
+            n_layers=n_layers
+        )
+        return mil_model
+    elif model_name == 'PGCN_MIL':
+        from modules.PGCN_MIL.pgcn_mil import PGCN_MIL
+        hidden_dim = yaml_args.Model.hidden_dim if hasattr(yaml_args.Model, 'hidden_dim') else 256
+        n_layers = yaml_args.Model.n_layers if hasattr(yaml_args.Model, 'n_layers') else 2
+        k = yaml_args.Model.k if hasattr(yaml_args.Model, 'k') else 5
+        use_dgl = yaml_args.Model.use_dgl if hasattr(yaml_args.Model, 'use_dgl') else False
+        mil_model = PGCN_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            num_classes=yaml_args.General.num_classes,
+            dropout=yaml_args.Model.dropout,
+            act=get_act(yaml_args.Model.act),
+            hidden_dim=hidden_dim,
+            n_layers=n_layers,
+            k=k,
+            use_dgl=use_dgl
+        )
+        return mil_model
+    elif model_name == 'MAMBA2D_MIL':
+        import importlib
+        mamba2d_module = importlib.import_module('modules.MAMBA2D_MIL.mamba2d_mil')
+        Mamba2D_MIL = mamba2d_module.Mamba2D_MIL
+        d_model = yaml_args.Model.d_model if hasattr(yaml_args.Model, 'd_model') else 512
+        d_state = yaml_args.Model.d_state if hasattr(yaml_args.Model, 'd_state') else 16
+        n_layers = yaml_args.Model.n_layers if hasattr(yaml_args.Model, 'n_layers') else 2
+        grid_size = yaml_args.Model.grid_size if hasattr(yaml_args.Model, 'grid_size') else None
+        mil_model = Mamba2D_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            num_classes=yaml_args.General.num_classes,
+            dropout=yaml_args.Model.dropout,
+            act=get_act(yaml_args.Model.act),
+            d_model=d_model,
+            d_state=d_state,
+            n_layers=n_layers,
+            grid_size=grid_size
+        )
+        return mil_model
     else:
         raise ValueError(f'Invalid model name: {model_name}')
     

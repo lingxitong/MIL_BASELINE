@@ -1,0 +1,53 @@
+General:
+    MODEL_NAME: RRT_MIL
+    seed: 2024
+    num_classes: 2
+    num_epochs: 5
+    device: 1
+    num_workers: 4
+    best_model_metric: macro_auc  
+    earlystop: 
+        use: False
+        patience: 5
+        metric: macro_auc
+
+Dataset:
+    DATASET_NAME: your_dataset_name
+    dataset_csv_path: /path/to/your/dataset.csv
+    balanced_sampler:
+        use: False
+        replacement: True
+
+Logs:
+    log_root_dir: /path/to/your/log_dir/
+
+Model:
+    in_dim: 1024  # Feature dimension (e.g., ResNet50->1024, ViT-S->384)
+    L: 512  # Hidden dimension for feature transformation
+    D: 128  # Hidden dimension for attention/aggregation
+    dropout: 0.1
+    act: relu  # relu, gelu, or silu
+    optimizer:
+        which: adam    # adam or adamw
+        adam_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+        adamw_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+    criterion: ce  
+    scheduler:
+        warmup: 2
+        which: step  # [step, cosine, multi_step, exponential]
+        step_config:
+            step_size: 3
+            gamma: 0.9
+        multi_step_config:
+            milestones: [20, 30, 40]
+            gamma: 0.9
+        exponential_config:
+            gamma: 0.9
+        cosine_config:
+            T_max: 10
+            eta_min: 0.0001
+
