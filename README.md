@@ -85,9 +85,9 @@ This project was originally developed for our previous work and is continuously 
 * CONCH [A visual-language foundation model for computational pathology](https://www.nature.com/articles/s41591-024-02856-4) (NAT MED 2024)
 * UNI [Towards a general-purpose foundation model for computational pathology](https://www.nature.com/articles/s41591-024-02857-3) (NAT MED 2024)
 * GIGAPATH [A whole-slide foundation model for digital pathology from real-world data](https://www.nature.com/articles/s41586-024-07441-w) (NAT 2024)
-* VIRCHOW [A foundation model for clinical-grade computational pathology and rare cancers detection](https://www.nature.com/articles/s41591-024-03141-0) (NAT 2024)
+* VIRCHOW [A foundation model for clinical-grade computational pathology and rare cancers](https://www.nature.com/articles/s41591-024-03141-0) (NAT 2024)
 * VIRCHOW-V2 [Virchow2: Scaling Self-Supervised Mixed Magnification Models in Pathology](https://arxiv.org/pdf/2408.00738) (arxiv 2024)
-* CONCH-V1.5 [Multimodal Whole Slide Foundation Model for Pathology](https://arxiv.org/abs/2411.19666) (arxiv 2024)
+* CONCH-V1.5 [Multimodal Whole Slide Foundation Model for Pathology](https://arxiv.org/abs/2411.19666) (NAT MED 2024)
 * UPDATING...
 
 ###  :gem: Implementated NetWork
@@ -112,8 +112,9 @@ This project was originally developed for our previous work and is continuously 
 * CA_MIL [Context-Aware Multiple Instance Learning for WSI Classification](https://arxiv.org/pdf/2305.05314) (ICLR 2024)
 * AC_MIL [Attention-Challenging Multiple Instance Learning for WSI Classification](https://arxiv.org/pdf/2311.07125) (ECCV 2024)
 * MAMBA_MIL [Enhancing Long Sequence Modeling with Sequence Reordering in CPath](https://arxiv.org/abs/2403.06800) (MICCAI 2024)
+* NCIE_MIL [Rethinking Decoupled MIL Framework for Histopathological Slide Classification](https://openreview.net/pdf?id=1GxyidfQzc) (MIDL 2024)
 * PA_MIL [Dynamic Policy-Driven Adaptive Multi-Instance Learning for WSI Classification](https://ieeexplore.ieee.org/document/10656273) (CVPR 2024)
-* MICRO_MIL [Graph-Based MIL for Context-Aware Diagnosis with Microscopic Images](https://arxiv.org/abs/2403.06800) (MICCAI 2025)
+* MICRO_MIL [Graph-Based MIL for Context-Aware Diagnosis with Microscopic Images](https://arxiv.org/abs/2407.21604) (MICCAI 2025)
 * DYHG_MIL [Dynamic Hypergraph Representation for Bone Metastasis Cancer Analysis](https://arxiv.org/abs/2501.16787) (CMPB 2025)
 * MSM_MIL [Multi-scan Mamba-based Multiple Instance Learning for WSI classification](https://www.sciencedirect.com/science/article/abs/pii/S0950705125009177) (KBS 2025)
 * IB_MIL [Interventional Bag Multi-Instance Learning On Whole-Slide Pathological Images](https://github.com/HHHedo/IBMIL) (CVPR 2023)
@@ -121,6 +122,7 @@ This project was originally developed for our previous work and is continuously 
 * S4_MIL [Efficiently Modeling Long Sequences with Structured State Spaces](https://github.com/isyangshu/MambaMIL) (ICLR 2022)
 * PGCN_MIL [Context-Aware Survival Prediction using Patch-based Graph Convolutional Networks](https://github.com/mahmoodlab/Patch-GCN) (MICCAI 2021)
 * MAMBA2D_MIL [2DMamba: Efficient State Space Model for Image Representation](https://github.com/AtlasAnalyticsLab/2DMamba) (CVPR 2025)
+* GDF_MIL [Rethinking Multi-Instance Learning through Graph-Driven Fusion]() (AAAI 2026)
 * UPDATING...
 
 ### ☑️  Implementated Metrics

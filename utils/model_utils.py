@@ -463,6 +463,34 @@ def get_model_from_yaml(yaml_args):
             use_dgl=use_dgl
         )
         return mil_model
+    elif model_name == 'NCIE_MIL':
+        from modules.NCIE_MIL.nc_ie_mil import NcIEMIL
+        in_dim = yaml_args.Model.in_dim
+        in_chans = yaml_args.Model.in_chans if hasattr(yaml_args.Model, 'in_chans') else 256
+        latent_dim = yaml_args.Model.latent_dim if hasattr(yaml_args.Model, 'latent_dim') else 1024
+        num_heads = yaml_args.Model.num_heads if hasattr(yaml_args.Model, 'num_heads') else 4
+        ratio = yaml_args.Model.ratio if hasattr(yaml_args.Model, 'ratio') else 32
+        qkv_bias = yaml_args.Model.qkv_bias if hasattr(yaml_args.Model, 'qkv_bias') else False
+        qk_scale = yaml_args.Model.qk_scale if hasattr(yaml_args.Model, 'qk_scale') else None
+        attn_drop = yaml_args.Model.attn_drop if hasattr(yaml_args.Model, 'attn_drop') else 0.0
+        proj_drop = yaml_args.Model.proj_drop if hasattr(yaml_args.Model, 'proj_drop') else 0.0
+        conv_drop = yaml_args.Model.conv_drop if hasattr(yaml_args.Model, 'conv_drop') else 0.0
+        mode = yaml_args.Model.mode if hasattr(yaml_args.Model, 'mode') else 'cross'
+        mil_model = NcIEMIL(
+            in_dim=in_dim,
+            in_chans=in_chans,
+            latent_dim=latent_dim,
+            n_classes=yaml_args.General.num_classes,
+            num_heads=num_heads,
+            ratio=ratio,
+            qkv_bias=qkv_bias,
+            qk_scale=qk_scale,
+            attn_drop=attn_drop,
+            proj_drop=proj_drop,
+            conv_drop=conv_drop,
+            mode=mode
+        )
+        return mil_model
     elif model_name == 'MAMBA2D_MIL':
         import importlib
         mamba2d_module = importlib.import_module('modules.MAMBA2D_MIL.mamba2d_mil')
@@ -480,6 +508,30 @@ def get_model_from_yaml(yaml_args):
             d_state=d_state,
             n_layers=n_layers,
             grid_size=grid_size
+        )
+        return mil_model
+    elif model_name == 'GDF_MIL':
+        from modules.GDF_MIL.gdf_mil import GDF_MIL
+        in_dim = yaml_args.Model.in_dim
+        hid_dim = yaml_args.Model.hid_dim if hasattr(yaml_args.Model, 'hid_dim') else 256
+        out_dim = yaml_args.Model.out_dim if hasattr(yaml_args.Model, 'out_dim') else 128
+        k_components = yaml_args.Model.k_components if hasattr(yaml_args.Model, 'k_components') else 10
+        k_neighbors = yaml_args.Model.k_neighbors if hasattr(yaml_args.Model, 'k_neighbors') else 10
+        dropout = yaml_args.Model.dropout if hasattr(yaml_args.Model, 'dropout') else 0.1
+        lambda_smooth = yaml_args.Model.lambda_smooth if hasattr(yaml_args.Model, 'lambda_smooth') else 0.0
+        lambda_nce = yaml_args.Model.lambda_nce if hasattr(yaml_args.Model, 'lambda_nce') else 0.0
+        act = yaml_args.Model.act if hasattr(yaml_args.Model, 'act') else 'leaky_relu'
+        mil_model = GDF_MIL(
+            in_dim=in_dim,
+            num_classes=yaml_args.General.num_classes,
+            hid_dim=hid_dim,
+            out_dim=out_dim,
+            k_components=k_components,
+            k_neighbors=k_neighbors,
+            dropout=dropout,
+            lambda_smooth=lambda_smooth,
+            lambda_nce=lambda_nce,
+            act=act
         )
         return mil_model
     else:
