@@ -30,6 +30,10 @@ class WarmUpLR(_LRScheduler):
 def get_criterion(criterion):
     if criterion == 'ce':
         return torch.nn.CrossEntropyLoss()
+    elif criterion == 'bce':
+        return torch.nn.BCEWithLogitsLoss()
+    else:
+        raise ValueError(f"Unknown criterion: {criterion}. Supported: 'ce', 'bce'")
 
 
 def get_optimizer(args,model):
