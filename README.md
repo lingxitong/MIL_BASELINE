@@ -117,6 +117,11 @@ This project was originally developed for our previous work and is continuously 
 * MICRO_MIL [Graph-Based MIL for Context-Aware Diagnosis with Microscopic Images](https://arxiv.org/abs/2407.21604) (MICCAI 2025)
 * DYHG_MIL [Dynamic Hypergraph Representation for Bone Metastasis Cancer Analysis](https://arxiv.org/abs/2501.16787) (CMPB 2025)
 * MSM_MIL [Multi-scan Mamba-based Multiple Instance Learning for WSI classification](https://www.sciencedirect.com/science/article/abs/pii/S0950705125009177) (KBS 2025)
+* IB_MIL [Interventional Bag Multi-Instance Learning On Whole-Slide Pathological Images](https://github.com/HHHedo/IBMIL) (CVPR 2023)
+* RRT_MIL [Feature Re-Embedding: Towards Foundation Model-Level Performance in Computational Pathology](https://github.com/DearCaat/RRT-MIL) (CVPR 2024)
+* S4_MIL [Efficiently Modeling Long Sequences with Structured State Spaces](https://github.com/isyangshu/MambaMIL) (ICLR 2022)
+* PGCN_MIL [Context-Aware Survival Prediction using Patch-based Graph Convolutional Networks](https://github.com/mahmoodlab/Patch-GCN) (MICCAI 2021)
+* MAMBA2D_MIL [2DMamba: Efficient State Space Model for Image Representation](https://github.com/AtlasAnalyticsLab/2DMamba) (CVPR 2025)
 * GDF_MIL [Rethinking Multi-Instance Learning through Graph-Driven Fusion]() (AAAI 2026)
 * UPDATING...
 

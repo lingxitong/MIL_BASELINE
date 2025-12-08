@@ -16,7 +16,7 @@ def process_MAX_MIL(args):
     process_pipeline = get_process_pipeline(val_dataset,test_dataset) 
     args.General.process_pipeline = process_pipeline
     '''
-    generator设置seed用于保证shuffle的一致性
+    Set seed for generator to ensure shuffle consistency
     '''
     
     generator = torch.Generator()

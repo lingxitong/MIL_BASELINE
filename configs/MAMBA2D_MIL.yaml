@@ -1,0 +1,55 @@
+General:
+    MODEL_NAME: MAMBA2D_MIL
+    seed: 2024
+    num_classes: 2
+    num_epochs: 5
+    device: 1
+    num_workers: 4
+    best_model_metric: macro_auc  
+    earlystop: 
+        use: False
+        patience: 5
+        metric: macro_auc
+
+Dataset:
+    DATASET_NAME: your_dataset_name
+    dataset_csv_path: /path/to/your/dataset.csv
+    balanced_sampler:
+        use: False
+        replacement: True
+
+Logs:
+    log_root_dir: /path/to/your/log_dir/
+
+Model:
+    in_dim: 1024  # Feature dimension
+    d_model: 512  # Hidden dimension for 2D Mamba
+    d_state: 16  # State dimension for Mamba
+    n_layers: 2  # Number of 2D Mamba layers
+    grid_size: null  # Optional: specify grid size (H, W), otherwise auto-detect
+    dropout: 0.1
+    act: gelu  # gelu recommended for Mamba
+    optimizer:
+        which: adam
+        adam_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+        adamw_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+    criterion: ce  
+    scheduler:
+        warmup: 2
+        which: step
+        step_config:
+            step_size: 3
+            gamma: 0.9
+        multi_step_config:
+            milestones: [20, 30, 40]
+            gamma: 0.9
+        exponential_config:
+            gamma: 0.9
+        cosine_config:
+            T_max: 10
+            eta_min: 0.0001
+

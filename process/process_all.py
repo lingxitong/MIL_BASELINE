@@ -85,6 +85,23 @@ def process(args,yaml_path,options):
     elif args.General.MODEL_NAME == 'PA_MIL':
         from .PA_MIL.process_pa_mil import process_PA_MIL
         process_PA_MIL(args)
+    elif args.General.MODEL_NAME == 'IB_MIL':
+        from .IB_MIL.process_ib_mil import process_IB_MIL
+        process_IB_MIL(args)
+    elif args.General.MODEL_NAME == 'RRT_MIL':
+        from .RRT_MIL.process_rrt_mil import process_RRT_MIL
+        process_RRT_MIL(args)
+    elif args.General.MODEL_NAME == 'S4_MIL':
+        from .S4_MIL.process_s4_mil import process_S4_MIL
+        process_S4_MIL(args)
+    elif args.General.MODEL_NAME == 'PGCN_MIL':
+        from .PGCN_MIL.process_pgcn_mil import process_PGCN_MIL
+        process_PGCN_MIL(args)
+    elif args.General.MODEL_NAME == 'MAMBA2D_MIL':
+        import importlib
+        process_module = importlib.import_module('process.MAMBA2D_MIL.process_mamba2d_mil')
+        process_MAMBA2D_MIL = process_module.process_MAMBA2D_MIL
+        process_MAMBA2D_MIL(args)
     elif args.General.MODEL_NAME == 'NCIE_MIL':
         from .NCIE_MIL.process_ncie_mil import process_NCIE_MIL
         process_NCIE_MIL(args)
