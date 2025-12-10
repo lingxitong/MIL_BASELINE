@@ -140,7 +140,7 @@ def save_log(args,epoch_info_log,best_epoch,process_pipeline):
     
 def get_model_from_yaml(yaml_args):
     model_name = yaml_args.General.MODEL_NAME
-    if model_name == 'AB_MIL':
+    if model_name == 'AB_MIL' or model_name in ['MIXUP_MIL', 'REMIX_MIL', 'RANKMIX_MIL', 'PSEBMIX_MIL', 'INSMIX_MIL']:
         from modules.AB_MIL.ab_mil import AB_MIL
         mil_model = AB_MIL(yaml_args.Model.L,yaml_args.Model.D,yaml_args.General.num_classes,yaml_args.Model.dropout,get_act(yaml_args.Model.act),yaml_args.Model.in_dim)
         return mil_model
