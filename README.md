@@ -99,7 +99,7 @@ This project was originally developed for our previous work and is continuously 
 * TRANS_MIL [Transformer based Correlated Multiple Instance Learning for WSI Classification](https://arxiv.org/abs/2106.00908) (NeurIPS 2021)
 * DS_MIL [Dual-stream MIL Network for WSI Classification with Self-supervised Contrastive Learning](https://arxiv.org/abs/2011.08939) (CVPR 2021)
 * CLAM_MIL [Data Efficient and Weakly Supervised Computational Pathology on WSI](https://arxiv.org/abs/2004.09666) (NAT BIOMED ENG 2021)
-* REMIX_MIL [A General and Efficient Framework for Multiple Instance Learning based WSI Classification](https://arxiv.org/abs/2110.09632) (MICCAI 2022)
+* REMIX_MIL [A General and Efficient Framework for MIL based WSI Classification](https://arxiv.org/abs/2110.09632) (MICCAI 2022)
 * DG_MIL [Distribution Guided Multiple Instance Learning for Whole Slide Image Classification](https://arxiv.org/abs/2206.08861) (MICCAI 2022)
 * DTFD_MIL [Double-Tier Feature Distillation MIL for Histopathology WSI Classification](https://arxiv.org/abs/2203.12081) (CVPR 2022)
 * ADD_MIL [Additive MIL: Intrinsically Interpretable MIL for Pathology](https://arxiv.org/pdf/2206.01794) (NeurIPS 2022)
