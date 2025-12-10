@@ -30,6 +30,14 @@ class WSI_Dataset(Dataset):
                 feat = torch.from_numpy(feat)
         else:
             feat = torch.load(slide_path)
+            # Handle dictionary format (e.g., {'feats': tensor, 'coords': tensor})
+            if isinstance(feat, dict):
+                if 'feats' in feat:
+                    feat = feat['feats']
+                elif 'features' in feat:
+                    feat = feat['features']
+                else:
+                    raise ValueError(f"Unknown dict format in {slide_path}, keys: {list(feat.keys())}")
         if len(feat.shape) == 3:
             feat = feat.squeeze(0)
         return feat,label

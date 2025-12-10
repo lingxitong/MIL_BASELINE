@@ -87,7 +87,15 @@ def val_loop(device,num_classes,model,loader,criterion,retrun_WSI_feature = Fals
             val_logits = val_logits.squeeze(0)
             bag_predictions_after_normal.append(torch.softmax(val_logits,0).cpu().numpy())
             val_logits = val_logits.unsqueeze(0)
-            val_loss = criterion(val_logits,label)
+            
+            # Handle BCE loss - convert label to one-hot if needed
+            if criterion.__class__.__name__ == 'BCEWithLogitsLoss':
+                import torch.nn.functional as F
+                label_for_loss = F.one_hot(label.long(), num_classes=num_classes).float()
+            else:
+                label_for_loss = label
+            
+            val_loss = criterion(val_logits, label_for_loss)
             val_loss_log += val_loss.item()
     if retrun_WSI_feature:
         WSI_features = torch.cat(WSI_features, dim=0).cpu().numpy()
