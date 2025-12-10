@@ -538,3 +538,97 @@ def dtfd_val_loop(device,num_classes,model_list,loader,criterion,num_Group,grad_
     total_loss /= len(loader)
     val_metrics= cal_scores(y_score,y_true,num_classes)
     return total_loss,val_metrics
+
+
+# ============================================
+# Mixup Training Loop Utilities
+# ============================================
+import numpy as np
+
+def train_loop_with_mixup(device, model, dataloader, criterion, optimizer, scheduler, mixup_config, mix_fn):
+    """
+    Generic training loop with mixup augmentation
+    Args:
+        device: torch device
+        model: MIL model
+        dataloader: training dataloader
+        criterion: loss function
+        optimizer: optimizer
+        scheduler: learning rate scheduler
+        mixup_config: dict with mixup parameters (prob, alpha, etc.)
+        mix_fn: mixing function from the specific module (e.g., mixup_data, insmix_data, etc.)
+    Returns:
+        train_loss, cost_time
+    """
+    model.train()
+    train_loss = 0.
+    start_time = time.time()
+    
+    all_features = []
+    all_labels = []
+    
+    for idx, batch in enumerate(dataloader):
+        if len(batch) == 3:
+            _, data, label = batch
+        else:
+            data, label = batch
+        all_features.append(data.squeeze(0).to(device))
+        all_labels.append(label.to(device))
+    
+    prob = mixup_config.get('prob', 0.5)
+    n_samples = len(all_features)
+    perm = torch.randperm(n_samples)
+    
+    for i in range(n_samples):
+        optimizer.zero_grad()
+        
+        if np.random.rand() < prob:
+            j = perm[i].item()
+            if i != j:
+                # Call the specific mix function with appropriate kwargs
+                mix_kwargs = {k: v for k, v in mixup_config.items() if k != 'prob'}
+                # For rankmix, we need to pass the model
+                if 'model' in mix_fn.__code__.co_varnames:
+                    mixed_feat, mixed_label, _ = mix_fn(
+                        all_features[i], all_labels[i],
+                        all_features[j], all_labels[j],
+                        model, **mix_kwargs
+                    )
+                else:
+                    mixed_feat, mixed_label, _ = mix_fn(
+                        all_features[i], all_labels[i],
+                        all_features[j], all_labels[j],
+                        **mix_kwargs
+                    )
+            else:
+                mixed_feat, mixed_label = all_features[i], all_labels[i]
+        else:
+            mixed_feat, mixed_label = all_features[i], all_labels[i]
+        
+        forward_return = model(mixed_feat.unsqueeze(0))
+        logits = forward_return['logits']
+        
+        if mixed_label.dim() == 0 or mixed_label.size(0) == 1:
+            if criterion.__class__.__name__ == 'BCEWithLogitsLoss':
+                label_for_loss = F.one_hot(mixed_label.long(), num_classes=logits.size(1)).float()
+            else:
+                label_for_loss = mixed_label.long()
+        else:
+            label_for_loss = mixed_label.float()
+        
+        if criterion.__class__.__name__ == 'BCEWithLogitsLoss':
+            loss = criterion(logits, label_for_loss)
+        else:
+            loss = criterion(logits, label_for_loss.argmax(dim=-1) if label_for_loss.dim() > 1 else label_for_loss)
+        
+        loss.backward()
+        optimizer.step()
+        train_loss += loss.item()
+    
+    if scheduler is not None:
+        scheduler.step()
+    
+    train_loss /= n_samples
+    cost_time = time.time() - start_time
+    
+    return train_loss, cost_time

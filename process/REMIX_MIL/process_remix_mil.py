@@ -1,13 +1,13 @@
 import torch
 from torch.utils.data import DataLoader
-from modules.AB_MIL.ab_mil import AB_MIL
+from modules.REMIX_MIL.remix_mil import REMIX_MIL, remix_data
 from utils.process_utils import get_process_pipeline, get_act
 from utils.wsi_utils import WSI_Dataset
 from utils.general_utils import set_global_seed, init_epoch_info_log, add_epoch_info_log, early_stop
 from utils.model_utils import get_optimizer, get_scheduler, get_criterion, save_last_model, save_log, model_select
-from utils.loop_utils import val_loop
-from utils.loop_utils_mixup import train_loop_with_mixup
+from utils.loop_utils import val_loop, train_loop_with_mixup
 from tqdm import tqdm
+
 
 def process_REMIX_MIL(args):
     """Process with ReMix augmentation"""
@@ -42,7 +42,7 @@ def process_REMIX_MIL(args):
     dropout = args.Model.dropout
     act = get_act(args.Model.act)
     
-    mil_model = AB_MIL(L=L, D=D, num_classes=num_classes, dropout=dropout, act=act, in_dim=in_dim)
+    mil_model = REMIX_MIL(L=L, D=D, num_classes=num_classes, dropout=dropout, act=act, in_dim=in_dim)
     mil_model.to(device)
     
     print('Model Ready!')
@@ -54,7 +54,6 @@ def process_REMIX_MIL(args):
     warmup_epoch = args.Model.scheduler.warmup
     
     mixup_config = {
-        'method': args.Mixup.method,
         'mode': args.Mixup.mode,
         'rate': args.Mixup.rate,
         'strength': args.Mixup.strength,
@@ -79,7 +78,7 @@ def process_REMIX_MIL(args):
         else:
             now_scheduler = scheduler
         
-        train_loss, cost_time = train_loop_with_mixup(device, mil_model, train_dataloader, criterion, optimizer, now_scheduler, mixup_config)
+        train_loss, cost_time = train_loop_with_mixup(device, mil_model, train_dataloader, criterion, optimizer, now_scheduler, mixup_config, remix_data)
         
         if process_pipeline == 'Train_Val_Test':
             val_loss, val_metrics = val_loop(device, num_classes, mil_model, val_dataloader, criterion)
@@ -110,4 +109,3 @@ def process_REMIX_MIL(args):
     print('\nProcess Finished!')
     print(f'Best epoch: {best_epoch}')
     print(f'Best {best_model_metric}: {best_val_metric}')
-

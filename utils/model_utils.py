@@ -140,9 +140,29 @@ def save_log(args,epoch_info_log,best_epoch,process_pipeline):
     
 def get_model_from_yaml(yaml_args):
     model_name = yaml_args.General.MODEL_NAME
-    if model_name == 'AB_MIL' or model_name in ['MIXUP_MIL', 'REMIX_MIL', 'RANKMIX_MIL', 'PSEBMIX_MIL', 'INSMIX_MIL']:
+    if model_name == 'AB_MIL':
         from modules.AB_MIL.ab_mil import AB_MIL
         mil_model = AB_MIL(yaml_args.Model.L,yaml_args.Model.D,yaml_args.General.num_classes,yaml_args.Model.dropout,get_act(yaml_args.Model.act),yaml_args.Model.in_dim)
+        return mil_model
+    elif model_name == 'MIXUP_MIL':
+        from modules.MIXUP_MIL.mixup_mil import MIXUP_MIL
+        mil_model = MIXUP_MIL(yaml_args.Model.L,yaml_args.Model.D,yaml_args.General.num_classes,yaml_args.Model.dropout,get_act(yaml_args.Model.act),yaml_args.Model.in_dim)
+        return mil_model
+    elif model_name == 'INSMIX_MIL':
+        from modules.INSMIX_MIL.insmix_mil import INSMIX_MIL
+        mil_model = INSMIX_MIL(yaml_args.Model.L,yaml_args.Model.D,yaml_args.General.num_classes,yaml_args.Model.dropout,get_act(yaml_args.Model.act),yaml_args.Model.in_dim)
+        return mil_model
+    elif model_name == 'PSEBMIX_MIL':
+        from modules.PSEBMIX_MIL.psebmix_mil import PSEBMIX_MIL
+        mil_model = PSEBMIX_MIL(yaml_args.Model.L,yaml_args.Model.D,yaml_args.General.num_classes,yaml_args.Model.dropout,get_act(yaml_args.Model.act),yaml_args.Model.in_dim)
+        return mil_model
+    elif model_name == 'RANKMIX_MIL':
+        from modules.RANKMIX_MIL.rankmix_mil import RANKMIX_MIL
+        mil_model = RANKMIX_MIL(yaml_args.Model.L,yaml_args.Model.D,yaml_args.General.num_classes,yaml_args.Model.dropout,get_act(yaml_args.Model.act),yaml_args.Model.in_dim)
+        return mil_model
+    elif model_name == 'REMIX_MIL':
+        from modules.REMIX_MIL.remix_mil import REMIX_MIL
+        mil_model = REMIX_MIL(yaml_args.Model.L,yaml_args.Model.D,yaml_args.General.num_classes,yaml_args.Model.dropout,get_act(yaml_args.Model.act),yaml_args.Model.in_dim)
         return mil_model
     elif model_name == 'GATE_AB_MIL':
         from modules.GATE_AB_MIL.gate_ab_mil import GATE_AB_MIL
