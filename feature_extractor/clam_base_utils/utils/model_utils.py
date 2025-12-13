@@ -54,6 +54,21 @@ def get_transforms(backbone_name:str):
         std = (0.229, 0.224, 0.225)
         virchow_transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean = mean, std = std)])
         return virchow_transform
+    elif backbone_name == 'uni_v2':
+        mean = (0.485, 0.456, 0.406)
+        std = (0.229, 0.224, 0.225)
+        uni_v2_transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean = mean, std = std)])
+        return uni_v2_transform
+    elif backbone_name == 'hoptimus_v1':
+        mean=(0.707223, 0.578729, 0.703617)
+        std=(0.211883, 0.230117, 0.177517)
+        hoptimus_v1_transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean = mean, std = std)])
+        return hoptimus_v1_transform
+    elif backbone_name == 'midnight':
+        mean = (0.5, 0.5, 0.5)
+        std = (0.5, 0.5, 0.5)
+        midnight_transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean = mean, std = std)])
+        return midnight_transform
     else:
         return None
     
@@ -158,27 +173,69 @@ def get_backbone(backbone_name:str,device,pretrained_weights_dir):
       conch_v1_5_config = ConchConfig()
       model = build_conch_v1_5(conch_v1_5_config, checkpoint_path)
       model = model.to(device)
-      model.eval()
+    elif backbone_name == 'uni_v2':
+        uni_v2_config = {
+            'img_size': 224,
+            'patch_size': 14,
+            'depth': 24,
+            'num_heads': 24,
+            'init_values': 1e-5,
+            'embed_dim': 1536,
+            'mlp_ratio': 2.66667 * 2,
+            'num_classes': 0,
+            'no_embed_class': True,
+            'mlp_layer': timm.layers.SwiGLUPacked,
+            'act_layer': torch.nn.SiLU,
+            'reg_tokens': 8,
+            'dynamic_img_size': True
+        }
+        model = timm.create_model(model_name='vit_giant_patch14_224', pretrained=False, **uni_v2_config)
+        checkpoint_path = os.path.join(model_dir, "pytorch_model.bin")
+        state_dict = torch.load(checkpoint_path, map_location="cpu",weights_only=True)
+        model.load_state_dict(state_dict, strict=True)
+        model = model.to(device)
+    elif backbone_name == 'hoptimus_v1':
+        assert timm.__version__ == '0.9.16', f"H-Optimus requires timm version 0.9.16, but found {timm.__version__}. Please install the correct version using `pip install timm==0.9.16`"
+        hoptimus_v1_config = {
+            "num_classes": 0,
+            "img_size": 224,
+            "global_pool": "token",
+            'init_values': 1e-5,
+            'dynamic_img_size': False
+        }
+        model = timm.create_model("vit_giant_patch14_reg4_dinov2", pretrained=False, **hoptimus_v1_config)
+        checkpoint_path = os.path.join(model_dir, "pytorch_model.bin")
+        state_dict = torch.load(checkpoint_path, map_location="cpu",weights_only=True)
+        model.load_state_dict(state_dict, strict=True)
+        model = model.to(device)
+    elif backbone_name == 'midnight':
+        from transformers import AutoModel
+        model = AutoModel.from_pretrained(model_dir)
+        model = model.to(device)
+    model.eval()
     return model
         
 
-
-
 def feature_extractor_adapter(model, batch,model_name):
-	if model_name == 'plip':
-		features = model.get_image_features(batch)
-	elif model_name == 'conch':
-		features = model.encode_image(batch)
-	elif model_name == 'virchow':
-		features = model(batch)
-		class_token = features[:, 0]    
-		patch_tokens = features[:, 1:]  
-		features = torch.cat([class_token, patch_tokens.mean(1)], dim=-1) 
-	elif model_name == 'virchow_v2':
-		features = model(batch)
-		class_token = features[:, 0]    
-		patch_tokens = features[:, 5:] 
-		features = torch.cat([class_token, patch_tokens.mean(1)], dim=-1)
-	else:
-		features = model(batch)
-	return features
+    if model_name == 'plip':
+        features = model.get_image_features(batch)
+    elif model_name == 'conch':
+        features = model.encode_image(batch)
+    elif model_name == 'virchow':
+        features = model(batch)
+        class_token = features[:, 0]    
+        patch_tokens = features[:, 1:]  
+        features = torch.cat([class_token, patch_tokens.mean(1)], dim=-1) 
+    elif model_name == 'virchow_v2':
+        features = model(batch)
+        class_token = features[:, 0]    
+        patch_tokens = features[:, 5:] 
+        features = torch.cat([class_token, patch_tokens.mean(1)], dim=-1)
+    elif model_name == 'midnight':
+        out = model(batch).last_hidden_state
+        features = out[:, 0, :]
+    else:
+        features = model(batch)
+    if len(features.shape) == 3:
+        features = features.squeeze(0)
+    return features

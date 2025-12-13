@@ -84,6 +84,7 @@ This project was originally developed for our previous work and is continuously 
 * PLIP [A visual–language foundation model for pathology image analysis using medical Twitter](https://www.nature.com/articles/s41591-023-02504-3) (NAT MED 2023)
 * CONCH [A visual-language foundation model for computational pathology](https://www.nature.com/articles/s41591-024-02856-4) (NAT MED 2024)
 * UNI [Towards a general-purpose foundation model for computational pathology](https://www.nature.com/articles/s41591-024-02857-3) (NAT MED 2024)
+* UNI-V2 [Towards a general-purpose foundation model for computational pathology](https://www.nature.com/articles/s41591-024-02857-3) (NAT MED 2024)
 * GIGAPATH [A whole-slide foundation model for digital pathology from real-world data](https://www.nature.com/articles/s41586-024-07441-w) (NAT 2024)
 * VIRCHOW [A foundation model for clinical-grade computational pathology and rare cancers](https://www.nature.com/articles/s41591-024-03141-0) (NAT 2024)
 * VIRCHOW-V2 [Virchow2: Scaling Self-Supervised Mixed Magnification Models in Pathology](https://arxiv.org/pdf/2408.00738) (arxiv 2024)
