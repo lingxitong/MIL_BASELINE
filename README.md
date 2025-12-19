@@ -107,6 +107,7 @@ This project was originally developed for our previous work and is continuously 
 * DTFD_MIL [Double-Tier Feature Distillation MIL for Histopathology WSI Classification](https://arxiv.org/abs/2203.12081) (CVPR 2022)
 * ADD_MIL [Additive MIL: Intrinsically Interpretable MIL for Pathology](https://arxiv.org/pdf/2206.01794) (NeurIPS 2022)
 * ILRA_MIL [Exploring Low-rank Property in MIL for Whole Slide Image classification](https://openreview.net/pdf?id=01KmhBsEPFO) (ICLR 2023)
+* IIB_MIL [Integrated instance-level and bag-level MIL with label disambiguation](https://link.springer.com/chapter/10.1007/978-3-031-43987-2_54) (MICCAI 2023)
 * IB_MIL [Interventional Bag Multi-Instance Learning On Whole-Slide Pathological Images](https://github.com/HHHedo/IBMIL) (CVPR 2023)
 * RANKMIX_MIL [Data Augmentation for Classifying WSIs with Diverse Sizes](https://openaccess.thecvf.com/content/CVPR2023/html/Chen_RankMix_Data_Augmentation_for_Weakly_Supervised_Learning_of_Classifying_Whole_CVPR_2023_paper.html) (CVPR 2023)
 * MHIM_MIL [MIL Framework with Masked Hard Instance Mining for WSI Classification](https://arxiv.org/abs/2307.15254) (ICCV 2023)
@@ -120,6 +121,7 @@ This project was originally developed for our previous work and is continuously 
 * CA_MIL [Context-Aware Multiple Instance Learning for WSI Classification](https://arxiv.org/pdf/2305.05314) (ICLR 2024)
 * AC_MIL [Attention-Challenging Multiple Instance Learning for WSI Classification](https://arxiv.org/pdf/2311.07125) (ECCV 2024)
 * MAMBA_MIL [Enhancing Long Sequence Modeling with Sequence Reordering in CPath](https://arxiv.org/abs/2403.06800) (MICCAI 2024)
+* SC_MIL [Sparse Context-aware MIL for Predicting Cancer Survival Probability Distribution in Whole Slide Images]（https://arxiv.org/abs/2407.00664）(MICCAI 2024)
 * NCIE_MIL [Rethinking Decoupled MIL Framework for Histopathological Slide Classification](https://openreview.net/pdf?id=1GxyidfQzc) (MIDL 2024)
 * RRT_MIL [Towards Foundation Model-Level Performance in Computational Pathology](https://github.com/DearCaat/RRT-MIL) (CVPR 2024)
 * PA_MIL [Dynamic Policy-Driven Adaptive Multi-Instance Learning for WSI Classification](https://ieeexplore.ieee.org/document/10656273) (CVPR 2024)
@@ -127,12 +129,10 @@ This project was originally developed for our previous work and is continuously 
 * DYHG_MIL [Dynamic Hypergraph Representation for Bone Metastasis Cancer Analysis](https://arxiv.org/abs/2501.16787) (CMPB 2025)
 * MSM_MIL [Multi-scan Mamba-based Multiple Instance Learning for WSI classification](https://www.sciencedirect.com/science/article/abs/pii/S0950705125009177) (KBS 2025)
 * MAMBA2D_MIL [2DMamba: Efficient State Space Model for Image Representation](https://github.com/AtlasAnalyticsLab/2DMamba) (CVPR 2025)
+* AEM_MIL [Attention Entropy Maximization for Multiple Instance Learning based Whole Slide Image Classification](https://arxiv.org/abs/2406.15303) (MICCAI 2025)
+* MICO_MIL [Multiple Instance Learning with Context-Aware Clustering](https://arxiv.org/abs/2506.18028) (MICCAI 2025)
+* TDA_MIL [Top-Down Attention-based Multiple Instance Learning for Whole Slide Image Analysis](https://link.springer.com/chapter/10.1007/978-3-032-04927-8_62) (MICCAI 2025)
 * GDF_MIL [Rethinking Multi-Instance Learning through Graph-Driven Fusion]() (AAAI 2026)
-* SC_MIL [Sparse Context-aware Multiple Instance Learning for Predicting Cancer Survival Probability Distribution in Whole Slide Images]（https://arxiv.org/abs/2407.00664）
-* IIB_MIL [Interventional Instance-Bag Multiple Instance Learning](https://github.com/TencentAILabHealthcare/IIB-MIL)
-* AEM_MIL [Attention Entropy Maximization for Multiple Instance Learning based Whole Slide Image Classification](https://arxiv.org/abs/2406.15303)
-* MICO_MIL [Multiple Instance Learning with Context-Aware Clustering](https://arxiv.org/abs/2506.18028)
-* TDA_MIL [Top-Down Attention-based Multiple Instance Learning for Whole Slide Image Analysis](https://link.springer.com/chapter/10.1007/978-3-032-04927-8_62)
 * UPDATING...
 
 ### ☑️  Implementated Metrics
