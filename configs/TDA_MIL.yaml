@@ -1,0 +1,61 @@
+General:
+    MODEL_NAME: TDA_MIL
+    seed: 2024
+    num_classes: 2
+    num_epochs: 5
+    device: 1
+    num_workers: 4
+    best_model_metric: macro_auc  
+    earlystop: 
+        use: False
+        patience: 5
+        metric: macro_auc
+
+Dataset:
+    DATASET_NAME: your_dataset_name
+    dataset_csv_path: /path/to/your/dataset.csv
+    balanced_sampler:
+        use: False
+        replacement: True
+
+Logs:
+    log_root_dir: /path/to/your/log_dir/
+
+Model:
+    in_dim: 1024  # Feature dimension D (e.g., ResNet50->1024, ViT-S->384, CONCH->512)
+    embed_dim: 512  # Embedding dimension d after dim reduction
+    num_layers: 2  # Number of transformer encoder blocks l
+    num_heads: 8  # Number of attention heads h
+    mlp_ratio: 4.0  # MLP ratio for transformer blocks
+    dropout: 0.1  # Dropout rate
+    attn_dropout: 0.1  # Attention dropout rate
+    td_mlp_ratio: 2.0  # MLP ratio for top-down MLP decoder
+    clamp_min: 0.0  # Minimum value for selection score clamping
+    clamp_max: 1.0  # Maximum value for selection score clamping
+    force_cls_score: 1.0  # Force CLS token selection score (None to disable)
+    share_weights_step12: true  # Share weights between Step I and Step II transformer blocks
+    max_seq_len: 2048  # Maximum sequence length to avoid OOM (if N > max_seq_len, randomly sample)
+    optimizer:
+        which: adam    # adam or adamw
+        adam_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+        adamw_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+    criterion: ce  
+    scheduler:
+        warmup: 2
+        which: step  # [step, cosine, multi_step, exponential]
+        step_config:
+            step_size: 3
+            gamma: 0.9
+        multi_step_config:
+            milestones: [20, 30, 40]
+            gamma: 0.9
+        exponential_config:
+            gamma: 0.9
+        cosine_config:
+            T_max: 10
+            eta_min: 0.0001
+
