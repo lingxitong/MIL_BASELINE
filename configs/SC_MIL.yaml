@@ -1,0 +1,67 @@
+General:
+    MODEL_NAME: SC_MIL
+    seed: 2024
+    num_classes: 2
+    num_epochs: 5
+    device: 1
+    num_workers: 4
+    best_model_metric: macro_auc  
+    earlystop: 
+        use: False
+        patience: 5
+        metric: macro_auc
+
+Dataset:
+    DATASET_NAME: your_dataset_name
+    dataset_csv_path: /path/to/your/dataset.csv
+    h5_csv_path: null  # Optional: path to h5.csv file. If null, will use dummy coords (grid-based)
+    use_dummy_coords: true  # Use dummy coords if h5_csv_path is not provided
+    balanced_sampler:
+        use: False
+        replacement: True
+    
+    # h5.csv should be like (if h5 files are available):
+    #  h5_path
+    #  /path/to/your/slide_name.h5
+    #  /path/to/your/slide_name.h5
+    # If h5_csv_path is null, dummy coords will be generated based on patch indices
+
+Logs:
+    log_root_dir: /path/to/your/log_dir/
+
+Model:
+    in_dim: 1024  # Feature dimension (e.g., ResNet50->1024, ViT-S->384, CONCH->512)
+    hidden_size: 512  # Hidden dimension (default: same as in_dim)
+    deep: 1  # Number of ClusterLocalAttention layers
+    n_cluster: null  # Number of clusters (if null, use cluster_size)
+    cluster_size: 32  # Target cluster size
+    feature_weight: 0  # Weight for features in clustering (0=coords only, 1=features only)
+    dropout: 0.25
+    act: relu  # relu, gelu, or silu
+    with_softfilter: false  # Use soft filter for instance selection
+    use_filter_branch: false  # Use filter branch (requires with_softfilter=true)
+    with_cssa: true  # Use Cluster-based Sparse Self-Attention
+    optimizer:
+        which: adam    # adam or adamw
+        adam_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+        adamw_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+    criterion: ce  
+    scheduler:
+        warmup: 2
+        which: step  # [step, cosine, multi_step, exponential]
+        step_config:
+            step_size: 3
+            gamma: 0.9
+        multi_step_config:
+            milestones: [20, 30, 40]
+            gamma: 0.9
+        exponential_config:
+            gamma: 0.9
+        cosine_config:
+            T_max: 10
+            eta_min: 0.0001
+

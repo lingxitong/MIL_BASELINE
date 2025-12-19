@@ -558,6 +558,113 @@ def get_model_from_yaml(yaml_args):
             act=act
         )
         return mil_model
+    elif model_name == 'SC_MIL':
+        from modules.SC_MIL.sc_mil import SC_MIL
+        hidden_size = yaml_args.Model.hidden_size if hasattr(yaml_args.Model, 'hidden_size') else yaml_args.Model.in_dim
+        deep = yaml_args.Model.deep if hasattr(yaml_args.Model, 'deep') else 1
+        n_cluster = yaml_args.Model.n_cluster if hasattr(yaml_args.Model, 'n_cluster') else None
+        cluster_size = yaml_args.Model.cluster_size if hasattr(yaml_args.Model, 'cluster_size') else None
+        feature_weight = yaml_args.Model.feature_weight if hasattr(yaml_args.Model, 'feature_weight') else 0
+        with_softfilter = yaml_args.Model.with_softfilter if hasattr(yaml_args.Model, 'with_softfilter') else False
+        use_filter_branch = yaml_args.Model.use_filter_branch if hasattr(yaml_args.Model, 'use_filter_branch') else False
+        with_cssa = yaml_args.Model.with_cssa if hasattr(yaml_args.Model, 'with_cssa') else True
+        mil_model = SC_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            num_classes=yaml_args.General.num_classes,
+            hidden_size=hidden_size,
+            deep=deep,
+            n_cluster=n_cluster,
+            cluster_size=cluster_size,
+            feature_weight=feature_weight,
+            dropout=yaml_args.Model.dropout,
+            with_softfilter=with_softfilter,
+            use_filter_branch=use_filter_branch,
+            with_cssa=with_cssa,
+            act=get_act(yaml_args.Model.act)
+        )
+        return mil_model
+    elif model_name == 'IIB_MIL':
+        from modules.IIB_MIL.iib_mil import IIB_MIL
+        dim = yaml_args.Model.dim if hasattr(yaml_args.Model, 'dim') else 256
+        depth = yaml_args.Model.depth if hasattr(yaml_args.Model, 'depth') else 3
+        num_queries = yaml_args.Model.num_queries if hasattr(yaml_args.Model, 'num_queries') else 5
+        mil_model = IIB_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            num_classes=yaml_args.General.num_classes,
+            dim=dim,
+            depth=depth,
+            num_queries=num_queries,
+            dropout=yaml_args.Model.dropout
+        )
+        return mil_model
+    elif model_name == 'AEM_MIL':
+        from modules.AEM_MIL.aem_mil import AEM_MIL
+        L = yaml_args.Model.L if hasattr(yaml_args.Model, 'L') else 512
+        D = yaml_args.Model.D if hasattr(yaml_args.Model, 'D') else 128
+        temperature = yaml_args.Model.temperature if hasattr(yaml_args.Model, 'temperature') else 1.0
+        lambda_entropy = yaml_args.Model.lambda_entropy if hasattr(yaml_args.Model, 'lambda_entropy') else 0.1
+        mil_model = AEM_MIL(
+            L=L,
+            D=D,
+            num_classes=yaml_args.General.num_classes,
+            dropout=yaml_args.Model.dropout,
+            act=get_act(yaml_args.Model.act),
+            in_dim=yaml_args.Model.in_dim,
+            temperature=temperature,
+            lambda_entropy=lambda_entropy
+        )
+        return mil_model
+    elif model_name == 'MICO_MIL':
+        from modules.MICO_MIL.mico_mil import MICO_MIL
+        embedding_dim = yaml_args.Model.embedding_dim if hasattr(yaml_args.Model, 'embedding_dim') else 512
+        num_clusters = yaml_args.Model.num_clusters if hasattr(yaml_args.Model, 'num_clusters') else 64
+        num_enhancers = yaml_args.Model.num_enhancers if hasattr(yaml_args.Model, 'num_enhancers') else 3
+        hard = yaml_args.Model.hard if hasattr(yaml_args.Model, 'hard') else False
+        similarity_method = yaml_args.Model.similarity_method if hasattr(yaml_args.Model, 'similarity_method') else 'l2'
+        cluster_init_path = yaml_args.Model.cluster_init_path if hasattr(yaml_args.Model, 'cluster_init_path') else None
+        mil_model = MICO_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            embedding_dim=embedding_dim,
+            num_clusters=num_clusters,
+            num_classes=yaml_args.General.num_classes,
+            num_enhancers=num_enhancers,
+            drop=yaml_args.Model.dropout,
+            hard=hard,
+            similarity_method=similarity_method,
+            cluster_init_path=cluster_init_path
+        )
+        return mil_model
+    elif model_name == 'TDA_MIL' or model_name == 'tda_mil':
+        from modules.TDA_MIL.tda_mil import TDA_MIL
+        embed_dim = yaml_args.Model.embed_dim if hasattr(yaml_args.Model, 'embed_dim') else 512
+        num_layers = yaml_args.Model.num_layers if hasattr(yaml_args.Model, 'num_layers') else 2
+        num_heads = yaml_args.Model.num_heads if hasattr(yaml_args.Model, 'num_heads') else 8
+        mlp_ratio = yaml_args.Model.mlp_ratio if hasattr(yaml_args.Model, 'mlp_ratio') else 4.0
+        dropout = yaml_args.Model.dropout if hasattr(yaml_args.Model, 'dropout') else 0.1
+        attn_dropout = yaml_args.Model.attn_dropout if hasattr(yaml_args.Model, 'attn_dropout') else 0.1
+        td_mlp_ratio = yaml_args.Model.td_mlp_ratio if hasattr(yaml_args.Model, 'td_mlp_ratio') else 2.0
+        clamp_min = yaml_args.Model.clamp_min if hasattr(yaml_args.Model, 'clamp_min') else 0.0
+        clamp_max = yaml_args.Model.clamp_max if hasattr(yaml_args.Model, 'clamp_max') else 1.0
+        force_cls_score = yaml_args.Model.force_cls_score if hasattr(yaml_args.Model, 'force_cls_score') else 1.0
+        share_weights_step12 = yaml_args.Model.share_weights_step12 if hasattr(yaml_args.Model, 'share_weights_step12') else True
+        max_seq_len = yaml_args.Model.max_seq_len if hasattr(yaml_args.Model, 'max_seq_len') else 2048
+        mil_model = TDA_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            embed_dim=embed_dim,
+            num_classes=yaml_args.General.num_classes,
+            num_layers=num_layers,
+            num_heads=num_heads,
+            mlp_ratio=mlp_ratio,
+            dropout=dropout,
+            attn_dropout=attn_dropout,
+            td_mlp_ratio=td_mlp_ratio,
+            clamp_min=clamp_min,
+            clamp_max=clamp_max,
+            force_cls_score=force_cls_score,
+            share_weights_step12=share_weights_step12,
+            max_seq_len=max_seq_len
+        )
+        return mil_model
     else:
         raise ValueError(f'Invalid model name: {model_name}')
     
