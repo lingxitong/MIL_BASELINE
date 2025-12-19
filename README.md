@@ -128,11 +128,11 @@ This project was originally developed for our previous work and is continuously 
 * MSM_MIL [Multi-scan Mamba-based Multiple Instance Learning for WSI classification](https://www.sciencedirect.com/science/article/abs/pii/S0950705125009177) (KBS 2025)
 * MAMBA2D_MIL [2DMamba: Efficient State Space Model for Image Representation](https://github.com/AtlasAnalyticsLab/2DMamba) (CVPR 2025)
 * GDF_MIL [Rethinking Multi-Instance Learning through Graph-Driven Fusion]() (AAAI 2026)
-* SC_MIL Sparse Context-aware Multiple Instance Learning for Predicting Cancer Survival Probability Distribution in Whole Slide Images
+* SC_MIL [Sparse Context-aware Multiple Instance Learning for Predicting Cancer Survival Probability Distribution in Whole Slide Images]（https://arxiv.org/abs/2407.00664）
 * IIB_MIL [Interventional Instance-Bag Multiple Instance Learning](https://github.com/TencentAILabHealthcare/IIB-MIL)
-* AEM_MIL Attention Entropy Maximization for Multiple Instance Learning based Whole Slide Image Classification
-* MICO_MIL [Multiple Instance Learning with Context-Aware Clustering](https://github.com/MiCo-main)
-* TDA_MIL [Top-Down Attention-based Multiple Instance Learning for Whole Slide Image Analysis](TDA_MIL.pdf) - Two-stage inference with self-attention contextualization and top-down feature injection
+* AEM_MIL [Attention Entropy Maximization for Multiple Instance Learning based Whole Slide Image Classification](https://arxiv.org/abs/2406.15303)
+* MICO_MIL [Multiple Instance Learning with Context-Aware Clustering](https://arxiv.org/abs/2506.18028)
+* TDA_MIL [Top-Down Attention-based Multiple Instance Learning for Whole Slide Image Analysis](https://link.springer.com/chapter/10.1007/978-3-032-04927-8_62)
 * UPDATING...
 
 ### ☑️  Implementated Metrics
