@@ -108,7 +108,6 @@ def process(args,yaml_path,options):
     elif args.General.MODEL_NAME == 'GDF_MIL':
         from .GDF_MIL.process_gdf_mil import process_GDF_MIL
         process_GDF_MIL(args)
-<<<<<<< Updated upstream
     elif args.General.MODEL_NAME == 'PSEBMIX_MIL':
         from .PSEBMIX_MIL.process_psebmix_mil import process_PSEBMIX_MIL
         process_PSEBMIX_MIL(args)
@@ -124,7 +123,6 @@ def process(args,yaml_path,options):
     elif args.General.MODEL_NAME == 'REMIX_MIL':
         from .REMIX_MIL.process_remix_mil import process_REMIX_MIL
         process_REMIX_MIL(args)
-=======
     elif args.General.MODEL_NAME == 'SC_MIL':
         from .SC_MIL.process_sc_mil import process_SC_MIL
         process_SC_MIL(args)
@@ -140,7 +138,6 @@ def process(args,yaml_path,options):
     elif args.General.MODEL_NAME == 'TDA_MIL':
         from .TDA_MIL.process_tda_mil import process_TDA_MIL
         process_TDA_MIL(args)
->>>>>>> Stashed changes
     else:
         raise ValueError('Model Not Found')
     # save every slide softmax-logits (confidence for each slide towards each class)
