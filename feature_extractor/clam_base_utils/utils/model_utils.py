@@ -8,7 +8,7 @@ from typing import List, Union, Tuple
 import torch.nn as nn
 import torch
 def get_transforms(backbone_name:str):
-    assert backbone_name in ['vit_s_imagenet','plip','uni','resnet50_imagenet','conch','ctranspath','gigapath','virchow','virchow_v2','conch_v1_5']
+    assert backbone_name in ['vit_s_imagenet','plip','uni','uni_v2','resnet50_imagenet','conch','ctranspath','gigapath','virchow','virchow_v2','conch_v1_5','midnight','hoptimus_v1']
     if backbone_name == 'vit_s_imagenet':
         mean = (0.5,0.5,0.5)
         std = (0.5,0.5,0.5)

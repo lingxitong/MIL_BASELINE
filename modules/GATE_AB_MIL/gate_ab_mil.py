@@ -63,19 +63,14 @@ class GATE_AB_MIL(nn.Module):
         self.attention_a = [
             nn.Linear(self.L, self.D,bias=bias),
         ]
-        if act == 'gelu': 
-            self.attention_a += [nn.GELU()]
-        elif act == 'relu':
-            self.attention_a += [nn.ReLU()]
-        elif act == 'tanh':
-            self.attention_a += [nn.Tanh()]
+        self.attention_a += [act]
 
         self.attention_b = [nn.Linear(self.L, self.D,bias=bias),
                             nn.Sigmoid()]
 
         if dropout:
-            self.attention_a += [nn.Dropout(0.25)]
-            self.attention_b += [nn.Dropout(0.25)]
+            self.attention_a += [nn.Dropout(dropout)]
+            self.attention_b += [nn.Dropout(dropout)]
 
         self.attention_a = nn.Sequential(*self.attention_a)
         self.attention_b = nn.Sequential(*self.attention_b)

@@ -83,11 +83,18 @@ conch_v1_5_weights_dir/
 	├──conch_v1_5_pytorch_model.bin
 uni_weightes_dir/
 	├──pytorch_model.bin
+uni_v2_weightes_dir/
+	├──pytorch_model.bin
 gigapath_weights_dir/
 	├──pytorch_model.bin 
 virchow_weightes_dir/
 	├──pytorch_model.bin
 virchow_v2_weightes_dir/
+	├──pytorch_model.bin
+midnight_weightes_dir/
+	├──model.safetensors
+	├──config.json
+hoptimus_v1_weightes_dir/
 	├──pytorch_model.bin
 
 ```
@@ -102,6 +109,9 @@ Model Download Link and timm-version:
 - [virchow](https://huggingface.co/paige-ai/Virchow) `timm>=0.9.11`
 - [virchow_v2](https://huggingface.co/paige-ai/Virchow2/tree/main) `timm>=0.9.11`
 - [conch_v1_5](https://huggingface.co/MahmoodLab/TITAN) `timm==1.0.3,transformers==4.46.0,einops==0.6.1,einops-exts==0.0.4`
+- [uni_v2](https://huggingface.co/MahmoodLab/UNI2-h) 
+- [midnight](https://huggingface.co/kaiko-ai/midnight) 
+- [hoptimus_v1](https://huggingface.co/bioptimus/H-optimus-1) 
 
 Results of `--feat_dir`
 ```bash
