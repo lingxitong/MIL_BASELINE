@@ -88,7 +88,8 @@ This project was originally developed for our previous work and is continuously 
 * GIGAPATH [A whole-slide foundation model for digital pathology from real-world data](https://www.nature.com/articles/s41586-024-07441-w) (NAT 2024)
 * VIRCHOW [A foundation model for clinical-grade computational pathology and rare cancers](https://www.nature.com/articles/s41591-024-03141-0) (NAT 2024)
 * VIRCHOW-V2 [Virchow2: Scaling Self-Supervised Mixed Magnification Models in Pathology](https://arxiv.org/pdf/2408.00738) (ARXIV 2024)
-* CONCH-V1.5 [Multimodal Whole Slide Foundation Model for Pathology](https://arxiv.org/abs/2411.19666) (NAT MED 2024)
+* CONCH-V1.5 [Multimodal Whole Slide Foundation Model for Pathology](https://arxiv.org/abs/2411.19666) (NAT MED 2025)
+* HOPTIMUS-V0 [HOPTIMUS-V0](https://huggingface.co/bioptimus/H-optimus-0) 
 * HOPTIMUS-V1 [HOPTIMUS-V1](https://huggingface.co/bioptimus/H-optimus-1) 
 * MIDNIGHT [MIDNIGHT](https://huggingface.co/kaiko-ai/midnight) 
 * UPDATING...
