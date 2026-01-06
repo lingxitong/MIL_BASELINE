@@ -8,7 +8,7 @@ from typing import List, Union, Tuple
 import torch.nn as nn
 import torch
 def get_transforms(backbone_name:str):
-    assert backbone_name in ['vit_s_imagenet','plip','uni','uni_v2','resnet50_imagenet','conch','ctranspath','gigapath','virchow','virchow_v2','conch_v1_5','midnight','hoptimus_v1']
+    assert backbone_name in ['vit_s_imagenet','plip','uni','uni_v2','resnet50_imagenet','conch','ctranspath','gigapath','virchow','virchow_v2','conch_v1_5','midnight','hoptimus_v1','hoptimus_v0']
     if backbone_name == 'vit_s_imagenet':
         mean = (0.5,0.5,0.5)
         std = (0.5,0.5,0.5)
@@ -59,11 +59,11 @@ def get_transforms(backbone_name:str):
         std = (0.229, 0.224, 0.225)
         uni_v2_transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean = mean, std = std)])
         return uni_v2_transform
-    elif backbone_name == 'hoptimus_v1':
+    elif backbone_name == 'hoptimus_v1' or backbone_name == ''hoptimus_v1':
         mean=(0.707223, 0.578729, 0.703617)
         std=(0.211883, 0.230117, 0.177517)
-        hoptimus_v1_transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean = mean, std = std)])
-        return hoptimus_v1_transform
+        hoptimus_transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean = mean, std = std)])
+        return hoptimus_transform
     elif backbone_name == 'midnight':
         mean = (0.5, 0.5, 0.5)
         std = (0.5, 0.5, 0.5)
@@ -194,7 +194,7 @@ def get_backbone(backbone_name:str,device,pretrained_weights_dir):
         state_dict = torch.load(checkpoint_path, map_location="cpu",weights_only=True)
         model.load_state_dict(state_dict, strict=True)
         model = model.to(device)
-    elif backbone_name == 'hoptimus_v1':
+    elif backbone_name == 'hoptimus_v1' or backbone_name == 'hoptimus_v0'
         assert timm.__version__ == '0.9.16', f"H-Optimus requires timm version 0.9.16, but found {timm.__version__}. Please install the correct version using `pip install timm==0.9.16`"
         hoptimus_v1_config = {
             "num_classes": 0,
