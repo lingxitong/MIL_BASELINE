@@ -11,6 +11,9 @@ With the rapid advancement of computational power and artificial intelligence te
 
 <details>
 <summary>News of MIL-Baseline</summary>
+**Update Preview**
+1.Comprehensive update of feature extraction and heatmap visualization system (integrated with Trident)
+2.Comprehensive update for survival analysis adaptation
 
 **2025-11-08**
 Adapt the H5 format feature file for Trident (https://github.com/mahmoodlab/TRIDENT) and add the balanced_sampler plugin.
