@@ -140,6 +140,7 @@ This project was originally developed for our previous work and is continuously 
 * MICO_MIL [Multiple Instance Learning with Context-Aware Clustering](https://arxiv.org/abs/2506.18028) (MICCAI 2025)
 * TDA_MIL [Top-Down Attention-based Multiple Instance Learning for Whole Slide Image Analysis](https://link.springer.com/chapter/10.1007/978-3-032-04927-8_62) (MICCAI 2025)
 * GDF_MIL [Rethinking Multi-Instance Learning through Graph-Driven Fusion]() (AAAI 2026)
+* RET_MIL [RetMIL: Retentive Multiple Instance Learningfor Histopathological Whole Slide ImageClassification](https://link.springer.com/chapter/10.1007/978-3-031-72083-3_41) (MICCAI 2024)
 * UPDATING...
 
 ### ☑️  Implementated Metrics

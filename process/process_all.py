@@ -138,6 +138,9 @@ def process(args,yaml_path,options):
     elif args.General.MODEL_NAME == 'TDA_MIL':
         from .TDA_MIL.process_tda_mil import process_TDA_MIL
         process_TDA_MIL(args)
+    elif args.General.MODEL_NAME == 'RET_MIL':
+        from .RET_MIL.process_ret_mil import process_RET_MIL
+        process_RET_MIL(args)
     else:
         raise ValueError('Model Not Found')
     # save every slide softmax-logits (confidence for each slide towards each class)

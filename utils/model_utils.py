@@ -665,6 +665,21 @@ def get_model_from_yaml(yaml_args):
             max_seq_len=max_seq_len
         )
         return mil_model
+    elif model_name == 'RET_MIL':
+        from modules.RET_MIL.ret_mil import RET_MIL
+        embed_dim = yaml_args.Model.embed_dim if hasattr(yaml_args.Model, 'embed_dim') and yaml_args.Model.embed_dim is not None else yaml_args.Model.in_dim
+        chunk_len = yaml_args.Model.chunk_len if hasattr(yaml_args.Model, 'chunk_len') else 512
+        num_heads = yaml_args.Model.num_heads if hasattr(yaml_args.Model, 'num_heads') else 8
+        dropout = yaml_args.Model.dropout if hasattr(yaml_args.Model, 'dropout') else 0.25
+        mil_model = RET_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            embed_dim=embed_dim,
+            num_classes=yaml_args.General.num_classes,
+            chunk_len=chunk_len,
+            num_heads=num_heads,
+            dropout=dropout
+        )
+        return mil_model
     else:
         raise ValueError(f'Invalid model name: {model_name}')
     
