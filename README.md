@@ -128,6 +128,7 @@ This project was originally developed for our previous work and is continuously 
 * CA_MIL [Context-Aware Multiple Instance Learning for WSI Classification](https://arxiv.org/pdf/2305.05314) (ICLR 2024)
 * AC_MIL [Attention-Challenging Multiple Instance Learning for WSI Classification](https://arxiv.org/pdf/2311.07125) (ECCV 2024)
 * MAMBA_MIL [Enhancing Long Sequence Modeling with Sequence Reordering in CPath](https://arxiv.org/abs/2403.06800) (MICCAI 2024)
+* RET_MIL [Retentive Multiple Instance Learning for Histopathological WSI Classification](https://link.springer.com/chapter/10.1007/978-3-031-72083-3_41) (MICCAI 2024)
 * SC_MIL [Sparse Context-aware MIL for Predicting Cancer Survival Probability Distribution in WSI](https://arxiv.org/abs/2407.00664) (MICCAI 2024)
 * NCIE_MIL [Rethinking Decoupled MIL Framework for Histopathological Slide Classification](https://openreview.net/pdf?id=1GxyidfQzc) (MIDL 2024)
 * RRT_MIL [Towards Foundation Model-Level Performance in Computational Pathology](https://github.com/DearCaat/RRT-MIL) (CVPR 2024)
@@ -140,7 +141,6 @@ This project was originally developed for our previous work and is continuously 
 * MICO_MIL [Multiple Instance Learning with Context-Aware Clustering](https://arxiv.org/abs/2506.18028) (MICCAI 2025)
 * TDA_MIL [Top-Down Attention-based Multiple Instance Learning for Whole Slide Image Analysis](https://link.springer.com/chapter/10.1007/978-3-032-04927-8_62) (MICCAI 2025)
 * GDF_MIL [Rethinking Multi-Instance Learning through Graph-Driven Fusion]() (AAAI 2026)
-* RET_MIL [RetMIL: Retentive Multiple Instance Learningfor Histopathological Whole Slide ImageClassification](https://link.springer.com/chapter/10.1007/978-3-031-72083-3_41) (MICCAI 2024)
 * UPDATING...
 
 ### ☑️  Implementated Metrics
