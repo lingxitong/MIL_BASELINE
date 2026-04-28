@@ -1,0 +1,54 @@
+General:
+    MODEL_NAME: DAG_MIL
+    seed: 2024
+    num_classes: 2
+    num_epochs: 5
+    device: 0
+    num_workers: 4
+    best_model_metric: macro_auc
+    earlystop:
+        use: False
+        patience: 5
+        metric: macro_auc
+
+Dataset:
+    DATASET_NAME: your_dataset_name
+    dataset_csv_path: /path/to/your/dataset.csv
+    h5_csv_path: /path/to/your/h5.csv
+    balanced_sampler:
+        use: False
+        replacement: True
+
+Logs:
+    log_root_dir: /path/to/your/log_dir/
+
+Model:
+    in_dim: 1024
+    dim_hidden: 512
+    topk: 6
+    stride: 512
+    agg_type: bi-interaction
+    dropout: 0.3
+    optimizer:
+        which: adam
+        adam_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+        adamw_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+    criterion: ce
+    scheduler:
+        warmup: 2
+        which: step
+        step_config:
+            step_size: 3
+            gamma: 0.9
+        multi_step_config:
+            milestones: [20, 30, 40]
+            gamma: 0.9
+        exponential_config:
+            gamma: 0.9
+        cosine_config:
+            T_max: 10
+            eta_min: 0.0001

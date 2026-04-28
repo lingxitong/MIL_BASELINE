@@ -266,6 +266,22 @@ def get_model_from_yaml(yaml_args):
             projection_dim=projection_dim
         )
         return mil_model
+    elif model_name == 'DAG_MIL':
+        from modules.DAG_MIL.dag_mil import DeformableGraphGNN
+        dim_hidden = yaml_args.Model.dim_hidden if hasattr(yaml_args.Model, 'dim_hidden') else 512
+        topk = yaml_args.Model.topk if hasattr(yaml_args.Model, 'topk') else 6
+        stride = yaml_args.Model.stride if hasattr(yaml_args.Model, 'stride') else 512
+        agg_type = yaml_args.Model.agg_type if hasattr(yaml_args.Model, 'agg_type') else 'bi-interaction'
+        mil_model = DeformableGraphGNN(
+            dim_in=yaml_args.Model.in_dim,
+            dim_hidden=dim_hidden,
+            n_classes=yaml_args.General.num_classes,
+            topk=topk,
+            stride=stride,
+            agg_type=agg_type,
+            dropout=yaml_args.Model.dropout
+        )
+        return mil_model
     elif model_name == 'DT_MIL':
         from modules.DT_MIL.dt_mil import DT_MIL
         mil_model = DT_MIL(
