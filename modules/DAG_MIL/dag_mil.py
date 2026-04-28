@@ -1,11 +1,11 @@
-import torch
 import math
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import AttentionalAggregation
 
 
-class DeformableGraphGNN(nn.Module):
+class DAG_MIL(nn.Module):
     def __init__(self, dim_in, dim_hidden, n_classes, topk, stride, agg_type='bi-interaction', dropout=0.3):
         super().__init__()
         self.topk = topk

@@ -140,6 +140,7 @@ This project was originally developed for our previous work and is continuously 
 * AEM_MIL [Attention Entropy Maximization for MIL based WSI Classification](https://arxiv.org/abs/2406.15303) (MICCAI 2025)
 * MICO_MIL [Multiple Instance Learning with Context-Aware Clustering](https://arxiv.org/abs/2506.18028) (MICCAI 2025)
 * TDA_MIL [Top-Down Attention-based Multiple Instance Learning for Whole Slide Image Analysis](https://link.springer.com/chapter/10.1007/978-3-032-04927-8_62) (MICCAI 2025)
+* DAG_MIL [Deformable attention graph representation learning for histopathology whole slide image analysis](https://ieeexplore.ieee.org/abstract/document/11464653) (AAAI 2026)
 * GDF_MIL [Rethinking Multi-Instance Learning through Graph-Driven Fusion]() (AAAI 2026)
 * UPDATING...
 

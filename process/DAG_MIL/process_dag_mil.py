@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 from torch.utils.data import DataLoader
-from modules.DAG_MIL.dag_mil import DeformableGraphGNN
+from modules.DAG_MIL.dag_mil import DAG_MIL
 from utils.process_utils import get_process_pipeline
 from utils.wsi_utils import LONG_MIL_WSI_Dataset
 from utils.general_utils import set_global_seed, init_epoch_info_log, add_epoch_info_log, early_stop
@@ -97,7 +97,7 @@ def process_DAG_MIL(args):
 
     device = torch.device(f'cuda:{args.General.device}')
     num_classes = args.General.num_classes
-    mil_model = DeformableGraphGNN(
+    mil_model = DAG_MIL(
         dim_in=args.Model.in_dim,
         dim_hidden=args.Model.dim_hidden,
         n_classes=num_classes,
