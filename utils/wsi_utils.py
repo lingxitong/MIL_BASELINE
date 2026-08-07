@@ -40,6 +40,7 @@ class WSI_Dataset(Dataset):
                     raise ValueError(f"Unknown dict format in {slide_path}, keys: {list(feat.keys())}")
         if len(feat.shape) == 3:
             feat = feat.squeeze(0)
+        feat = feat.float()
         return feat,label
 
     def is_None_Dataset(self):
