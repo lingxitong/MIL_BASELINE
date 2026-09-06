@@ -13,6 +13,9 @@ def process(args,yaml_path,options):
     elif args.General.MODEL_NAME == 'AB_MIL':
         from .AB_MIL.process_ab_mil import process_AB_MIL
         process_AB_MIL(args)
+    elif args.General.MODEL_NAME == 'NN_MIL':
+        from .NN_MIL.process_nn_mil import process_NN_MIL
+        process_NN_MIL(args)
     elif args.General.MODEL_NAME == 'MO_MIL':
         from .MO_MIL.process_mo_mil import process_MO_MIL
         process_MO_MIL(args)

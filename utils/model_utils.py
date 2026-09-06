@@ -140,7 +140,21 @@ def save_log(args,epoch_info_log,best_epoch,process_pipeline):
     
 def get_model_from_yaml(yaml_args):
     model_name = yaml_args.General.MODEL_NAME
-    if model_name == 'AB_MIL':
+    if model_name == 'NN_MIL':
+        from modules.NN_MIL.nn_mil import NN_MIL
+        mil_model = NN_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            hidden_dim=getattr(yaml_args.Model, 'hidden_dim', 256),
+            num_classes=yaml_args.General.num_classes,
+            dropout=getattr(yaml_args.Model, 'dropout', 0.25),
+            activation=getattr(yaml_args.Model, 'activation', 'softmax'),
+            feature_select=getattr(yaml_args.Model, 'feature_select', True),
+            eval_stride_divisor=getattr(yaml_args.Model, 'eval_stride_divisor', 4),
+            cover_shuffle=getattr(yaml_args.Model, 'cover_shuffle', True),
+            cover_seed=getattr(yaml_args.Model, 'cover_seed', 42),
+        )
+        return mil_model
+    elif model_name == 'AB_MIL':
         from modules.AB_MIL.ab_mil import AB_MIL
         mil_model = AB_MIL(yaml_args.Model.L,yaml_args.Model.D,yaml_args.General.num_classes,yaml_args.Model.dropout,get_act(yaml_args.Model.act),yaml_args.Model.in_dim)
         return mil_model

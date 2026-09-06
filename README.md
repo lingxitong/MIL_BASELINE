@@ -87,6 +87,7 @@ fix bug of all MIL-models expect DTFD-MIL
 * MEAN_MIL
 * MAX_MIL
 * AB_MIL [Attention-based Deep Multiple Instance Learning](https://arxiv.org/abs/1802.04712) (ICML 2018)
+* NN_MIL [nnMIL: a generalizable multiple instance learning framework for computational pathology](https://www.nature.com/articles/s41551-026-01767-8) (Nature Biomedical Engineering 2026)
 * MIXUP_MIL [mixup: Beyond Empirical Risk Minimization](https://arxiv.org/abs/1710.09412) (ICLR 2018)
 * DT_MIL [Deformable Transformer for Multi-instance Learning on Histopathological Image](https://link.springer.com/chapter/10.1007/978-3-030-87237-3_20) (MICCAI 2021)
 * TRANS_MIL [Transformer based Correlated Multiple Instance Learning for WSI Classification](https://arxiv.org/abs/2106.00908) (NeurIPS 2021)
@@ -172,6 +173,9 @@ You can use the dataset-split-scripts to perform different dataset-split, the de
 ### :fire: **Train/Test MIL**
 #### **Yaml Config**
 You can config the yaml-file in `/configs`. For example, `/configs/AB_MIL.yaml`, A detailed explanation has been written in  `/configs/AB_MIL.yaml`. 
+
+#### **NN_MIL (nnMIL)**
+`configs/NN_MIL.yaml` adds the classification workflow from [nnMIL](https://github.com/Luoxd1996/nnMIL): fixed-length patch sub-bags for batched training, class-balanced mini-batches, random feature-subspace attention, and deterministic overlapping-subspace ensemble inference. Set `Model.fixed_bag_size: auto` to use half the median training patch count, or provide an explicit positive integer. During evaluation, `test_mil.py` writes `NN_MIL_predictions.csv` alongside standard metrics; it includes per-class probabilities, entropy, mutual information, probability variance and the number of subspaces. Padding is masked before attention softmax and therefore never contributes to slide aggregation.
 #### **Train & Test**
 Then, `/train_mil.py` will help you like this:
 ``` shell
