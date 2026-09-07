@@ -1,0 +1,58 @@
+General:
+    MODEL_NAME: NN_MIL
+    seed: 2024
+    num_classes: 2
+    num_epochs: 50
+    device: 0
+    num_workers: 4
+    best_model_metric: macro_auc
+    earlystop:
+        use: False
+        patience: 10
+        metric: macro_auc
+
+Dataset:
+    DATASET_NAME: your_dataset_name
+    dataset_csv_path: /path/to/your/dataset.csv
+
+Logs:
+    log_root_dir: /path/to/your/log_dir/
+
+Model:
+    # Set to 'auto' to use floor(0.5 * median training patch count), as nnMIL does.
+    fixed_bag_size: auto
+    auto_bag_size_factor: 0.5
+    batch_size: 32
+    task_aware_sampler: True
+    in_dim: 1024
+    hidden_dim: 256
+    dropout: 0.25
+    activation: softmax
+    feature_select: True
+    # Evaluation uses overlapping hidden_dim-wide windows with stride hidden_dim / divisor.
+    eval_stride_divisor: 4
+    cover_shuffle: True
+    cover_seed: 42
+    criterion: ce
+    optimizer:
+        which: adamw
+        adam_config:
+            lr: 0.0003
+            weight_decay: 0.00001
+        adamw_config:
+            lr: 0.0003
+            weight_decay: 0.01
+    scheduler:
+        warmup: 5
+        which: cosine
+        step_config:
+            step_size: 20
+            gamma: 0.9
+        multi_step_config:
+            milestones: [20, 30, 40]
+            gamma: 0.9
+        exponential_config:
+            gamma: 0.9
+        cosine_config:
+            T_max: 50
+            eta_min: 0.000001

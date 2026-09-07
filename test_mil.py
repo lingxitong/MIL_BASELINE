@@ -8,6 +8,7 @@ import torch
 import shutil
 import os
 from utils.model_utils import get_model_from_yaml,get_criterion
+from utils.nnmil_utils import nnmil_val_loop
 warnings.filterwarnings('ignore')
 
 def test(args):
@@ -58,6 +59,11 @@ def test(args):
         test_loss,test_metrics =  ds_val_loop(device,num_classes,mil_model,test_dataloader,criterion)
     elif yaml_args.General.MODEL_NAME == 'DTFD_MIL':
         test_loss,test_metrics =  dtfd_val_loop(device,num_classes,model_list,test_dataloader,criterion,yaml_args.Model.num_Group,yaml_args.Model.grad_clipping,yaml_args.Model.distill,yaml_args.Model.total_instance)
+    elif yaml_args.General.MODEL_NAME == 'NN_MIL':
+        test_loss,test_metrics,predictions = nnmil_val_loop(
+            device, num_classes, mil_model, test_dataloader, criterion,
+            return_predictions=True, slide_paths=test_ds.slide_path_list,
+        )
     else:
         test_loss,test_metrics =  val_loop(device,num_classes,mil_model,test_dataloader,criterion)
     
@@ -77,6 +83,10 @@ def test(args):
     log_to_save = {'test_loss':test_loss,'test_metrics':test_metrics}
     with open(test_log_path,'w') as f:
         f.write(str(log_to_save))
+    if model_name == 'NN_MIL':
+        prediction_path = os.path.join(test_log_dir, 'NN_MIL_predictions.csv')
+        predictions.to_csv(prediction_path, index=False)
+        print(f"NN_MIL predictions and uncertainty saved at: {prediction_path}")
     print(f"Test log saved at: {test_log_path}")
     
 
