@@ -87,7 +87,6 @@ fix bug of all MIL-models expect DTFD-MIL
 * MEAN_MIL
 * MAX_MIL
 * AB_MIL [Attention-based Deep Multiple Instance Learning](https://arxiv.org/abs/1802.04712) (ICML 2018)
-* NN_MIL [nnMIL: a generalizable multiple instance learning framework for computational pathology](https://www.nature.com/articles/s41551-026-01767-8) (Nature Biomedical Engineering 2026)
 * MIXUP_MIL [mixup: Beyond Empirical Risk Minimization](https://arxiv.org/abs/1710.09412) (ICLR 2018)
 * DT_MIL [Deformable Transformer for Multi-instance Learning on Histopathological Image](https://link.springer.com/chapter/10.1007/978-3-030-87237-3_20) (MICCAI 2021)
 * TRANS_MIL [Transformer based Correlated Multiple Instance Learning for WSI Classification](https://arxiv.org/abs/2106.00908) (NeurIPS 2021)
@@ -132,6 +131,7 @@ fix bug of all MIL-models expect DTFD-MIL
 * GDF_MIL [Rethinking Multi-Instance Learning through Graph-Driven Fusion](https://ojs.aaai.org/index.php/AAAI/article/view/40081) (AAAI 2026)
 * DAG_MIL [Deformable attention graph representation learning for histopathology WSI analysis](https://ieeexplore.ieee.org/abstract/document/11464653) (ICASSP 2026)
 * MO_MIL [MoMIL: Multi-order Enhanced Multiple Instance Learning for Computational Pathology](https://www.sciencedirect.com/science/article/abs/pii/S0262885626000247) (IJCV  2026)
+* NN_MIL [A generalizable multiple instance learning framework for computational pathology](https://www.nature.com/articles/s41551-026-01767-8) (NBE 2026)
 * UPDATING...
 
 ### ☑️  Implementated Metrics
