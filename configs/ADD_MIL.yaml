@@ -17,7 +17,7 @@ Dataset:
     # to use k-fold train-val/k-fold train-val then test, open dataset_root_dir
     
     dataset_csv_path: /path/to/your/dataset.csv
-    # dataset_root_dir: /dir/to/your/dataset_dir/
+    dataset_root_dir: {}
     balanced_sampler:
         use: False
         replacement: True
@@ -27,11 +27,14 @@ Logs:
 
 
 Model:
-    in_dim: 1024  # depend on the pt dimensions，such resnet50——>1024 vit_s——>384
-    L: 512
-    D: 128
-    dropout: 0.1
-    act: relu  # relu or silu gule
+    # Set this to the feature extractor output dimension.
+    in_dim: 1024
+    hidden_dim: 256
+    attention_hidden_dims: [256, 256]
+    classifier_hidden_dims: [256, 256]
+    use_batch_norm: true
+    track_bn_stats: true
+    bag_size: 1600
     optimizer:
         which: adam    # adam or adamw
         adam_config:

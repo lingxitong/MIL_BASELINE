@@ -1,0 +1,48 @@
+General:
+    MODEL_NAME: FC_MIL
+    seed: 2024
+    num_classes: 2
+    num_epochs: 5
+    device: 0
+    num_workers: 4
+    best_model_metric: macro_auc
+    earlystop:
+        use: false
+        patience: 5
+        metric: macro_auc
+
+Dataset:
+    DATASET_NAME: your_dataset_name
+    dataset_csv_path: /path/to/your/dataset.csv
+    dataset_root_dir: {}
+    balanced_sampler:
+        use: false
+        replacement: true
+
+Logs:
+    log_root_dir: /path/to/your/log_dir/
+
+Model:
+    # Set this to the feature extractor output dimension.
+    in_dim: 512
+    hidden_dim: 512
+    dropout: 0.25
+    max_instances: null
+    alpha_cr: 1.0
+    topk_ratio: 0.03
+    lam: 0.5
+    optimizer:
+        which: adam
+        adam_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+        adamw_config:
+            lr: 0.0002
+            weight_decay: 0.00001
+    criterion: ce
+    scheduler:
+        warmup: 1
+        which: cosine
+        cosine_config:
+            T_max: 4
+            eta_min: 0.00001

@@ -16,6 +16,27 @@ def process(args,yaml_path,options):
     elif args.General.MODEL_NAME == 'NN_MIL':
         from .NN_MIL.process_nn_mil import process_NN_MIL
         process_NN_MIL(args)
+    elif args.General.MODEL_NAME == 'FC_MIL':
+        from .FC_MIL.process_fc_mil import process_FC_MIL
+        process_FC_MIL(args)
+    elif args.General.MODEL_NAME == 'LIN_MIL':
+        from .LIN_MIL.process_lin_mil import process_LIN_MIL
+        process_LIN_MIL(args)
+    elif args.General.MODEL_NAME == 'ATTRI_MIL':
+        from .ATTRI_MIL.process_attri_mil import process_ATTRI_MIL
+        process_ATTRI_MIL(args)
+    elif args.General.MODEL_NAME == 'MR_AB_MIL':
+        from .MR_AB_MIL.process_mr_ab_mil import process_MR_AB_MIL
+        process_MR_AB_MIL(args)
+    elif args.General.MODEL_NAME == 'CAR_MIL':
+        from .CAR_MIL.process_car_mil import process_CAR_MIL
+        process_CAR_MIL(args)
+    elif args.General.MODEL_NAME == 'PNEA_MIL':
+        from .PNEA_MIL.process_pnea_mil import process_PNEA_MIL
+        process_PNEA_MIL(args)
+    elif args.General.MODEL_NAME == 'AS_MIL':
+        from .AS_MIL.process_as_mil import process_AS_MIL
+        process_AS_MIL(args)
     elif args.General.MODEL_NAME == 'MO_MIL':
         from .MO_MIL.process_mo_mil import process_MO_MIL
         process_MO_MIL(args)
