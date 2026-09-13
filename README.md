@@ -127,7 +127,7 @@ fix bug of all MIL-models expect DTFD-MIL
 * MICO_MIL [Multiple Instance Learning with Context-Aware Clustering](https://arxiv.org/abs/2506.18028) (MICCAI 2025)
 * TDA_MIL [Top-Down Attention-based Multiple Instance Learning for Whole Slide Image Analysis](https://link.springer.com/chapter/10.1007/978-3-032-04927-8_62) (MICCAI 2025)
 * LIN_MIL [Linear Attention-based Multiple Instance Learning for Computational Pathology](https://github.com/charlotterchtr/Lin-MIL) (MICCAI 2025)
-* ATTRI_MIL [AttriMIL: Revisiting Attention-based Multiple Instance Learning for Whole-Slide Pathological Image Classification from a Perspective of Instance Attributes](https://github.com/MedCAI/AttriMIL) (Medical Image Analysis 2025)
+* ATTRI_MIL [Revisiting Attention-based MIL for WSI Classification from a Perspective of Instance Attributes](https://github.com/MedCAI/AttriMIL) (MIA 2025)
 * FC_MIL [Frequency-Aware Causal Regularization for Multiple Instance Learning in WSI Classification](https://doi.org/10.1109/TMI.2026.3697015) (TMI 2026)
 * PSA_MIL [Probabilistic Spatial Attention-Based MIL for Whole Slide Image Classification](https://arxiv.org/abs/2503.16284) (WACV 2026)
 * STABLE_MIL [Entropy-Stabilized Attention-based MIL for Morphologically Variable WSIs](https://ieeexplore.ieee.org/abstract/document/11477827)(TMI 2026) 
