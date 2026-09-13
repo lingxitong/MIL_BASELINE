@@ -138,7 +138,7 @@ fix bug of all MIL-models expect DTFD-MIL
 * MR_AB_MIL [Exploiting Low-Dimensional Manifold of Features for Few-Shot WSI Classification](https://openreview.net/forum?id=HBP9uSEYME) (ICLR 2026)
 * AS_MIL [Attention-Stabilized Multiple Instance Learning for Whole-Slide Imaging](https://openreview.net/forum?id=CYmjrbQRyM) (ICLR 2026)
 * CAR_MIL [Counterfactual Attention Regularization for Multiple Instance Learning](https://arxiv.org/abs/2609.08419) (ECCV 2026)
-* PNEA_MIL [Interpretable Multiple-Instance Learning for WSI through Positive-Negative Evidence Analysis](https://doi.org/10.1145/3807503.3819367) (ACM BCB 2026)
+* PNEA_MIL [Interpretable MIL for WSI through Positive-Negative Evidence Analysis](https://doi.org/10.1145/3807503.3819367) (ACM BCB 2026)
 * UPDATING...
 
 ### ☑️  Implementated Metrics
