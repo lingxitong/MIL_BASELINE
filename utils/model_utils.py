@@ -48,8 +48,8 @@ def get_optimizer(args,model):
        weight_decay = args.Model.optimizer.adamw_config.weight_decay
        optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=lr, weight_decay=weight_decay)
        return optimizer,lr
-   
-   
+
+
 def get_param_optimizer(args,params):
     # trainable_parameters = filter(lambda p: p.requires_grad, mil_model.parameters())
     trainable_parameters = params
@@ -158,6 +158,81 @@ def get_model_from_yaml(yaml_args):
         from modules.AB_MIL.ab_mil import AB_MIL
         mil_model = AB_MIL(yaml_args.Model.L,yaml_args.Model.D,yaml_args.General.num_classes,yaml_args.Model.dropout,get_act(yaml_args.Model.act),yaml_args.Model.in_dim)
         return mil_model
+    elif model_name == 'FC_MIL':
+        from modules.FC_MIL.fc_mil import FC_MIL
+        return FC_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            num_classes=yaml_args.General.num_classes,
+            hidden_dim=yaml_args.Model.get('hidden_dim', 512),
+            dropout=yaml_args.Model.get('dropout', 0.25),
+            max_instances=yaml_args.Model.get('max_instances', None),
+        )
+    elif model_name == 'LIN_MIL':
+        from modules.LIN_MIL.lin_mil import LIN_MIL
+        return LIN_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            num_classes=yaml_args.General.num_classes,
+            latent_dim=yaml_args.Model.get('latent_dim', 512),
+            transformer_depth=yaml_args.Model.get('transformer_depth', 4),
+            dropout=yaml_args.Model.get('dropout', 0.0),
+            emb_dropout=yaml_args.Model.get('emb_dropout', 0.1),
+            act=yaml_args.Model.get('act', 'ReLU'),
+            pooling=yaml_args.Model.get('pooling', 'cls'),
+            num_heads=yaml_args.Model.get('num_heads', 8),
+            max_instances=yaml_args.Model.get('max_instances', None),
+        )
+    elif model_name == 'ATTRI_MIL':
+        from modules.ATTRI_MIL.attri_mil import ATTRI_MIL
+        return ATTRI_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            num_classes=yaml_args.General.num_classes,
+            attention_dim=yaml_args.Model.get('attention_dim', None),
+            dropout=yaml_args.Model.get('dropout', 0.0),
+        )
+    elif model_name == 'MR_AB_MIL':
+        from modules.MR_AB_MIL.mr_ab_mil import MR_AB_MIL
+        return MR_AB_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            attention_dim=yaml_args.Model.get('attention_dim', 256),
+            num_classes=yaml_args.General.num_classes,
+            rank=yaml_args.Model.get('rank', 64),
+            residual_alpha=yaml_args.Model.get('residual_alpha', 1.0),
+            residual_dropout=yaml_args.Model.get('residual_dropout', 0.0),
+            dropout=yaml_args.Model.get('dropout', 0.0),
+        )
+    elif model_name == 'CAR_MIL':
+        from modules.CAR_MIL.car_mil import CAR_MIL
+        return CAR_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            hidden_dim=yaml_args.Model.get('hidden_dim', 512),
+            attention_dim=yaml_args.Model.get('attention_dim', 128),
+            num_classes=yaml_args.General.num_classes,
+            dropout=yaml_args.Model.get('dropout', 0.25),
+            act=yaml_args.Model.get('act', 'relu'),
+            attention_bias=yaml_args.Model.get('attention_bias', False),
+        )
+    elif model_name == 'PNEA_MIL':
+        from modules.PNEA_MIL.pnea_mil import PNEA_MIL
+        return PNEA_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            evidence_dim=yaml_args.Model.get('evidence_dim', 64),
+            num_classes=yaml_args.General.num_classes,
+            lambda_l1=yaml_args.Model.get('lambda_l1', 5.0),
+        )
+    elif model_name == 'AS_MIL':
+        from modules.AS_MIL.as_mil import AS_MIL
+        return AS_MIL(
+            in_dim=yaml_args.Model.in_dim,
+            hidden_dim=yaml_args.Model.get('hidden_dim', 256),
+            num_classes=yaml_args.General.num_classes,
+            num_tokens=yaml_args.Model.get('num_tokens', 8),
+            num_heads=yaml_args.Model.get('num_heads', 8),
+            token_drop=yaml_args.Model.get('token_drop', 4),
+            dropout=yaml_args.Model.get('dropout', 0.1),
+            ema_decay=yaml_args.Model.get('ema_decay', 0.999),
+            temperature=yaml_args.Model.get('temperature', 0.2),
+            consistency_weight=yaml_args.Model.get('consistency_weight', 1.0),
+        )
     elif model_name == 'MIXUP_MIL':
         from modules.MIXUP_MIL.mixup_mil import MIXUP_MIL
         mil_model = MIXUP_MIL(yaml_args.Model.L,yaml_args.Model.D,yaml_args.General.num_classes,yaml_args.Model.dropout,get_act(yaml_args.Model.act),yaml_args.Model.in_dim)
@@ -500,15 +575,20 @@ def get_model_from_yaml(yaml_args):
         return mil_model
     elif model_name == 'ADD_MIL':
         from modules.ADD_MIL.add_mil import ADD_MIL
-        L = yaml_args.Model.L if hasattr(yaml_args.Model, 'L') else 512
-        D = yaml_args.Model.D if hasattr(yaml_args.Model, 'D') else 128
+        model_args = yaml_args.Model
+        hidden_dim = model_args.get('hidden_dim', 256)
         mil_model = ADD_MIL(
-            L=L,
-            D=D,
+            in_dim=model_args.in_dim,
             num_classes=yaml_args.General.num_classes,
-            dropout=yaml_args.Model.dropout,
-            act=get_act(yaml_args.Model.act),
-            in_dim=yaml_args.Model.in_dim
+            hidden_dim=hidden_dim,
+            attention_hidden_dims=model_args.get(
+                'attention_hidden_dims', [hidden_dim, hidden_dim]
+            ),
+            classifier_hidden_dims=model_args.get(
+                'classifier_hidden_dims', [hidden_dim, hidden_dim]
+            ),
+            use_batch_norm=model_args.get('use_batch_norm', True),
+            track_bn_stats=model_args.get('track_bn_stats', True),
         )
         return mil_model
     elif model_name == 'MHIM_MIL':
