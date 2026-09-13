@@ -127,7 +127,7 @@ fix bug of all MIL-models expect DTFD-MIL
 * MICO_MIL [Multiple Instance Learning with Context-Aware Clustering](https://arxiv.org/abs/2506.18028) (MICCAI 2025)
 * TDA_MIL [Top-Down Attention-based Multiple Instance Learning for Whole Slide Image Analysis](https://link.springer.com/chapter/10.1007/978-3-032-04927-8_62) (MICCAI 2025)
 * LIN_MIL [Linear Attention-based Multiple Instance Learning for Computational Pathology](https://github.com/charlotterchtr/Lin-MIL) (MICCAI 2025)
-* ATTRI_MIL [Revisiting Attention-based MIL for WSI Classification from a Perspective of Instance Attributes](https://github.com/MedCAI/AttriMIL) (MIA 2025)
+* ATTRI_MIL [Revisiting Attention-based MIL for WSI Classification from Instance Attributes](https://github.com/MedCAI/AttriMIL) (MIA 2025)
 * FC_MIL [Frequency-Aware Causal Regularization for Multiple Instance Learning in WSI Classification](https://doi.org/10.1109/TMI.2026.3697015) (TMI 2026)
 * PSA_MIL [Probabilistic Spatial Attention-Based MIL for Whole Slide Image Classification](https://arxiv.org/abs/2503.16284) (WACV 2026)
 * STABLE_MIL [Entropy-Stabilized Attention-based MIL for Morphologically Variable WSIs](https://ieeexplore.ieee.org/abstract/document/11477827)(TMI 2026) 
@@ -138,7 +138,7 @@ fix bug of all MIL-models expect DTFD-MIL
 * MR_AB_MIL [Exploiting Low-Dimensional Manifold of Features for Few-Shot WSI Classification](https://openreview.net/forum?id=HBP9uSEYME) (ICLR 2026)
 * AS_MIL [Attention-Stabilized Multiple Instance Learning for Whole-Slide Imaging](https://openreview.net/forum?id=CYmjrbQRyM) (ICLR 2026)
 * CAR_MIL [Counterfactual Attention Regularization for Multiple Instance Learning](https://arxiv.org/abs/2609.08419) (ECCV 2026)
-* PNEA_MIL [Interpretable Multiple-Instance Learning for Whole-Slide Images through Positive-Negative Evidence Analysis](https://doi.org/10.1145/3807503.3819367) (ACM BCB 2026)
+* PNEA_MIL [Interpretable Multiple-Instance Learning for WSI through Positive-Negative Evidence Analysis](https://doi.org/10.1145/3807503.3819367) (ACM BCB 2026)
 * UPDATING...
 
 ### ☑️  Implementated Metrics
