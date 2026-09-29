@@ -53,8 +53,8 @@ fix bug of all MIL-models expect DTFD-MIL
 * A library that easily extend by following a uniform definition
 
 ### :bulb: Dataset Uniform Interface
-* User only need to provide the following csvs whether Public/Private Dataset<br/>
-  `/datasets/example_Dataset.csv`
+* User only need to provide the following csvs whether Public/Private Dataset
+  `/datasets/example_Dataset.csv` (or `/datasets/example_Dataset_by_case.csv`) 
   
 ### :closed_umbrella: Supported Dataset-Split-Method
 * User-difined Train-Val-Test split
@@ -63,7 +63,8 @@ fix bug of all MIL-models expect DTFD-MIL
 * Train-Val split with K-fold
 * Train-Val-Test split with K-fold
 * Train-Val with K-fold then test
-* The difference between the different splits is in   `/split_scripts/README.md`
+* The difference between the different splits is in `/split_scripts/README.md`
+* **We recommend prioritizing the case-level split scripts in `/split_by_case/`** when a single case contains multiple slides. They keep all slides of the same `case_id` in the same subset (avoiding case-level leakage between train / val / test); the output format matches `/split_scripts/` and plugs directly into `train_mil.py`. See `/split_by_case/README.md` for details.
 
 ### :triangular_ruler: Feature Encoder
   <em>Deprecated, we recommend using [https://github.com/mahmoodlab/Trident](https://github.com/mahmoodlab/Trident) instead, as it provides comprehensive PFM integration.</em>
@@ -157,6 +158,7 @@ fix bug of all MIL-models expect DTFD-MIL
 - `/process:` Defined the training frameworks for different MIL models.
 - `/feature_extractor:` Supports different feature extractors.
 - `/split_scripts:` Supports different dataset split methods.
+- `/split_by_case:` Case-level (`case_id`) dataset split methods (recommended when a case contains multiple slides).
 - `/vis_scripts:` Visualization scripts for TSNE and Attention.
 - `/datasets:` User-Datasets path information.
 - `/utils:` Framework's utility scripts.
@@ -171,10 +173,12 @@ Supported formats include `OpenSlide` and `SDPC` formats. The following backbone
 Feature extraction is orthogonal to MIL training. Therefore, we also recommend using repositories such as [PIANO](https://github.com/WonderLandxD/PIANO) or [TRIDENT](https://github.com/mahmoodlab/TRIDENT) for your feature extraction work.
 
 #### **Dataset-Csv Construction**
-You should construct a csv-file like the format of `/datasets/example_Dataset.csv`
+You should construct a csv-file like the format of `/datasets/example_Dataset.csv` or `/datasets/example_Dataset_by_case.csv`
 
 #### **Dataset-Split Construction**
 You can use the dataset-split-scripts to perform different dataset-split, the detailed split method descriptions are in `/split_scripts/README.md`.
+
+**We recommend prioritizing the case-level split scripts in `/split_by_case/`**: when a case contains multiple slides, slide-level splitting may scatter slides of the same case across train / val / test, causing case-level leakage and inflated evaluation metrics. The scripts in `/split_by_case/` keep all slides of the same `case_id` in the same subset and output the same format as `/split_scripts/`, so the results can be fed directly into `train_mil.py`. Their input csv requires the `case_id / slide_path / label` columns — see `/datasets/example_Dataset_by_case.csv` and `/split_by_case/README.md`.
 
 
 ### :fire: **Train/Test MIL**

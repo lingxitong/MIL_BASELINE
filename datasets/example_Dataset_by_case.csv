@@ -1,0 +1,16 @@
+case_id,slide_path,label
+TCGA-01-0001,datasets/features/TCGA-01-0001-01Z-00-DX1.pt,0
+TCGA-01-0002,datasets/features/TCGA-01-0002-01Z-00-DX1.pt,1
+TCGA-01-0002,datasets/features/TCGA-01-0002-01Z-00-DX2.pt,1
+TCGA-01-0003,datasets/features/TCGA-01-0003-01Z-00-DX1.pt,2
+TCGA-01-0003,datasets/features/TCGA-01-0003-01Z-00-DX2.pt,2
+TCGA-01-0003,datasets/features/TCGA-01-0003-01Z-00-DX3.pt,2
+TCGA-01-0004,datasets/features/TCGA-01-0004-01Z-00-DX1.pt,0
+TCGA-01-0004,datasets/features/TCGA-01-0004-01Z-00-DX2.pt,0
+TCGA-01-0004,datasets/features/TCGA-01-0004-01Z-00-DX3.pt,0
+TCGA-01-0004,datasets/features/TCGA-01-0004-01Z-00-DX4.pt,0
+TCGA-01-0005,datasets/features/TCGA-01-0005-01Z-00-DX1.pt,1
+TCGA-01-0005,datasets/features/TCGA-01-0005-01Z-00-DX2.pt,1
+TCGA-01-0005,datasets/features/TCGA-01-0005-01Z-00-DX3.pt,1
+TCGA-01-0005,datasets/features/TCGA-01-0005-01Z-00-DX4.pt,1
+TCGA-01-0005,datasets/features/TCGA-01-0005-01Z-00-DX5.pt,1
